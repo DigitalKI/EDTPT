@@ -32,9 +32,21 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+[node name="LogDetailContainer" type="MarginContainer" parent="HBoxContainer"]
 margin_left = 204.0
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+
+[node name="LogDetails" type="RichTextLabel" parent="HBoxContainer/LogDetailContainer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 815.0
+margin_bottom = 595.0
+
+[connection signal="item_selected" from="HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]

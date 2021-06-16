@@ -18,19 +18,21 @@ func get_files() -> Array:
 		print("An error occurred when trying to access the path.")
 	return logfiles
 
-func get_log_variant(_filename):
+func get_log_objects(_filename):
 	var file = File.new()
-	var jjournal : JSONParseResult
+	var results = []
 	if file.open(logs_path + _filename, File.READ) == OK:
 		while !file.eof_reached():
+			var jjournal : JSONParseResult
 			var content = file.get_line()
 			jjournal = JSON.parse(content)
+			results.append(jjournal.result)
 		file.close()
-	return jjournal.result
+	return results
 
-func read_log():
-	for logfile in get_files():
-		if logfile.get_extension() == 'log':
-			var logf = get_log_variant(logfile)
-			print(logf)
+#func read_log():
+#	for logfile in get_files():
+#		if logfile.get_extension() == 'log':
+#			var logf = get_log_object(logfile)
+#			print(logf)
 
