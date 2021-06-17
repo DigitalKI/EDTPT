@@ -8,10 +8,20 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Node",
+"class": "DataReader",
+"language": "GDScript",
+"path": "res://DataReader.gd"
+} ]
+_global_script_class_icons={
+"DataReader": ""
+}
+
 [application]
 
 config/name="EDTPT"
-run/main_scene="res://Main.tscn"
+run/main_scene="res://MainContainer.tscn"
 config/icon="res://icon.png"
 
 [global]

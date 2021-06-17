@@ -1,18 +1,18 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://DataReader.gd" type="Script" id=1]
-[ext_resource path="res://MainControl.gd" type="Script" id=2]
+[ext_resource path="res://JournalReader.gd" type="Script" id=1]
+[ext_resource path="res://DataReader.gd" type="Script" id=2]
 
-[node name="MainControl" type="Control"]
+[node name="JournalReader" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 2 )
+script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="DataReader" type="Node" parent="."]
-script = ExtResource( 1 )
+script = ExtResource( 2 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchor_right = 1.0
@@ -27,7 +27,6 @@ __meta__ = {
 margin_right = 200.0
 margin_bottom = 600.0
 rect_min_size = Vector2( 200, 50 )
-items = [ "Item 0", null, false ]
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -49,4 +48,5 @@ margin_top = 5.0
 margin_right = 815.0
 margin_bottom = 595.0
 
+[connection signal="thread_completed_get_log_objects" from="DataReader" to="." method="_on_DataReader_thread_completed_get_log_objects"]
 [connection signal="item_selected" from="HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]
