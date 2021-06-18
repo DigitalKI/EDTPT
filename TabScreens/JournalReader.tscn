@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TabScreens/JournalReader.gd" type="Script" id=1]
+
+[node name="JournalReader" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LogDetailContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LogDetailContainer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 1019.0
+margin_bottom = 595.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LogEntries" type="ItemList" parent="LogDetailContainer/HBoxContainer"]
+margin_right = 200.0
+margin_bottom = 590.0
+rect_min_size = Vector2( 200, 50 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LogDetails" type="RichTextLabel" parent="LogDetailContainer/HBoxContainer"]
+margin_left = 204.0
+margin_right = 1014.0
+margin_bottom = 590.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="item_selected" from="LogDetailContainer/HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]
