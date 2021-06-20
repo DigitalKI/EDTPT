@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "Node",
 "class": "DataReader",
 "language": "GDScript",
-"path": "res://Helpers/DataReader.gd"
+"path": "res://HelperModules/DataReader.gd"
 } ]
 _global_script_class_icons={
 "DataReader": ""
@@ -26,7 +26,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
-data_reader="*res://Helpers/DataReader.gd"
+data_reader="*res://HelperModules/DataReader.gd"
 
 [global]
 

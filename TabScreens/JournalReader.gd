@@ -17,8 +17,8 @@ func _on_LogEntries_item_selected(index):
 
 
 func _on_DataReader_thread_completed_get_log_objects():
-	for logobj in data_reader.logobjects:
-		log_entries.add_item(logobj["filename"])
+	for logobj_id in data_reader.logobjects.keys():
+		log_entries.add_item(logobj_id)
 
 func show_data_object(_current_logobject):
 	if _current_logobject:
