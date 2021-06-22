@@ -12,3 +12,4 @@ func _on_BtLogs_pressed():
 
 func _on_BtShips_pressed():
 	$TabContainer.current_tab = 1
+	$TabContainer/TabShips/Ships.initialize_ships_tab()

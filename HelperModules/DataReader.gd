@@ -76,3 +76,12 @@ func reset_thread():
 	if thread_reader.is_active():
 		thread_reader.wait_to_finish()
 	emit_signal("thread_completed_get_log_objects")
+
+
+func get_event_by_type(_event_type : String):
+	var evt_lst : Array = []
+	for log_file in logobjects.keys():
+		for evt in logobjects[log_file]["dataobject"]:
+			if evt.has("event") && evt["event"] == _event_type:
+				evt_lst.append(evt)
+	return evt_lst
