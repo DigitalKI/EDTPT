@@ -28,15 +28,22 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BtLogs" type="Button" parent="Panel/VBoxContainer"]
+[node name="BtCMDR" type="MenuButton" parent="Panel/VBoxContainer"]
 margin_right = 100.0
 margin_bottom = 20.0
-text = "Log Entries"
+text = "CMDR"
+items = [ "Item 0", null, 0, false, false, 0, 0, null, "", false ]
 
-[node name="BtShips" type="Button" parent="Panel/VBoxContainer"]
+[node name="BtLogs" type="Button" parent="Panel/VBoxContainer"]
 margin_top = 24.0
 margin_right = 100.0
 margin_bottom = 44.0
+text = "Log Entries"
+
+[node name="BtShips" type="Button" parent="Panel/VBoxContainer"]
+margin_top = 48.0
+margin_right = 100.0
+margin_bottom = 68.0
 text = "Ships"
 
 [node name="TabContainer" type="TabContainer" parent="."]

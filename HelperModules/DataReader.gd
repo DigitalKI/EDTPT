@@ -4,6 +4,7 @@ class_name DataReader
 var logs_path = "%s\\Saved Games\\Frontier Developments\\Elite Dangerous\\" % OS.get_environment('userprofile')
 var thread_reader : Thread = null
 var mutex
+var cmdrs : Array = []
 var logfiles : Array = []
 var logobjects : Dictionary
 
@@ -65,6 +66,9 @@ func get_all_log_objects(_nullparam = null):
 		print("reading \"%s\" %s of %s"  % [log_file, current_file, total_files])
 		current_file += 1
 		curr_logobj = get_log_object(log_file)
+		var curr_cmdr = get_events_by_type("Commander", curr_logobj, true)
+		if curr_cmdr:
+			cmdrs.append(curr_cmdr[0])
 		logobjects[log_file] = curr_logobj.duplicate()
 	mutex.unlock()
 	call_deferred("reset_thread")
@@ -77,11 +81,16 @@ func reset_thread():
 		thread_reader.wait_to_finish()
 	emit_signal("thread_completed_get_log_objects")
 
+func get_events_by_type(_event_type : String, _dataobject, _first : bool = false):
+	var evt_lst : Array = []
+	for evt in _dataobject:
+		if evt.has("event") && evt["event"] == _event_type:
+			evt_lst.append(evt)
+	return evt_lst
+	
 
-func get_event_by_type(_event_type : String):
+func get_all_events_by_type(_event_type : String):
 	var evt_lst : Array = []
 	for log_file in logobjects.keys():
-		for evt in logobjects[log_file]["dataobject"]:
-			if evt.has("event") && evt["event"] == _event_type:
-				evt_lst.append(evt)
+			evt_lst.append_array(get_events_by_type(_event_type, logobjects[log_file]["dataobject"]))
 	return evt_lst
