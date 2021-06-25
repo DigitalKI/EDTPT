@@ -13,9 +13,21 @@ _global_script_classes=[ {
 "class": "DataReader",
 "language": "GDScript",
 "path": "res://HelperModules/DataReader.gd"
+}, {
+"base": "Object",
+"class": "DateTime",
+"language": "GDScript",
+"path": "res://HelperModules/DateTime.gd"
+}, {
+"base": "Object",
+"class": "ShipsDataManager",
+"language": "GDScript",
+"path": "res://HelperModules/ShipsDataManager.gd"
 } ]
 _global_script_class_icons={
-"DataReader": ""
+"DataReader": "",
+"DateTime": "",
+"ShipsDataManager": ""
 }
 
 [application]

@@ -1,0 +1,102 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.870588, 0.537255, 0, 1 )
+corner_detail = 5
+
+[node name="ShipButton" type="Button"]
+margin_right = 250.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 60, 60 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 72.0
+margin_bottom = 60.0
+
+[node name="ShipModel" type="Label" parent="HBoxContainer/VBoxContainer2"]
+margin_right = 72.0
+margin_bottom = 14.0
+text = "ship model"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShipName" type="Label" parent="HBoxContainer/VBoxContainer2"]
+margin_top = 18.0
+margin_right = 72.0
+margin_bottom = 32.0
+text = "Ship name"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 76.0
+margin_right = 250.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="HBoxContainer/VBoxContainer"]
+margin_right = 174.0
+margin_bottom = 8.0
+rect_min_size = Vector2( 0, 7 )
+mouse_filter = 1
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+value = 50.0
+percent_visible = false
+
+[node name="ProgressBar2" type="ProgressBar" parent="HBoxContainer/VBoxContainer"]
+margin_top = 12.0
+margin_right = 174.0
+margin_bottom = 21.0
+rect_min_size = Vector2( 0, 7 )
+mouse_filter = 1
+input_pass_on_modal_close_click = false
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+value = 50.0
+percent_visible = false
+
+[node name="ProgressBar3" type="ProgressBar" parent="HBoxContainer/VBoxContainer"]
+margin_top = 25.0
+margin_right = 174.0
+margin_bottom = 34.0
+rect_min_size = Vector2( 0, 7 )
+mouse_filter = 1
+input_pass_on_modal_close_click = false
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+value = 50.0
+percent_visible = false
+
+[node name="ProgressBar4" type="ProgressBar" parent="HBoxContainer/VBoxContainer"]
+margin_top = 38.0
+margin_right = 174.0
+margin_bottom = 47.0
+rect_min_size = Vector2( 0, 7 )
+mouse_filter = 1
+input_pass_on_modal_close_click = false
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+value = 50.0
+percent_visible = false
+
+[node name="ProgressBar5" type="ProgressBar" parent="HBoxContainer/VBoxContainer"]
+margin_top = 51.0
+margin_right = 174.0
+margin_bottom = 60.0
+rect_min_size = Vector2( 0, 7 )
+mouse_filter = 1
+input_pass_on_modal_close_click = false
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+value = 50.0
+percent_visible = false

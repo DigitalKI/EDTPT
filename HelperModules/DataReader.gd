@@ -7,6 +7,7 @@ var mutex
 var cmdrs : Dictionary = {}
 var logfiles : Array = []
 var logobjects : Dictionary
+var ships_manager : ShipsDataManager = ShipsDataManager.new()
 
 #signal thread_completed_get_files
 signal thread_completed_get_log_objects
@@ -66,10 +67,12 @@ func get_all_log_objects(_nullparam = null):
 		print("reading \"%s\" %s of %s"  % [log_file, current_file, total_files])
 		current_file += 1
 		curr_logobj = get_log_object(log_file)
+#		Extracts the commanders name
 		var curr_cmdr = get_events_by_type("Commander", curr_logobj["dataobject"], true)
 		if curr_cmdr:
 			cmdrs[curr_cmdr[0]["FID"]] = curr_cmdr[0]["Name"]
 		logobjects[log_file] = curr_logobj.duplicate()
+	ships_manager.get_stored_ships()
 	mutex.unlock()
 	call_deferred("reset_thread")
 
