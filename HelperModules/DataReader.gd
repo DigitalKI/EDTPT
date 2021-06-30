@@ -5,6 +5,7 @@ var logs_path = "%s\\Saved Games\\Frontier Developments\\Elite Dangerous\\" % OS
 var thread_reader : Thread = null
 var mutex
 var cmdrs : Dictionary = {}
+var evt_types : Array = []
 var logfiles : Array = []
 var logobjects : Dictionary
 var ships_manager : ShipsDataManager = ShipsDataManager.new()
@@ -18,6 +19,7 @@ func _ready():
 	print(logs_path)
 #	get_all_log_objects_threaded()
 	get_all_log_objects()
+	get_event_types()
 	
 func _exit_tree():
 	if thread_reader.is_active():
@@ -85,7 +87,6 @@ func get_all_log_objects(_nullparam = null):
 		logobjects[log_file] = curr_logobj.duplicate()
 	ships_manager.get_stored_ships()
 	ships_manager.get_ships_loadoud()
-	print("Max jmp range: %s" % ships_manager.get_max_jump_range())
 	mutex.unlock()
 	call_deferred("reset_thread")
 
@@ -97,6 +98,15 @@ func reset_thread():
 		thread_reader.wait_to_finish()
 	emit_signal("thread_completed_get_log_objects")
 
+func get_event_types():
+	evt_types = []
+	for log_file in logobjects.keys():
+		var dobj = logobjects[log_file]["dataobject"]
+		for evt in dobj:
+			if evt is Dictionary && evt.has("event") && !evt_types.has(evt["event"]):
+				evt_types.append(evt["event"])
+	return evt_types
+
 func get_events_by_type(_event_type : String, _dataobject, _first : bool = false):
 	var evt_lst : Array = []
 	for evt in _dataobject:
@@ -105,7 +115,6 @@ func get_events_by_type(_event_type : String, _dataobject, _first : bool = false
 			if _first:
 				break
 	return evt_lst
-	
 
 func get_all_events_by_type(_event_type : String):
 	var evt_lst : Array = []
