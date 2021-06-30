@@ -44,13 +44,23 @@ func get_files(_nullarg = null):
 func get_files_threaded():
 	thread_reader.start(self, "get_files", null)
 
-func get_log_object(_filename):
+func get_log_object(_filename : String):
 	var file = File.new()
 	var jjournal : JSONParseResult
 	var results = []
 	if file.open(logs_path + _filename, File.READ) == OK:
+		var content : String
 		while !file.eof_reached():
-			var content : String = file.get_line()
+			if _filename.get_extension() == "json":
+				content += file.get_line()
+			else:
+				content = file.get_line()
+				if content:
+					jjournal = JSON.parse(content)
+					if jjournal.result:
+						results.append(jjournal.result)
+						
+		if _filename.get_extension() == "json":
 			if content:
 				jjournal = JSON.parse(content)
 				if jjournal.result:
@@ -74,6 +84,8 @@ func get_all_log_objects(_nullparam = null):
 			cmdrs[curr_cmdr[0]["FID"]] = curr_cmdr[0]["Name"]
 		logobjects[log_file] = curr_logobj.duplicate()
 	ships_manager.get_stored_ships()
+	ships_manager.get_ships_loadoud()
+	print("Max jmp range: %s" % ships_manager.get_max_jump_range())
 	mutex.unlock()
 	call_deferred("reset_thread")
 

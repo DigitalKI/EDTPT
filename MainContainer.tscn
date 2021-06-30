@@ -2,7 +2,7 @@
 
 [ext_resource path="res://TabScreens/JournalReader.tscn" type="PackedScene" id=1]
 [ext_resource path="res://MainContainer.gd" type="Script" id=2]
-[ext_resource path="res://TabScreens/Ships.tscn" type="PackedScene" id=3]
+[ext_resource path="res://TabScreens/Shipyard/Shipyard.tscn" type="PackedScene" id=3]
 [ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=4]
 
 [sub_resource type="StyleBoxFlat" id=1]
@@ -87,7 +87,7 @@ margin_top = 8.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="Ships" parent="TabContainer/TabShips" instance=ExtResource( 3 )]
+[node name="Shipyard" parent="TabContainer/TabShips" instance=ExtResource( 3 )]
 margin_left = -4.4949
 margin_top = 2.99661
 margin_right = -4.49487

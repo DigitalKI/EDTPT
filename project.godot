@@ -22,7 +22,7 @@ _global_script_classes=[ {
 "base": "Button",
 "class": "ShipButton",
 "language": "GDScript",
-"path": "res://TabScreens/ShipButton.gd"
+"path": "res://TabScreens/Shipyard/ShipButton.gd"
 }, {
 "base": "Object",
 "class": "ShipsDataManager",
