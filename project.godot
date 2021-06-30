@@ -46,9 +46,16 @@ config/icon="res://icon.png"
 
 data_reader="*res://HelperModules/DataReader.gd"
 
+[display]
+
+window/per_pixel_transparency/allowed=true
+window/per_pixel_transparency/enabled=true
+
 [global]
 
 font=false
+display=false
+transparen=false
 
 [physics]
 
