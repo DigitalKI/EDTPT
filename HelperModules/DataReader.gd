@@ -15,6 +15,7 @@ signal thread_completed_get_log_objects
 func _ready():
 	thread_reader = Thread.new()
 	mutex = Mutex.new()
+	print(logs_path)
 #	get_all_log_objects_threaded()
 	get_all_log_objects()
 	
