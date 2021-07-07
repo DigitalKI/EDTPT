@@ -5,6 +5,7 @@ var logs_path = "%s\\Saved Games\\Frontier Developments\\Elite Dangerous\\" % OS
 var thread_reader : Thread = null
 var mutex
 var cmdrs : Dictionary = {}
+var selected_cmdr
 var evt_types : Array = []
 var logfiles : Array = []
 var logobjects : Dictionary
@@ -50,6 +51,8 @@ func get_log_object(_filename : String):
 	var file = File.new()
 	var jjournal : JSONParseResult
 	var results = []
+	var cmdr = ""
+	var fid = ""
 	if file.open(logs_path + _filename, File.READ) == OK:
 		var content : String
 		while !file.eof_reached():
@@ -60,6 +63,9 @@ func get_log_object(_filename : String):
 				if content:
 					jjournal = JSON.parse(content)
 					if jjournal.result:
+						if jjournal.result["event"] == "Commander":
+							cmdr = jjournal.result["Name"]
+							fid = jjournal.result["FID"]
 						results.append(jjournal.result)
 						
 		if _filename.get_extension() == "json":
@@ -68,7 +74,7 @@ func get_log_object(_filename : String):
 				if jjournal.result:
 					results.append(jjournal.result)
 		file.close()
-	return {"date_modified": file.get_modified_time(logs_path + _filename), "dataobject":results}
+	return {"date_modified": file.get_modified_time(logs_path + _filename), "name": cmdr, "FID": fid, "dataobject":results}
 
 func get_all_log_objects(_nullparam = null):
 	mutex.lock()
@@ -84,6 +90,8 @@ func get_all_log_objects(_nullparam = null):
 		var curr_cmdr = get_events_by_type("Commander", curr_logobj["dataobject"], true)
 		if curr_cmdr:
 			cmdrs[curr_cmdr[0]["FID"]] = curr_cmdr[0]["Name"]
+			if !selected_cmdr:
+				selected_cmdr = curr_cmdr[0]["Name"]
 		logobjects[log_file] = curr_logobj.duplicate()
 	ships_manager.get_stored_ships()
 	ships_manager.get_ships_loadoud()

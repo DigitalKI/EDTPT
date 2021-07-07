@@ -3,14 +3,9 @@ extends HBoxContainer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	# This code makes the window background transparent
-#	get_tree().get_root().set_transparent_background(true)
-	
-	# This is a test to se how to do passthrough controls
-	# Polygons need to be placed behind the controls you want to show.
-#	OS.set_window_mouse_passthrough($Panel/VBoxContainer/PassThroughPoly.polygon)
-
-	pass # Replace with function body.
+	$Panel/VBoxContainer/BtCMDR.clear()
+	for cmdr_id in data_reader.cmdrs.keys():
+		$Panel/VBoxContainer/BtCMDR.add_item(data_reader.cmdrs[cmdr_id])
 
 
 func _on_BtLogs_pressed():
@@ -20,3 +15,8 @@ func _on_BtLogs_pressed():
 func _on_BtShips_pressed():
 	$TabContainer.current_tab = 1
 	$TabContainer/TabShips/Shipyard.initialize_ships_tab()
+
+
+func _on_BtCMDR_item_selected(index):
+	data_reader.selected_cmdr = $Panel/VBoxContainer/BtCMDR.get_item_text(index)
+	$TabContainer/TabLogs/JournalReader._on_DataReader_thread_completed_get_log_objects()

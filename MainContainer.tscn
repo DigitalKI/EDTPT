@@ -23,7 +23,6 @@ margin_bottom = 600.0
 rect_min_size = Vector2( 100, 0 )
 mouse_filter = 2
 size_flags_vertical = 3
-theme = ExtResource( 4 )
 custom_styles/panel = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -39,13 +38,15 @@ __meta__ = {
 }
 
 [node name="PassThroughPoly" type="Polygon2D" parent="Panel/VBoxContainer"]
+visible = false
 polygon = PoolVector2Array( 0, 0, 100, 0, 100, 120, 0, 120 )
 
-[node name="BtCMDR" type="MenuButton" parent="Panel/VBoxContainer"]
+[node name="BtCMDR" type="OptionButton" parent="Panel/VBoxContainer"]
 margin_right = 100.0
 margin_bottom = 20.0
-text = "CMDR"
-items = [ "Item 0", null, 0, false, false, 0, 0, null, "", false ]
+text = "Item 0"
+items = [ "Item 0", null, false, 0, false, "0", null, false, 0, false ]
+selected = 0
 
 [node name="BtLogs" type="Button" parent="Panel/VBoxContainer"]
 margin_top = 24.0
@@ -111,5 +112,6 @@ margin_top = 8.0
 margin_right = -4.0
 margin_bottom = -4.0
 
+[connection signal="item_selected" from="Panel/VBoxContainer/BtCMDR" to="." method="_on_BtCMDR_item_selected"]
 [connection signal="pressed" from="Panel/VBoxContainer/BtLogs" to="." method="_on_BtLogs_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/BtShips" to="." method="_on_BtShips_pressed"]

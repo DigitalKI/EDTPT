@@ -28,6 +28,6 @@ func initialize_ships_tab():
 		ship_btn.MaxJump = current_max_jump
 		ship_btn.Jump = 0
 		if ship_loadout:
-			ship_btn.Hull = ship_loadout["HullValue"]
-			ship_btn.Jump = ship_loadout["MaxJumpRange"]
+			ship_btn.Hull = ship_loadout["HullValue"] if ship_loadout.has("HullValue") else 0
+			ship_btn.Jump = ship_loadout["MaxJumpRange"] if ship_loadout.has("MaxJumpRange") else 0
 		$MarginContainer/HBoxContainer/ScrollContainer/VBoxContainer.add_child(ship_btn)

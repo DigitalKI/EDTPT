@@ -1,7 +1,7 @@
 extends Control
 
-onready var log_entries = $LogDetailContainer/HBoxContainer/LogEntries
-onready var log_details = $LogDetailContainer/HBoxContainer/LogDetails
+onready var log_entries = $LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries
+onready var log_details = $LogDetailContainer/VBoxContainer/HBoxContainer/LogDetails
 
 
 # Called when the node enters the scene tree for the first time.
@@ -17,8 +17,10 @@ func _on_LogEntries_item_selected(index):
 
 
 func _on_DataReader_thread_completed_get_log_objects():
+	log_entries.clear()
 	for logobj_id in data_reader.logobjects.keys():
-		log_entries.add_item(logobj_id)
+		if data_reader.logobjects[logobj_id]["name"] == data_reader.selected_cmdr:
+			log_entries.add_item(logobj_id)
 
 func show_data_object(_current_logobject):
 	if _current_logobject:
