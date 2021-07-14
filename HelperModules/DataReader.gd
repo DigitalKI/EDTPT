@@ -62,12 +62,14 @@ func get_log_object(_filename : String):
 				content = file.get_line()
 				if content:
 					jjournal = JSON.parse(content)
-					if jjournal.result:
+					if jjournal.result is Dictionary:
 						if jjournal.result["event"] == "Commander":
 							cmdr = jjournal.result["Name"]
 							fid = jjournal.result["FID"]
 						results.append(jjournal.result)
-						
+					else:
+						print("Problem with this file: %s" % _filename)
+						print("Here: %s" % content)
 		if _filename.get_extension() == "json":
 			if content:
 				jjournal = JSON.parse(content)
