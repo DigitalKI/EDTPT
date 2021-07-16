@@ -29,10 +29,21 @@ margin_top = 5.0
 margin_right = 1019.0
 margin_bottom = 595.0
 
-[node name="ToolButton" type="ToolButton" parent="LogDetailContainer/VBoxContainer"]
+[node name="ToolBarContainer" type="HBoxContainer" parent="LogDetailContainer/VBoxContainer"]
 margin_right = 1014.0
 margin_bottom = 22.0
-text = "something"
+
+[node name="ToolButton" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
+margin_right = 48.0
+margin_bottom = 22.0
+text = "Apply"
+
+[node name="EventTypeFilter" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
+margin_left = 52.0
+margin_right = 149.0
+margin_bottom = 22.0
+text = "Filter By type"
+items = [ "Item 0", null, 1, false, false, 0, 0, null, "", false, "Item 1", null, 1, false, false, 1, 0, null, "", false, "Item 2", null, 1, false, false, 2, 0, null, "", false ]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="LogDetailContainer/VBoxContainer"]
 margin_top = 26.0

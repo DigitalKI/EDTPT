@@ -1,13 +1,12 @@
 extends Control
 
-onready var log_entries = $LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries
-onready var log_details = $LogDetailContainer/VBoxContainer/HBoxContainer/LogDetails
+onready var log_entries = $LogDetailContainer/HBoxContainer/LogEntries
+onready var log_details = $LogDetailContainer/HBoxContainer/LogDetails
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	data_reader.connect("thread_completed_get_log_objects", self, "_on_DataReader_thread_completed_get_log_objects")
-	fill_event_type_filter()
 
 func _on_LogEntries_item_selected(index):
 	var journal_name = log_entries.get_item_text(index)
@@ -18,10 +17,8 @@ func _on_LogEntries_item_selected(index):
 
 
 func _on_DataReader_thread_completed_get_log_objects():
-	log_entries.clear()
 	for logobj_id in data_reader.logobjects.keys():
-		if data_reader.logobjects[logobj_id]["name"] == data_reader.selected_cmdr:
-			log_entries.add_item(logobj_id)
+		log_entries.add_item(logobj_id)
 
 func show_data_object(_current_logobject):
 	if _current_logobject:
@@ -33,9 +30,3 @@ func show_data_object(_current_logobject):
 				objtext += "\n"
 			objtext += "------------------------\n"
 		log_details.text = objtext
-
-func fill_event_type_filter():
-	$LogDetailContainer/VBoxContainer/ToolBarContainer/EventTypeFilter.get_popup().clear()
-	for evt_tpy in data_reader.evt_types:
-		$LogDetailContainer/VBoxContainer/ToolBarContainer/EventTypeFilter.get_popup().add_check_item(evt_tpy)
-		

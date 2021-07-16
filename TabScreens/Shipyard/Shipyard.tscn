@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://TabScreens/Shipyard/Shipyard.gd" type="Script" id=1]
+[ext_resource path="res://ShipModels/Krait_MK2.glb" type="PackedScene" id=2]
+
+[sub_resource type="ViewportTexture" id=1]
+viewport_path = NodePath("MarginContainer/HBoxContainer/TextureRect/Viewport")
 
 [node name="Ships" type="Control"]
 anchor_right = 1.0
@@ -37,3 +41,22 @@ margin_right = 250.0
 margin_bottom = 590.0
 rect_min_size = Vector2( 250, 0 )
 size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+margin_left = 254.0
+margin_right = 1014.0
+margin_bottom = 590.0
+size_flags_horizontal = 3
+texture = SubResource( 1 )
+stretch_mode = 7
+flip_v = true
+
+[node name="Viewport" type="Viewport" parent="MarginContainer/HBoxContainer/TextureRect"]
+size = Vector2( 720, 480 )
+size_override_stretch = true
+
+[node name="Krait_MK2" parent="MarginContainer/HBoxContainer/TextureRect/Viewport" instance=ExtResource( 2 )]
+
+[node name="Camera" type="Camera" parent="MarginContainer/HBoxContainer/TextureRect/Viewport/Krait_MK2"]
+transform = Transform( 1, 0, 0, 0, 0.737254, 0.675616, 0, -0.675616, 0.737254, 0, 32.8616, 48.5115 )
+far = 692.5
