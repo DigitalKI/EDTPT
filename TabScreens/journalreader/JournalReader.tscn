@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://TabScreens/JournalReader.gd" type="Script" id=1]
+[ext_resource path="res://TabScreens/journalreader/JournalReader.gd" type="Script" id=1]
+[ext_resource path="res://TabScreens/journalreader/JournalEvent.tscn" type="PackedScene" id=2]
 
 [node name="JournalReader" type="Control"]
 anchor_right = 1.0
@@ -31,22 +32,29 @@ margin_bottom = 595.0
 
 [node name="ToolBarContainer" type="HBoxContainer" parent="LogDetailContainer/VBoxContainer"]
 margin_right = 1014.0
-margin_bottom = 22.0
+margin_bottom = 40.0
 
 [node name="ToolButton" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
 margin_right = 48.0
-margin_bottom = 22.0
+margin_bottom = 40.0
 text = "Apply"
 
-[node name="EventTypeFilter" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
+[node name="DisplayByEventFile" type="CheckButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
 margin_left = 52.0
-margin_right = 149.0
-margin_bottom = 22.0
+margin_right = 208.0
+margin_bottom = 40.0
+pressed = true
+text = "Show by file"
+
+[node name="EventTypeFilter" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
+margin_left = 212.0
+margin_right = 309.0
+margin_bottom = 40.0
 text = "Filter By type"
 items = [ "Item 0", null, 1, false, false, 0, 0, null, "", false, "Item 1", null, 1, false, false, 1, 0, null, "", false, "Item 2", null, 1, false, false, 2, 0, null, "", false ]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="LogDetailContainer/VBoxContainer"]
-margin_top = 26.0
+margin_top = 44.0
 margin_right = 1014.0
 margin_bottom = 590.0
 size_flags_horizontal = 3
@@ -57,17 +65,38 @@ __meta__ = {
 
 [node name="LogEntries" type="ItemList" parent="LogDetailContainer/VBoxContainer/HBoxContainer"]
 margin_right = 200.0
-margin_bottom = 564.0
+margin_bottom = 546.0
 rect_min_size = Vector2( 200, 50 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="LogDetails" type="RichTextLabel" parent="LogDetailContainer/VBoxContainer/HBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="LogDetailContainer/VBoxContainer/HBoxContainer"]
 margin_left = 204.0
 margin_right = 1014.0
-margin_bottom = 564.0
+margin_bottom = 546.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="LogDetails" type="VBoxContainer" parent="LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
+margin_right = 810.0
+margin_bottom = 546.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="EventItem" parent="LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer/LogDetails" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 810.0
+margin_bottom = 40.0
+
+[node name="EventItem2" parent="LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer/LogDetails" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 44.0
+margin_right = 810.0
+margin_bottom = 84.0
+
+[connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/DisplayByEventFile" to="." method="_on_DisplayByEventFile_toggled"]
 [connection signal="item_selected" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]

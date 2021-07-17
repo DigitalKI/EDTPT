@@ -1,26 +1,35 @@
 extends Control
 
-onready var log_entries = $LogDetailContainer/HBoxContainer/LogEntries
-onready var log_details = $LogDetailContainer/HBoxContainer/LogDetails
+onready var log_entries = $LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries
+onready var log_details = $LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer/LogDetails
+onready var log_filter = $LogDetailContainer/VBoxContainer/ToolBarContainer/EventTypeFilter
+
+var journal_event = preload("res://TabScreens/journalreader/JournalEvent.tscn")
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	data_reader.connect("thread_completed_get_log_objects", self, "_on_DataReader_thread_completed_get_log_objects")
+	fill_event_type_filter()
 
 func _on_LogEntries_item_selected(index):
 	var journal_name = log_entries.get_item_text(index)
 	# Let's reset the details text area
-	log_details.scroll_to_line(0)
-	log_details.text = ""
-	show_data_object(data_reader.logobjects[journal_name]["dataobject"])
-
+	$LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer.scroll_vertical = 0
+	var dataobject = data_reader.logobjects[journal_name]["dataobject"]
+	add_events(dataobject)
 
 func _on_DataReader_thread_completed_get_log_objects():
+	log_entries.clear()
 	for logobj_id in data_reader.logobjects.keys():
-		log_entries.add_item(logobj_id)
+		if data_reader.logobjects[logobj_id]["name"] == data_reader.selected_cmdr:
+			log_entries.add_item(logobj_id)
+	# Automatically display the last journal entries:
+	if log_entries.get_item_count() > 0:
+		var dataobject = data_reader.logobjects[log_entries.get_item_text(log_entries.get_item_count() - 1)]["dataobject"]
+		add_events(dataobject)
 
-func show_data_object(_current_logobject):
+func get_data_object_text(_current_logobject):
 	if _current_logobject:
 		var objtext = ""
 		for log_obj in _current_logobject:
@@ -29,4 +38,42 @@ func show_data_object(_current_logobject):
 					objtext +=  String(idx) + " - " + String(log_obj.get(idx)) + "\n"
 				objtext += "\n"
 			objtext += "------------------------\n"
-		log_details.text = objtext
+		return objtext
+
+func add_events(_current_logobject):
+	for old_evt in log_details.get_children():
+		old_evt.queue_free()
+	if _current_logobject:
+		for log_obj in _current_logobject:
+			if log_obj is Dictionary:
+				var objtext : String = ""
+				var evt : JournalEvent = journal_event.instance()
+				if log_obj.has("event"):
+					evt.event_type = log_obj["event"]
+				if log_obj.has("timestamp"):
+					evt.event_time = log_obj["timestamp"]
+				for idx in log_obj.keys():
+					if idx != "event" && idx != "timestamp":
+						objtext +=  String(idx) + " - " + String(log_obj.get(idx)) + " | "
+				evt.event_text = objtext
+				log_details.add_child(evt)
+
+func fill_event_type_filter():
+	log_filter.get_popup().clear()
+	for evt_tpy in data_reader.evt_types:
+		log_filter.get_popup().add_check_item(evt_tpy)
+	log_filter.get_popup().connect("id_pressed",self,"_on_filter_selected")
+	
+func _on_filter_selected(_index):
+	if !log_filter.get_popup().is_item_checked(_index):
+		log_filter.get_popup().set_item_checked(_index, true)
+		print(log_filter.get_popup().get_item_text(_index))
+	pass
+		
+
+
+func _on_DisplayByEventFile_toggled(button_pressed):
+	if button_pressed:
+		log_entries.visible = true
+	else:
+		log_entries.visible = false

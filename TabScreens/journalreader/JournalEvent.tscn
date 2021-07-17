@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TabScreens/journalreader/JournalEvent.gd" type="Script" id=1]
+
+[node name="EventItem" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 0.067
+margin_bottom = -0.200001
+rect_min_size = Vector2( 100, 40 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EventType" type="TextEdit" parent="BoxContainer"]
+margin_right = 100.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 100, 0 )
+size_flags_vertical = 5
+text = "Event type"
+readonly = true
+
+[node name="EeventTime" type="TextEdit" parent="BoxContainer"]
+margin_left = 104.0
+margin_right = 224.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 120, 0 )
+size_flags_vertical = 5
+text = "Event time"
+readonly = true
+
+[node name="EventDescription" type="RichTextLabel" parent="BoxContainer"]
+margin_left = 228.0
+margin_right = 1024.0
+margin_bottom = 40.0
+focus_mode = 2
+size_flags_horizontal = 3
+text = "event description"
+selection_enabled = true
