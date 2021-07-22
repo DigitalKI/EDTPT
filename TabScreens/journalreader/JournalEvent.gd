@@ -22,7 +22,7 @@ func _get_event_type():
 func _set_event_time(_value):
 	var date : DateTime
 	date = DateTime.new(_value)
-	$BoxContainer/EeventTime.text = date.to_string()
+	$BoxContainer/EventTime.text = date.to_string()
 
 func _get_event_time():
 	return date.to_string()

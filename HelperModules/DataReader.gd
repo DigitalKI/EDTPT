@@ -8,7 +8,7 @@ var cmdrs : Dictionary = {}
 var selected_cmdr
 var evt_types : Array = []
 var logfiles : Array = []
-var logobjects : Dictionary
+var logobjects : Dictionary = {}
 var ships_manager : ShipsDataManager = ShipsDataManager.new()
 
 #signal thread_completed_get_files
@@ -31,12 +31,14 @@ func get_files(_nullarg = null):
 	if dir.open(logs_path) == OK:
 		logobjects = {}
 		dir.list_dir_begin()
-		var file_name = dir.get_next()
+		var file_name : String = dir.get_next()
 		while file_name != "":
 			if dir.current_is_dir():
 				print("Found directory: " + file_name)
 			else:
-				logobjects[file_name] = null
+				logobjects[file_name] = []
+				if file_name.begins_with("Journal."):
+					logfiles.append(file_name)
 			file_name = dir.get_next()
 	else:
 		print("An error occurred when trying to access the path.")
@@ -48,14 +50,21 @@ func get_files_threaded():
 	thread_reader.start(self, "get_files", null)
 
 func get_log_object(_filename : String):
+	var attempt = 0
 	var file = File.new()
 	var jjournal : JSONParseResult
 	var results = []
 	var cmdr = ""
 	var fid = ""
-	if file.open(logs_path + _filename, File.READ) == OK:
+	var file_status = file.open(logs_path + _filename, File.READ)
+	if file_status != OK:
+		file.close()
+		file_status = file.open(logs_path + _filename, File.READ)
+	if file_status == OK:
 		var content : String
 		while !file.eof_reached():
+			if _filename == "Journal.210721082116.01.log":
+				print("stop here")
 			if _filename.get_extension() == "json":
 				content += file.get_line()
 			else:
@@ -76,25 +85,26 @@ func get_log_object(_filename : String):
 				if jjournal.result:
 					results.append(jjournal.result)
 		file.close()
+	else:
+		print("Cannot read log file, status: %s" % file_status)
 	return {"date_modified": file.get_modified_time(logs_path + _filename), "name": cmdr, "FID": fid, "dataobject":results}
 
 func get_all_log_objects(_nullparam = null):
 	mutex.lock()
 	get_files()
-	var curr_logobj
 	var total_files = logobjects.size()
 	var current_file = 1
 	for log_file in logobjects.keys():
 		print("reading \"%s\" %s of %s"  % [log_file, current_file, total_files])
 		current_file += 1
-		curr_logobj = get_log_object(log_file)
+		var curr_logobj = get_log_object(log_file)
 #		Extracts the commanders name
-		var curr_cmdr = get_events_by_type("Commander", curr_logobj["dataobject"], true)
+		var curr_cmdr = get_events_by_type(["Commander"], curr_logobj["dataobject"], true)
 		if curr_cmdr:
 			cmdrs[curr_cmdr[0]["FID"]] = curr_cmdr[0]["Name"]
 			if !selected_cmdr:
 				selected_cmdr = curr_cmdr[0]["Name"]
-		logobjects[log_file] = curr_logobj.duplicate()
+		logobjects[log_file] = curr_logobj
 	ships_manager.get_stored_ships()
 	ships_manager.get_ships_loadoud()
 	mutex.unlock()
@@ -117,18 +127,19 @@ func get_event_types():
 				evt_types.append(evt["event"])
 	return evt_types
 
-func get_events_by_type(_event_type : String, _dataobject, _first : bool = false):
+func get_events_by_type(_event_types : Array, _dataobject, _first : bool = false):
 	var evt_lst : Array = []
 	for evt in _dataobject:
-		if evt is Dictionary && evt.has("event") && evt["event"] == _event_type:
+		if evt is Dictionary && evt.has("event") && _event_types.has(evt["event"]):
 			evt_lst.append(evt)
 			if _first:
 				break
 	return evt_lst
 
-func get_all_events_by_type(_event_type : String):
+func get_all_events_by_type(_event_types : Array):
 	var evt_lst : Array = []
 	for log_file in logobjects.keys():
 		var dobj = logobjects[log_file]["dataobject"]
-		evt_lst.append_array(get_events_by_type(_event_type, dobj))
+		evt_lst.append_array(get_events_by_type(_event_types, dobj))
 	return evt_lst
+

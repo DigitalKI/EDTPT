@@ -63,6 +63,10 @@ font=false
 display=false
 transparen=false
 
+[memory]
+
+limits/command_queue/multithreading_queue_size_kb=512
+
 [physics]
 
 common/enable_pause_aware_picking=true

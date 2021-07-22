@@ -13,7 +13,7 @@ func _ready():
 	pass # Replace with function body.
 
 func get_stored_ships():
-	stored_ships_events = data_reader.get_all_events_by_type("StoredShips")
+	stored_ships_events = data_reader.get_all_events_by_type(["StoredShips"])
 	var latest_stored_ship_evt : int = 0
 	if stored_ships_events:
 		for ship_evt in stored_ships_events:
@@ -29,7 +29,7 @@ func get_stored_ships():
 	return current_stored_ships.size()
 
 func get_ships_loadoud():
-	ships_loadout_events = data_reader.get_all_events_by_type("Loadout")
+	ships_loadout_events = data_reader.get_all_events_by_type(["Loadout"])
 	if ships_loadout_events:
 		for ship_loadout in ships_loadout_events:
 			var evt_datetime = DateTime.new(ship_loadout["timestamp"]).unix_time
@@ -49,7 +49,7 @@ func get_max_hull_value(_relative : bool = true):
 				if max_hull < ships_loadout[idx]["HullValue"]:
 					max_hull = ships_loadout[idx]["HullValue"]
 	return max_hull
-	
+
 func get_max_jump_range(_relative : bool = true):
 	var max_jump = 0
 	if _relative:
@@ -58,3 +58,23 @@ func get_max_jump_range(_relative : bool = true):
 				if max_jump < ships_loadout[idx]["MaxJumpRange"]:
 					max_jump = ships_loadout[idx]["MaxJumpRange"]
 	return max_jump
+
+func get_max_shield_strength(_relative : bool = true):
+	var max_shield = 0
+	if _relative:
+		for idx in ships_loadout:
+			if ships_loadout[idx].has("Modules"):
+				for module in ships_loadout[idx]["Modules"]:
+					if module.has("ShieldGenStrength"):
+						pass
+	return max_shield
+
+	
+func get_ship_modules(_relative : bool = true):
+	var ship_modules : Array = []
+	if _relative:
+		for idx in ships_loadout:
+			if ships_loadout[idx].has("Modules"):
+				for module in ships_loadout[idx]["Modules"]:
+					ship_modules.append(module)
+	return ship_modules

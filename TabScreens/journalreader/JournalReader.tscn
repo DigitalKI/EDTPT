@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://TabScreens/journalreader/JournalReader.gd" type="Script" id=1]
 [ext_resource path="res://TabScreens/journalreader/JournalEvent.tscn" type="PackedScene" id=2]
+[ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=3]
 
 [node name="JournalReader" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+theme = ExtResource( 3 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -35,20 +37,20 @@ margin_right = 1014.0
 margin_bottom = 40.0
 
 [node name="ToolButton" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_right = 48.0
+margin_right = 43.0
 margin_bottom = 40.0
 text = "Apply"
 
 [node name="DisplayByEventFile" type="CheckButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_left = 52.0
-margin_right = 208.0
+margin_left = 47.0
+margin_right = 193.0
 margin_bottom = 40.0
 pressed = true
 text = "Show by file"
 
 [node name="EventTypeFilter" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_left = 212.0
-margin_right = 309.0
+margin_left = 197.0
+margin_right = 283.0
 margin_bottom = 40.0
 text = "Filter By type"
 items = [ "Item 0", null, 1, false, false, 0, 0, null, "", false, "Item 1", null, 1, false, false, 1, 0, null, "", false, "Item 2", null, 1, false, false, 2, 0, null, "", false ]

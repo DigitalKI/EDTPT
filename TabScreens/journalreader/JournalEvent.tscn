@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://TabScreens/journalreader/JournalEvent.gd" type="Script" id=1]
+[ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=2]
 
 [node name="EventItem" type="Control"]
 anchor_right = 1.0
@@ -9,6 +10,7 @@ margin_bottom = -0.200001
 rect_min_size = Vector2( 100, 40 )
 size_flags_horizontal = 3
 size_flags_vertical = 5
+theme = ExtResource( 2 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -21,28 +23,27 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="EventType" type="TextEdit" parent="BoxContainer"]
+[node name="EventType" type="LineEdit" parent="BoxContainer"]
 margin_right = 100.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 100, 0 )
 size_flags_vertical = 5
 text = "Event type"
-readonly = true
+editable = false
 
-[node name="EeventTime" type="TextEdit" parent="BoxContainer"]
+[node name="EventTime" type="LineEdit" parent="BoxContainer"]
 margin_left = 104.0
 margin_right = 224.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 120, 0 )
 size_flags_vertical = 5
 text = "Event time"
-readonly = true
+editable = false
 
-[node name="EventDescription" type="RichTextLabel" parent="BoxContainer"]
+[node name="EventDescription" type="TextEdit" parent="BoxContainer"]
 margin_left = 228.0
 margin_right = 1024.0
 margin_bottom = 40.0
-focus_mode = 2
 size_flags_horizontal = 3
 text = "event description"
-selection_enabled = true
+readonly = true
