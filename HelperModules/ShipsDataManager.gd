@@ -60,13 +60,19 @@ func get_max_jump_range(_relative : bool = true):
 	return max_jump
 
 func get_max_shield_strength(_relative : bool = true):
+	var orig_shield = 0
 	var max_shield = 0
 	if _relative:
 		for idx in ships_loadout:
 			if ships_loadout[idx].has("Modules"):
 				for module in ships_loadout[idx]["Modules"]:
-					if module.has("ShieldGenStrength"):
-						pass
+					if module["Item"].begins_with("int_shieldgenerator"):
+						if module.has("Engineering"):
+							if module["Engineering"].has("Modifiers"):
+								for modifier in module["Engineering"]["Modifiers"]:
+									if modifier["Label"] == "ShieldGenStrength":
+										orig_shield = modifier["OriginalValue"]
+										max_shield = modifier["Value"]
 	return max_shield
 
 	
