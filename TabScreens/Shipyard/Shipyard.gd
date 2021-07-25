@@ -22,8 +22,8 @@ func initialize_ships_tab():
 		ship_btn.ship_id = ship_loadout["ShipID"]
 		ship_btn.ShipType = st_ship["ShipType_Localised"] if st_ship.has("ShipType_Localised") else ship_loadout["Ship"]
 		ship_btn.ShipName =  ship_loadout["ShipName"]
-		ship_btn.MaxShields = 100
-		ship_btn.Shields = 0
+		ship_btn.MaxShields = current_max_shields
+		ship_btn.Shields = data_reader.ships_manager.get_engineering_value(ship_loadout, "ShieldGenStrength")
 		ship_btn.MaxHull = current_max_hull
 		ship_btn.Hull = 0
 		ship_btn.MaxJump = current_max_jump

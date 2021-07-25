@@ -56,6 +56,7 @@ size = Vector2( 720, 480 )
 size_override_stretch = true
 
 [node name="Krait_MK2" parent="MarginContainer/HBoxContainer/TextureRect/Viewport" instance=ExtResource( 2 )]
+visible = false
 
 [node name="Camera" type="Camera" parent="MarginContainer/HBoxContainer/TextureRect/Viewport/Krait_MK2"]
 transform = Transform( 1, 0, 0, 0, 0.737254, 0.675616, 0, -0.675616, 0.737254, 0, 32.8616, 48.5115 )

@@ -70,10 +70,21 @@ func get_max_shield_strength(_relative : bool = true):
 						if module.has("Engineering"):
 							if module["Engineering"].has("Modifiers"):
 								for modifier in module["Engineering"]["Modifiers"]:
-									if modifier["Label"] == "ShieldGenStrength":
+									if modifier["Label"] == "ShieldGenStrength" && modifier["Value"] > max_shield:
 										orig_shield = modifier["OriginalValue"]
 										max_shield = modifier["Value"]
 	return max_shield
+
+func get_engineering_value(_ship_loadout, _label):
+	var value : float = 0
+	if _ship_loadout.has("Modules"):
+		for module in _ship_loadout["Modules"]:
+			if module.has("Engineering"):
+				if module["Engineering"].has("Modifiers"):
+					for modifier in module["Engineering"]["Modifiers"]:
+						if modifier["Label"] == _label:
+							value = modifier["Value"]
+	return value
 
 	
 func get_ship_modules(_relative : bool = true):

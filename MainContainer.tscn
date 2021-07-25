@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://TabScreens/journalreader/JournalReader.tscn" type="PackedScene" id=1]
 [ext_resource path="res://MainContainer.gd" type="Script" id=2]
 [ext_resource path="res://TabScreens/Shipyard/Shipyard.tscn" type="PackedScene" id=3]
 [ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=4]
 [ext_resource path="res://Notifications.gd" type="Script" id=5]
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.tscn" type="PackedScene" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.6, 0.6, 0.6, 0.113725 )
@@ -76,6 +77,12 @@ margin_right = 100.0
 margin_bottom = 71.0
 text = "Ships"
 
+[node name="BtGalaxy" type="Button" parent="VBoxContainer/MainContainer/Panel/VBoxContainer"]
+margin_top = 75.0
+margin_right = 100.0
+margin_bottom = 96.0
+text = "Ships"
+
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer/MainContainer"]
 margin_left = 104.0
 margin_right = 1024.0
@@ -110,7 +117,7 @@ margin_top = 2.99661
 margin_right = -4.49487
 margin_bottom = 2.99658
 
-[node name="Tabs3" type="Tabs" parent="VBoxContainer/MainContainer/TabContainer"]
+[node name="TabsGalaxy" type="Tabs" parent="VBoxContainer/MainContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -118,6 +125,8 @@ margin_left = 4.0
 margin_top = 8.0
 margin_right = -4.0
 margin_bottom = -4.0
+
+[node name="GalaxyMap" parent="VBoxContainer/MainContainer/TabContainer/TabsGalaxy" instance=ExtResource( 6 )]
 
 [node name="Tabs4" type="Tabs" parent="VBoxContainer/MainContainer/TabContainer"]
 visible = false
@@ -138,3 +147,4 @@ script = ExtResource( 5 )
 [connection signal="item_selected" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtCMDR" to="VBoxContainer/MainContainer" method="_on_BtCMDR_item_selected"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtLogs" to="VBoxContainer/MainContainer" method="_on_BtLogs_pressed"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtShips" to="VBoxContainer/MainContainer" method="_on_BtShips_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtGalaxy" to="VBoxContainer/MainContainer" method="_on_BtGalaxy_pressed"]

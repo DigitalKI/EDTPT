@@ -10,6 +10,7 @@ var evt_types : Array = []
 var logfiles : Array = []
 var logobjects : Dictionary = {}
 var ships_manager : ShipsDataManager = ShipsDataManager.new()
+var galaxy_manager : GalaxyDataManager = GalaxyDataManager.new()
 
 #signal thread_completed_get_files
 signal thread_completed_get_log_objects
@@ -58,13 +59,12 @@ func get_log_object(_filename : String):
 	var fid = ""
 	var file_status = file.open(logs_path + _filename, File.READ)
 	if file_status != OK:
-		file.close()
+		file.flush()
+		print("Flushing file")
 		file_status = file.open(logs_path + _filename, File.READ)
 	if file_status == OK:
 		var content : String
 		while !file.eof_reached():
-			if _filename == "Journal.210721082116.01.log":
-				print("stop here")
 			if _filename.get_extension() == "json":
 				content += file.get_line()
 			else:
