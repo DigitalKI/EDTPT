@@ -81,7 +81,7 @@ text = "Ships"
 margin_top = 75.0
 margin_right = 100.0
 margin_bottom = 96.0
-text = "Ships"
+text = "Galaxy Map"
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer/MainContainer"]
 margin_left = 104.0

@@ -1,23 +1,28 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.gd" type="Script" id=1]
+[ext_resource path="res://TabScreens/GalaxyMap/star.material" type="Material" id=2]
+[ext_resource path="res://TabScreens/GalaxyMap/grid.png" type="Texture" id=3]
 
-[sub_resource type="SpatialMaterial" id=1]
+[sub_resource type="SphereMesh" id=1]
 
-[sub_resource type="SpatialMaterial" id=5]
-flags_vertex_lighting = true
-emission_enabled = true
-emission = Color( 1, 1, 1, 1 )
-emission_energy = 1.04
-emission_operator = 0
-emission_on_uv2 = false
+[sub_resource type="SpatialMaterial" id=2]
 
-[sub_resource type="SphereMesh" id=2]
-material = SubResource( 5 )
+[sub_resource type="SphereMesh" id=3]
+material = ExtResource( 2 )
 
-[sub_resource type="MultiMesh" id=3]
+[sub_resource type="MultiMesh" id=4]
 transform_format = 1
-mesh = SubResource( 2 )
+mesh = SubResource( 3 )
+
+[sub_resource type="PlaneMesh" id=5]
+size = Vector2( 9999, 9999 )
+
+[sub_resource type="SpatialMaterial" id=6]
+flags_transparent = true
+params_cull_mode = 2
+albedo_texture = ExtResource( 3 )
+uv1_scale = Vector3( 999, 999, 999 )
 
 [node name="GalaxyMap" type="ViewportContainer"]
 anchor_right = 1.0
@@ -29,17 +34,29 @@ __meta__ = {
 }
 
 [node name="Viewport" type="Viewport" parent="."]
-size = Vector2( 1024, 468 )
+size = Vector2( 1024, 600 )
 handle_input_locally = false
 render_target_update_mode = 3
 
 [node name="GalaxyCenter" type="Spatial" parent="Viewport"]
 
-[node name="Camera Center" type="Spatial" parent="Viewport/GalaxyCenter"]
+[node name="CameraCenter" type="Spatial" parent="Viewport/GalaxyCenter"]
 
-[node name="Camera" type="Camera" parent="Viewport/GalaxyCenter/Camera Center"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20.4765 )
+[node name="Camera" type="Camera" parent="Viewport/GalaxyCenter/CameraCenter"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 100 )
+fov = 30.0
+far = 99999.0
+
+[node name="MeshInstance" type="MeshInstance" parent="Viewport/GalaxyCenter/CameraCenter"]
+mesh = SubResource( 1 )
+material/0 = ExtResource( 2 )
 
 [node name="MultiMeshInstance" type="MultiMeshInstance" parent="Viewport/GalaxyCenter"]
-material_override = SubResource( 1 )
-multimesh = SubResource( 3 )
+material_override = SubResource( 2 )
+multimesh = SubResource( 4 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Viewport/GalaxyCenter"]
+mesh = SubResource( 5 )
+material/0 = SubResource( 6 )
+
+[connection signal="gui_input" from="." to="." method="_on_GalaxyMap_gui_input"]
