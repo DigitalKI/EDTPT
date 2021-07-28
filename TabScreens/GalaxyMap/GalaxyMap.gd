@@ -1,7 +1,5 @@
 extends ViewportContainer
 
-var fsdjumps = []
-var star_systems = []
 var mouse_left_pressed : = false
 var mouse_middle_pressed : = false
 var mouse_right_pressed : = false
@@ -20,19 +18,20 @@ var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	fsdjumps = data_reader.galaxy_manager.get_all_jumped_systems()
-	star_systems = data_reader.galaxy_manager.star_systems
-	stars_multimesh.multimesh.instance_count = star_systems.size()
-	stars_multimesh.multimesh.visible_instance_count = star_systems.size()
+	data_reader.galaxy_manager.get_all_jumped_systems()
+	stars_multimesh.multimesh.instance_count = data_reader.galaxy_manager.star_systems.size()
+	stars_multimesh.multimesh.visible_instance_count = data_reader.galaxy_manager.star_systems.size()
 	var idx = 0
-	for system in star_systems:
-		var jumps : Array = []
+	for system_jumps in data_reader.galaxy_manager.star_systems_data:
 		var sys_coord : Vector3
-		for jump in fsdjumps:
-			if jump["SystemAddress"] == system:
-				jumps.append(jump)
-		sys_coord = Vector3(jumps[0]["StarPos"][0], jumps[0]["StarPos"][1], jumps[0]["StarPos"][2])
-		stars_multimesh.multimesh.set_instance_transform(idx, Transform(Basis(), sys_coord))
+		var intensity : float = system_jumps.size()/256.0
+		if intensity > 1:
+			intensity = 1
+		var star_color : Color = Color(intensity,intensity,intensity)
+		var star_size : Basis = Basis().scaled(Vector3(1,1,1).linear_interpolate(Vector3(50,50,50),intensity))
+		sys_coord = Vector3(system_jumps[0]["StarPos"][0], system_jumps[0]["StarPos"][1], system_jumps[0]["StarPos"][2])
+		stars_multimesh.multimesh.set_instance_transform(idx, Transform(star_size, sys_coord))
+		stars_multimesh.multimesh.set_instance_color(idx, star_color)
 		idx += 1
 
 
