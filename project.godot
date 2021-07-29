@@ -57,11 +57,16 @@ config/icon="res://icon.png"
 [autoload]
 
 data_reader="*res://HelperModules/DataReader.gd"
+main_container="*res://MainContainer.tscn"
 
 [display]
 
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/godot-sqlite/plugin.cfg" )
 
 [global]
 

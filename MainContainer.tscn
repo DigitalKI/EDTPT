@@ -4,7 +4,7 @@
 [ext_resource path="res://MainContainer.gd" type="Script" id=2]
 [ext_resource path="res://TabScreens/Shipyard/Shipyard.tscn" type="PackedScene" id=3]
 [ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=4]
-[ext_resource path="res://Notifications.gd" type="Script" id=5]
+[ext_resource path="res://MainContainerRoot.gd" type="Script" id=5]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.tscn" type="PackedScene" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
@@ -13,6 +13,7 @@ bg_color = Color( 0.6, 0.6, 0.6, 0.113725 )
 [node name="Root" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -142,7 +143,6 @@ margin_top = 580.0
 margin_right = 1024.0
 margin_bottom = 600.0
 rect_min_size = Vector2( 0, 20 )
-script = ExtResource( 5 )
 
 [connection signal="item_selected" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtCMDR" to="VBoxContainer/MainContainer" method="_on_BtCMDR_item_selected"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtLogs" to="VBoxContainer/MainContainer" method="_on_BtLogs_pressed"]
