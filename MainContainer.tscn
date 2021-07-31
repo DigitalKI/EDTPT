@@ -138,13 +138,31 @@ margin_top = 8.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="Notifications" type="Label" parent="VBoxContainer"]
+[node name="Notifications" type="Button" parent="VBoxContainer"]
 margin_top = 580.0
 margin_right = 1024.0
 margin_bottom = 600.0
 rect_min_size = Vector2( 0, 20 )
+align = 0
+
+[node name="NotificationsHistory" type="PopupPanel" parent="."]
+anchor_top = 0.663
+anchor_right = 1.0
+anchor_bottom = 0.965
+margin_top = 0.199982
+
+[node name="NotificationsText" type="TextEdit" parent="NotificationsHistory"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+readonly = true
+show_line_numbers = true
 
 [connection signal="item_selected" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtCMDR" to="VBoxContainer/MainContainer" method="_on_BtCMDR_item_selected"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtLogs" to="VBoxContainer/MainContainer" method="_on_BtLogs_pressed"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtShips" to="VBoxContainer/MainContainer" method="_on_BtShips_pressed"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtGalaxy" to="VBoxContainer/MainContainer" method="_on_BtGalaxy_pressed"]
+[connection signal="pressed" from="VBoxContainer/Notifications" to="." method="_on_Notifications_pressed"]
