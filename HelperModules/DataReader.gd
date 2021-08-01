@@ -69,7 +69,12 @@ func clean_database():
 	db.delete_rows("Events","")
 	db.delete_rows("Commander","")
 	db.delete_rows("Fileheader","")
+	var selected_rows = db.select_rows("sqlite_sequence", "", ["*"])
+	for seq in selected_rows:
+		seq["seq"] = 0
+		db.update_rows("sqlite_sequence", "name = '" + seq["name"] + "'", seq)
 	db.query("VACUUM;")
+	db.query("CREATE TABLE IF NOT EXISTS Backpack (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,'timestamp' text,'Items' text,'Components' text,'Consumables' text,'Data' text);")
 	# I should also add a counter reset for the autoincrement fields
 
 
@@ -84,7 +89,6 @@ func db_create_table_from_event(_event : Dictionary):
 	var table_name = _event["event"]
 	# Do not create if exists already
 	if db.select_rows("sqlite_master", "type = 'table' AND name='"+ table_name + "'", ["*"]).empty():
-		
 		#Let's get the event with most rows, as some new where added and we need the most up-to-date
 		var typed_events = get_all_events_by_type([table_name])
 		var example_event : Dictionary = {}
@@ -92,17 +96,18 @@ func db_create_table_from_event(_event : Dictionary):
 			for evt_k in evt.keys():
 				if !example_event.has(evt_k):
 					example_event[evt_k] = evt[evt_k] if evt[evt_k] else "string"
-		var table_dict : Dictionary = Dictionary()
+		var table_dict : Dictionary = {}
 		table_dict["Id"] = {"data_type":"int", "primary_key": true, "not_null": true, "auto_increment" : true}
-		table_dict["EventId"] = {"data_type":"int", "not_null": true}
+		table_dict["CMDRId"] = {"data_type":"int", "not_null": true}
+		table_dict["FileheaderId"] = {"data_type":"int", "not_null": true}
 		
 		for column in example_event.keys():
-			if column != "timestamp" && column != "event":
+			if column != "event":
 				var data_type = "text"
 				if example_event[column] is String && (example_event[column] == "true" ||  example_event[column] == "false"):
 					data_type = "int"
-				elif typeof(example_event[column]) == TYPE_ARRAY:
-					data_type = "blob"
+#				elif typeof(example_event[column]) == TYPE_ARRAY:
+#					data_type = "blob"
 				elif typeof(example_event[column]) == TYPE_INT:
 					data_type = "int"
 				elif typeof(example_event[column]) == TYPE_REAL:
@@ -119,9 +124,6 @@ func db_create_table_from_event(_event : Dictionary):
 				else:
 					table_dict[column] = {"data_type": data_type}
 		
-		if table_name == "Backpack":
-			print("here")
-#			table_dict["Message_Localised"] = {"data_type":"text"}
 		return db.create_table(table_name, table_dict)
 	else:
 		return false
@@ -191,6 +193,7 @@ func get_new_log_objects(_nullparam = null):
 	mutex.lock()
 	get_files()
 	var total_files = logfiles.size()
+	var total_events = 0
 	var current_file = 1
 	for log_file in logfiles:
 		var parsed_logfiles = db_get_log_files("filename = '" + log_file + "'")
@@ -204,10 +207,12 @@ func get_new_log_objects(_nullparam = null):
 				if !selected_cmdr:
 					selected_cmdr = curr_logobj["name"]
 			new_log_events[log_file] = curr_logobj.duplicate()
+			total_events += new_log_events[log_file]["events"].size()
 		else:
 			log_event("Journal already in database, skipped.")
 	mutex.unlock()
 	call_deferred("reset_thread")
+	print("total events : %s" % total_events)
 
 func write_events_to_db():
 	var all_insert_events := {}
@@ -217,7 +222,7 @@ func write_events_to_db():
 			var dobj = new_log_events[log_file]["events"]
 			var fileheader : Dictionary = {}
 			var fileheader_last_id = 0
-			for header_evt in get_events_by_type(["Fileheader"], dobj):
+			for header_evt in get_events_by_type(["Fileheader"], dobj, true):
 				fileheader = header_evt
 				fileheader["filename"] = log_file
 			if !fileheader.empty():
@@ -231,7 +236,8 @@ func write_events_to_db():
 				})
 				fileheader_last_id = db.last_insert_rowid
 			else:
-				print("Fileheader not found! Corruption?")
+				print("Fileheader not found! Skipping log file.")
+				continue
 			var cmdr_id_result = db.select_rows("Commander", "FID = '" + fid + "'", ["*"])
 			if !cmdr_id_result.empty():
 				var cmdr_id = cmdr_id_result[0]["Id"]
@@ -240,41 +246,35 @@ func write_events_to_db():
 					if evt is Dictionary && evt.has("event"):
 						# Creates the event type table, but not for commander and fileheader, that are there by default
 						var current_event_type = evt["event"]
+						if !all_insert_events.has(current_event_type):
+							all_insert_events[current_event_type] = []
 						if !event_tables.has(current_event_type) && current_event_type != "Commander" && current_event_type != "Fileheader":
 							if !db_create_table_from_event(evt):
 								log_event("There was an error creating table %s" % current_event_type)
 								print("Problem creating table %s" % current_event_type)
-							if current_event_type == "Backpack":
-								print("here")
 							#If you just createad a new event type table, then refresh the list of them
 							event_tables = get_all_event_tables()
 						if fileheader_last_id <= 0:
 							print("No fileheader id to use! Aborting")
 							continue
 						if current_event_type != "Commander" && current_event_type != "Fileheader":
-							all_insert_events[current_event_type] = []
-							if !db.insert_row("Events", {
-								"timestamp": evt["timestamp"]
-								, "event": current_event_type
-								, "CMDRId": cmdr_id
-								, "FileheaderId": fileheader_last_id
-								}):
-								log_event("There was a problem adding the new event to table 'Events'.")
-							evt["EventId"] = db.last_insert_rowid
-							evt.erase("timestamp")
+							# Removing event column as each type goes into a separate table
 							evt.erase("event")
+							#CNDRId and FileheaderId are added and assigned
+							evt["CMDRId"] = cmdr_id
+							evt["FileheaderId"] = fileheader_last_id
+							# we now assign the appropriate value to certain fields
+							# such as true/false, Dictionary, Array
 							for col_key in evt.keys():
 								if evt[col_key] is Array:
-									evt[col_key] = PoolByteArray(evt[col_key])
+									evt[col_key] = String(evt[col_key])
 								elif evt[col_key] is Dictionary:
-									evt[col_key] = String(evt[col_key]).to_ascii()
+									evt[col_key] = String(evt[col_key])
 								elif evt[col_key] is String:
 									if evt[col_key] == "false":
 										evt[col_key] = 0
 									elif evt[col_key] == "true":
 										evt[col_key] = 1
-								elif (current_event_type == "Commander" || current_event_type == "Fileheader") && col_key == "EventId":
-									evt.erase(col_key)
 								
 								# Some columns have to be changed as they are reserved keywords or already used
 								# leave this code last, as it is iterating through the columns
@@ -285,11 +285,11 @@ func write_events_to_db():
 									evt[col_key + "_" + col_key] = evt[col_key]
 									evt.erase(col_key)
 							all_insert_events[current_event_type].append(evt)
-				
-		for table_name in all_insert_events.keys():
-			if !db.insert_rows(table_name, all_insert_events[table_name]):
-				log_event("There was a problem adding event for table %s" % table_name)
-		all_insert_events = {}
+	# Ready to insert values!
+	for table_name in all_insert_events.keys():
+		print("Adding %s events of type %s" % [all_insert_events[table_name].size(), table_name])
+		if !db.insert_rows(table_name, all_insert_events[table_name]):
+			log_event("There was a problem adding event for table %s" % table_name)
 
 func get_all_event_tables():
 	var table_evt_types := []
