@@ -80,7 +80,7 @@ func _on_filter_selected(_index):
 		if popup.is_item_checked(_itm_idx):
 			_lst_event_types.append(popup.get_item_text(_itm_idx))
 	clear_events()
-	add_events(data_reader.get_all_events_by_type(_lst_event_types))
+	add_events(data_reader.get_all_db_events_by_type(_lst_event_types))
 
 
 func _on_DisplayByEventFile_toggled(button_pressed):

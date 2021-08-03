@@ -2,7 +2,7 @@ extends Node
 class_name DataReader
 
 const SQLite = preload("res://addons/godot-sqlite/bin/gdsqlite.gdns")
-var db
+var db : SQLite
 
 var forbidden_columns := ["From", "To", "Group", "By", "Sort", "Asc"]
 var not_usable_columns := ["Id", "ID"]
@@ -38,13 +38,14 @@ func _ready():
 	db.open_db()
 	
 	# This shouldn't be here, but it's for dev purposes
-	clean_database()
+#	clean_database()
 	
 	get_new_log_objects()
 	write_events_to_db()
 #	get_all_log_objects_threaded()
-#	get_event_types()
+	get_event_types()
 #	get_all_log_objects()
+	get_all_db_events_by_type(evt_types)
 	ships_manager.get_stored_ships()
 	ships_manager.get_ships_loadoud()
 
@@ -90,7 +91,7 @@ func db_create_table_from_event(_event : Dictionary):
 	# Do not create if exists already
 	if db.select_rows("sqlite_master", "type = 'table' AND name='"+ table_name + "'", ["*"]).empty():
 		#Let's get the event with most rows, as some new where added and we need the most up-to-date
-		var typed_events = get_all_events_by_type([table_name])
+		var typed_events = get_all_new_events_by_type([table_name])
 		var example_event : Dictionary = {}
 		for evt in typed_events:
 			for evt_k in evt.keys():
@@ -267,9 +268,9 @@ func write_events_to_db():
 							# such as true/false, Dictionary, Array
 							for col_key in evt.keys():
 								if evt[col_key] is Array:
-									evt[col_key] = String(evt[col_key])
+									evt[col_key] = JSON.print(evt[col_key])
 								elif evt[col_key] is Dictionary:
-									evt[col_key] = String(evt[col_key])
+									evt[col_key] = JSON.print(evt[col_key])
 								elif evt[col_key] is String:
 									if evt[col_key] == "false":
 										evt[col_key] = 0
@@ -307,10 +308,10 @@ func reset_thread():
 
 func get_event_types():
 	evt_types = []
-	if db.query("SELECT DISTINCT event FROM 'Events' ORDER BY event;"):
-		var result = db.query_result.duplicate()
+	var result = db.select_rows("sqlite_master", "", ["name"])
+	if !result.empty():
 		for evt_tp in result:
-			evt_types.append(evt_tp["event"])
+			evt_types.append(evt_tp["name"])
 	else:
 		log_event("There was an error getting event types.")
 	return evt_types
@@ -326,7 +327,7 @@ func get_events_by_type(_event_types : Array, _dataobject, _first : bool = false
 
 # For now this only retrieves from data not present in database
 # so it's very specific function
-func get_all_events_by_type(_event_types : Array):
+func get_all_new_events_by_type(_event_types : Array):
 	var evt_lst : Array = []
 	for log_file in new_log_events.keys():
 		var dobj = new_log_events[log_file]["events"]

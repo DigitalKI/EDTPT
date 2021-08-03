@@ -17,7 +17,7 @@ func _on_BtShips_pressed():
 
 func _on_BtGalaxy_pressed():
 	$TabContainer.current_tab = 2
-	data_reader.galaxy_manager.get_all_jumped_systems()
+	data_reader.galaxy_manager.get_all_visited_systems()
 #	$TabContainer/TabsGalaxy/GalaxyMap.initialize_galaxy_map()
 
 

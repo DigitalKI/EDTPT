@@ -18,18 +18,18 @@ var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	data_reader.galaxy_manager.get_all_jumped_systems()
+	data_reader.galaxy_manager.get_all_visited_systems()
 	stars_multimesh.multimesh.instance_count = data_reader.galaxy_manager.star_systems.size()
 	stars_multimesh.multimesh.visible_instance_count = data_reader.galaxy_manager.star_systems.size()
 	var idx = 0
-	for system_jumps in data_reader.galaxy_manager.star_systems_data:
-		var sys_coord : Vector3
-		var intensity : float = system_jumps.size()/256.0
+	for system in data_reader.galaxy_manager.star_systems:
+		var sys_coord_json = JSON.parse(system["StarPos"]).result
+		var sys_coord : Vector3 = Vector3(sys_coord_json[0], sys_coord_json[1], sys_coord_json[2])
+		var intensity : float = system["Visits"]/256.0
 		if intensity > 1:
 			intensity = 1
 		var star_color : Color = Color(intensity,intensity,intensity)
-		var star_size : Basis = Basis().scaled(Vector3(1,1,1).linear_interpolate(Vector3(50,50,50),intensity))
-		sys_coord = Vector3(system_jumps[0]["StarPos"][0], system_jumps[0]["StarPos"][1], system_jumps[0]["StarPos"][2])
+		var star_size : Basis = Basis().scaled(Vector3(1,1,1).linear_interpolate(Vector3(10,10,10),intensity))
 		stars_multimesh.multimesh.set_instance_transform(idx, Transform(star_size, sys_coord))
 		stars_multimesh.multimesh.set_instance_color(idx, star_color)
 		idx += 1

@@ -13,23 +13,28 @@ func _ready():
 	pass # Replace with function body.
 
 func get_stored_ships():
-	stored_ships_events = data_reader.get_all_events_by_type(["StoredShips"])
+	stored_ships_events = data_reader.get_all_db_events_by_type(["StoredShips"])
 	var latest_stored_ship_evt : int = 0
 	if stored_ships_events:
 		for ship_evt in stored_ships_events:
 			var evt_datetime = DateTime.new(ship_evt["timestamp"]).unix_time
 			if evt_datetime > latest_stored_ship_evt:
 				latest_stored_ship_evt = evt_datetime
-				if ship_evt.has("ShipsHere") && ship_evt["ShipsHere"].size() > 0:
-							for ship in ship_evt["ShipsHere"]:
-								current_stored_ships[int(ship["ShipID"])] = ship
-				elif ship_evt.has("ShipsRemote") && ship_evt["ShipsRemote"].size() > 0:
-							for ship in ship_evt["ShipsRemote"]:
-								current_stored_ships[int(ship["ShipID"])] = ship
+				if ship_evt.has("ShipsHere"):
+					var ships_here := JSON.parse(ship_evt["ShipsHere"])
+					print(ships_here.result)
+					if ships_here.result is Array:
+						for ship in ships_here.result:
+							current_stored_ships[int(ship["ShipID"])] = ship
+				elif ship_evt.has("ShipsRemote"):
+					var ships_remote := JSON.parse(ship_evt["ShipsRemote"])
+					if ships_remote.result is Array:
+						for ship in ships_remote.result:
+							current_stored_ships[int(ship["ShipID"])] = ship
 	return current_stored_ships.size()
 
 func get_ships_loadoud():
-	ships_loadout_events = data_reader.get_all_events_by_type(["Loadout"])
+	ships_loadout_events = data_reader.get_all_db_events_by_type(["Loadout"])
 	if ships_loadout_events:
 		for ship_loadout in ships_loadout_events:
 			var evt_datetime = DateTime.new(ship_loadout["timestamp"]).unix_time
@@ -65,25 +70,29 @@ func get_max_shield_strength(_relative : bool = true):
 	if _relative:
 		for idx in ships_loadout:
 			if ships_loadout[idx].has("Modules"):
-				for module in ships_loadout[idx]["Modules"]:
-					if module["Item"].begins_with("int_shieldgenerator"):
-						if module.has("Engineering"):
-							if module["Engineering"].has("Modifiers"):
-								for modifier in module["Engineering"]["Modifiers"]:
-									if modifier["Label"] == "ShieldGenStrength" && modifier["Value"] > max_shield:
-										orig_shield = modifier["OriginalValue"]
-										max_shield = modifier["Value"]
+				var modules := JSON.parse(ships_loadout[idx]["Modules"])
+				if modules.result is Array:
+					for module in modules.result:
+						if module["Item"].begins_with("int_shieldgenerator"):
+							if module.has("Engineering"):
+								if module["Engineering"].has("Modifiers"):
+									for modifier in module["Engineering"]["Modifiers"]:
+										if modifier["Label"] == "ShieldGenStrength" && modifier["Value"] > max_shield:
+											orig_shield = modifier["OriginalValue"]
+											max_shield = modifier["Value"]
 	return max_shield
 
 func get_engineering_value(_ship_loadout, _label):
 	var value : float = 0
 	if _ship_loadout.has("Modules"):
-		for module in _ship_loadout["Modules"]:
-			if module.has("Engineering"):
-				if module["Engineering"].has("Modifiers"):
-					for modifier in module["Engineering"]["Modifiers"]:
-						if modifier["Label"] == _label:
-							value = modifier["Value"]
+		var modules := JSON.parse(_ship_loadout["Modules"])
+		if modules.result is Array:
+			for module in modules.result:
+				if module.has("Engineering"):
+					if module["Engineering"].has("Modifiers"):
+						for modifier in module["Engineering"]["Modifiers"]:
+							if modifier["Label"] == _label:
+								value = modifier["Value"]
 	return value
 
 	
