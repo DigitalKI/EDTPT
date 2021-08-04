@@ -15,6 +15,7 @@ var cmdrs : Dictionary = {}
 var current_cmdr : Dictionary = {}
 var selected_cmdr
 var evt_types : Array = []
+var events : Array = []
 var logfiles : Array = []
 var logobjects : Dictionary = {}
 var new_log_events : Dictionary = {}
@@ -38,16 +39,11 @@ func _ready():
 	db.open_db()
 	
 	# This shouldn't be here, but it's for dev purposes
-#	clean_database()
+	clean_database()
 	
 	get_new_log_objects()
 	write_events_to_db()
-#	get_all_log_objects_threaded()
 	get_event_types()
-#	get_all_log_objects()
-	get_all_db_events_by_type(evt_types)
-	ships_manager.get_stored_ships()
-	ships_manager.get_ships_loadoud()
 
 func _exit_tree():
 	db.close_db()
@@ -62,14 +58,14 @@ func log_event(_text):
 func clean_database():
 	var tables = db.select_rows("sqlite_master", "type = 'table'", ["*"]).duplicate()
 	for table in tables:
-		if table["name"] != "sqlite_sequence" && table["name"] != "Commander" && table["name"] != "Events" && table["name"] != "Fileheader":
+		if table["name"] != "sqlite_sequence" && table["name"] != "Commander" && table["name"] != "Fileheader" && table["name"] != "event_types":
 			if db.drop_table(table["name"]):
 				log_event("Dropping table %s" % table["name"])
 			else:
 				log_event("Could not delete table %s" % table["name"])
-	db.delete_rows("Events","")
 	db.delete_rows("Commander","")
 	db.delete_rows("Fileheader","")
+	db.delete_rows("event_types","")
 	var selected_rows = db.select_rows("sqlite_sequence", "", ["*"])
 	for seq in selected_rows:
 		seq["seq"] = 0
@@ -83,11 +79,24 @@ func db_get_log_files(_filter = ""):
 	var selected_array = db.select_rows("Fileheader", _filter, ["*"])
 	return selected_array
 
+func db_get_all_cmdrs():
+	var selected_array = db.select_rows("Commander", "", ["*"])
+	for cmdr in selected_array:
+		cmdrs[cmdr["FID"]] = cmdr["Name"]
+	return cmdrs
+
 # Creates a table from the event type, 
 # automatically generating columns with its respective type.
 # Table is not created if it already exists in the database.
 func db_create_table_from_event(_event : Dictionary):
 	var table_name = _event["event"]
+	
+	
+	# Create the event type
+	if db.select_rows("event_types", "event_type = '" + table_name + "'", ["*"]).empty():
+		if !db.insert_rows("event_types", [{"event_type": table_name}]):
+			log_event("There was a problem adding a new event type")
+	
 	# Do not create if exists already
 	if db.select_rows("sqlite_master", "type = 'table' AND name='"+ table_name + "'", ["*"]).empty():
 		#Let's get the event with most rows, as some new where added and we need the most up-to-date
@@ -308,12 +317,13 @@ func reset_thread():
 
 func get_event_types():
 	evt_types = []
-	var result = db.select_rows("sqlite_master", "", ["name"])
+	var result = db.select_rows("event_types", "", ["event_type"])
 	if !result.empty():
 		for evt_tp in result:
-			evt_types.append(evt_tp["name"])
+			evt_types.append(evt_tp["event_type"])
 	else:
 		log_event("There was an error getting event types.")
+	evt_types.sort()
 	return evt_types
 
 func get_events_by_type(_event_types : Array, _dataobject, _first : bool = false):
@@ -334,11 +344,40 @@ func get_all_new_events_by_type(_event_types : Array):
 		evt_lst.append_array(get_events_by_type(_event_types, dobj))
 	return evt_lst
 
-func get_all_db_events_by_type(_event_types : Array):
+class EventsSorter:
+	static func sort_ascending(a, b):
+		if a["timestamp"] < b["timestamp"]:
+			return true
+		return false
+	static func sort_descending(a, b):
+		if a["timestamp"] > b["timestamp"]:
+			return true
+		return false
+
+func get_all_db_events_by_type(_event_types : Array, _amount : int = 1000, _range : int = 0):
 	var evt_lst : Array = []
+	var current_range = "" if _range == 0 else (", " + String(_range))
 	for evt_typ in _event_types:
 		if !db.select_rows("sqlite_master", "type = 'table' AND name='"+ evt_typ + "'", ["*"]).empty():
-			var events : Array = db.select_rows(evt_typ, "", ["*"])
-			evt_lst.append_array(events)
+			db.query("SELECT '" + evt_typ + "' as event, tbl.* FROM " + evt_typ + " AS tbl"
+			+ " LIMIT " + String(_amount) + current_range)
+			evt_lst.append_array(db.query_result.duplicate())
+	evt_lst.sort_custom(EventsSorter, "sort_descending")
 	return evt_lst
+
+func get_all_db_events_by_file(_event_files : Array):
+	var evt_lst : Array = []
+	for file in _event_files:
+		evt_lst = []
+		var fileheader : Array = db.select_rows("fileheader", "filename = '" + file + "'", ["Id"])
+		if fileheader.size() > 0:
+			var id = fileheader[0]
+			for evt_typ in evt_types:
+				evt_lst.append_array(db.select_rows(evt_typ, "FileheaderId = '" + String(id) + "'" , ["*"]).duplicate())
+			
+			if !evt_lst.empty():
+				var cmdr_id = evt_lst[0]["CMDRId"]
+				var cmdr = db.select_rows("Commander", "Id = '" + String(cmdr_id) + "'", ["*"])
+				logobjects[file] = { "name": cmdr[0]["Name"], "FID": cmdr[0]["FID"], "dataobject": evt_lst.duplicate() }
+	return logobjects
 

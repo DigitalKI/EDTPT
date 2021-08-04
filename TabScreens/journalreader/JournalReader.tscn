@@ -45,7 +45,6 @@ text = "Apply"
 margin_left = 47.0
 margin_right = 193.0
 margin_bottom = 40.0
-pressed = true
 text = "Show by file"
 
 [node name="EventTypeFilter" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
@@ -66,6 +65,7 @@ __meta__ = {
 }
 
 [node name="LogEntries" type="ItemList" parent="LogDetailContainer/VBoxContainer/HBoxContainer"]
+visible = false
 margin_right = 200.0
 margin_bottom = 546.0
 rect_min_size = Vector2( 200, 50 )
@@ -74,7 +74,6 @@ __meta__ = {
 }
 
 [node name="ScrollContainer" type="ScrollContainer" parent="LogDetailContainer/VBoxContainer/HBoxContainer"]
-margin_left = 204.0
 margin_right = 1014.0
 margin_bottom = 546.0
 size_flags_horizontal = 3
@@ -82,7 +81,7 @@ size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
 [node name="LogDetails" type="VBoxContainer" parent="LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
-margin_right = 810.0
+margin_right = 1014.0
 margin_bottom = 546.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -90,14 +89,14 @@ size_flags_vertical = 3
 [node name="EventItem" parent="LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer/LogDetails" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 810.0
+margin_right = 1014.0
 margin_bottom = 40.0
 
 [node name="EventItem2" parent="LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer/LogDetails" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 44.0
-margin_right = 810.0
+margin_right = 1014.0
 margin_bottom = 84.0
 
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/DisplayByEventFile" to="." method="_on_DisplayByEventFile_toggled"]

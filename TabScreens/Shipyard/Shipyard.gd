@@ -4,6 +4,8 @@ var ship_button_res = preload("res://TabScreens/Shipyard/ShipButton.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func initialize_ships_tab():
+	data_reader.ships_manager.get_stored_ships()
+	data_reader.ships_manager.get_ships_loadoud()
 	var current_max_hull = data_reader.ships_manager.get_max_hull_value()
 	var current_max_jump = data_reader.ships_manager.get_max_jump_range()
 	var current_max_shields = data_reader.ships_manager.get_max_shield_strength()

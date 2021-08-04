@@ -25,11 +25,12 @@ func _ready():
 	for system in data_reader.galaxy_manager.star_systems:
 		var sys_coord_json = JSON.parse(system["StarPos"]).result
 		var sys_coord : Vector3 = Vector3(sys_coord_json[0], sys_coord_json[1], sys_coord_json[2])
-		var intensity : float = system["Visits"]/256.0
+		var intensity : float = system["Visits"]/100.0
 		if intensity > 1:
 			intensity = 1
-		var star_color : Color = Color(intensity,intensity,intensity)
-		var star_size : Basis = Basis().scaled(Vector3(1,1,1).linear_interpolate(Vector3(10,10,10),intensity))
+		var color_intensity = intensity #ease(intensity, 0.5)
+		var star_color : Color = Color(1.0, 0.2, 0.2).linear_interpolate(Color(1.0, 1.0, 1.0), color_intensity)
+		var star_size : Basis = Basis().scaled(Vector3(0.5,0.5,0.5).linear_interpolate(Vector3(2.5,2.5,2.5),intensity))
 		stars_multimesh.multimesh.set_instance_transform(idx, Transform(star_size, sys_coord))
 		stars_multimesh.multimesh.set_instance_color(idx, star_color)
 		idx += 1

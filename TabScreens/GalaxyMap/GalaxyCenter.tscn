@@ -20,6 +20,7 @@ size = Vector2( 9999, 9999 )
 
 [sub_resource type="SpatialMaterial" id=5]
 flags_transparent = true
+flags_world_triplanar = true
 params_cull_mode = 2
 albedo_texture = ExtResource( 2 )
 uv1_scale = Vector3( 999, 999, 999 )

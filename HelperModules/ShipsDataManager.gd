@@ -22,7 +22,6 @@ func get_stored_ships():
 				latest_stored_ship_evt = evt_datetime
 				if ship_evt.has("ShipsHere"):
 					var ships_here := JSON.parse(ship_evt["ShipsHere"])
-					print(ships_here.result)
 					if ships_here.result is Array:
 						for ship in ships_here.result:
 							current_stored_ships[int(ship["ShipID"])] = ship
