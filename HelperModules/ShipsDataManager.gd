@@ -33,13 +33,14 @@ func get_stored_ships():
 	return current_stored_ships.size()
 
 func get_ships_loadoud():
-	ships_loadout_events = data_reader.get_all_db_events_by_type(["Loadout"])
+	ships_loadout.clear()
+	ships_loadout_events = data_reader.get_all_db_events_by_type(["Loadout"], 0)
 	if ships_loadout_events:
 		for ship_loadout in ships_loadout_events:
 			var evt_datetime = DateTime.new(ship_loadout["timestamp"]).unix_time
 			if ships_loadout.has(int(ship_loadout["ShipID"])):
 				var existing_datetime = DateTime.new(ships_loadout[int(ship_loadout["ShipID"])]["timestamp"]).unix_time
-				if evt_datetime > existing_datetime:
+				if ship_loadout["timestamp"] > ships_loadout[int(ship_loadout["ShipID"])]["timestamp"]:
 					ships_loadout[int(ship_loadout["ShipID"])] = ship_loadout
 			else:
 				ships_loadout[int(ship_loadout["ShipID"])] = ship_loadout
@@ -49,7 +50,9 @@ func get_max_hull_value(_relative : bool = true):
 	var max_hull = 0
 	if _relative:
 		for idx in ships_loadout:
-			if ships_loadout[idx].has("HullValue"):
+			if ships_loadout[idx].has("HullValue") && ships_loadout[idx]:
+				if ships_loadout[idx]["HullValue"] == null:
+					ships_loadout[idx]["HullValue"] = 0
 				if max_hull < ships_loadout[idx]["HullValue"]:
 					max_hull = ships_loadout[idx]["HullValue"]
 	return max_hull

@@ -10,6 +10,7 @@ var journal_event = preload("res://TabScreens/journalreader/JournalEvent.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	data_reader.connect("thread_completed_get_log_objects", self, "_on_DataReader_thread_completed_get_log_objects")
+	data_reader.connect("new_cached_events", self, "_on_DataReader_new_cached_events")
 	data_reader.db_get_all_cmdrs()
 	fill_event_type_filter()
 
@@ -28,6 +29,10 @@ func _on_DataReader_thread_completed_get_log_objects():
 			log_entries.add_item(logobj_id)
 	# Automatically display the last journal entries:
 	add_all_events_by_type()
+
+func _on_DataReader_new_cached_events():
+	clear_events()
+	add_events(data_reader.cached_events)
 
 func get_data_object_text(_current_logobject):
 	if _current_logobject:

@@ -19,11 +19,15 @@ var events : Array = []
 var logfiles : Array = []
 var logobjects : Dictionary = {}
 var new_log_events : Dictionary = {}
+var cached_events : Array = []
+
+var timer : Timer
 var ships_manager : ShipsDataManager = ShipsDataManager.new()
 var galaxy_manager : GalaxyDataManager = GalaxyDataManager.new()
 
 #signal thread_completed_get_files
 signal thread_completed_get_log_objects
+signal new_cached_events
 
 signal log_event_generated(log_text)
 
@@ -32,6 +36,12 @@ func _ready():
 	mutex = Mutex.new()
 	log_event(logs_path)
 	
+	timer = Timer.new()
+	get_tree().current_scene.add_child(timer)
+	timer.wait_time = 5
+	timer.connect("timeout", self, "timer_read_cache")
+#	timer.start()
+	
 	db = SQLite.new()
 	db.path = "res://Database/edtpt"
 #	db.verbose_mode = true
@@ -39,7 +49,7 @@ func _ready():
 	db.open_db()
 	
 	# This shouldn't be here, but it's for dev purposes
-	clean_database()
+#	clean_database()
 	
 	get_new_log_objects()
 	write_events_to_db()
@@ -49,6 +59,14 @@ func _exit_tree():
 	db.close_db()
 	if thread_reader.is_active():
 		thread_reader.wait_to_finish()
+
+func timer_read_cache():
+	get_new_log_objects()
+	write_events_to_db()
+	self.emit_signal("new_cached_events")
+#	for cachefile in get_files(true):
+#		cached_events = get_file_events(cachefile)["events"]
+#		self.emit_signal("new_cached_events")
 
 func log_event(_text):
 	log_event_last = _text
@@ -138,7 +156,7 @@ func db_create_table_from_event(_event : Dictionary):
 	else:
 		return false
 
-func get_files(_nullarg = null):
+func get_files(_get_cache := false):
 	var dir = Directory.new()
 	if dir.open(logs_path) == OK:
 		logfiles.clear()
@@ -147,9 +165,10 @@ func get_files(_nullarg = null):
 		while file_name != "":
 			if dir.current_is_dir():
 				log_event("Found directory: " + file_name)
-			else:
-				if file_name.begins_with("Journal."):
-					logfiles.append(file_name)
+			elif _get_cache && file_name.get_extension() == "cache":
+				logfiles.append(file_name)
+			elif file_name.begins_with("Journal."):
+				logfiles.append(file_name)
 			file_name = dir.get_next()
 	else:
 		log_event("An error occurred when trying to access the path.")
@@ -196,7 +215,7 @@ func get_file_events(_filename : String):
 					events.append(jjournal.result)
 		file.close()
 	else:
-		log_event("Cannot read log file, status: %s" % file_status)
+		log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
 	return {"name": cmdr, "FID" : fid, "events": events}
 
 func get_new_log_objects(_nullparam = null):
@@ -356,11 +375,12 @@ class EventsSorter:
 
 func get_all_db_events_by_type(_event_types : Array, _amount : int = 1000, _range : int = 0):
 	var evt_lst : Array = []
+	var current_amount = "" if _amount == 0 else " LIMIT " + String(_amount)
 	var current_range = "" if _range == 0 else (", " + String(_range))
 	for evt_typ in _event_types:
 		if !db.select_rows("sqlite_master", "type = 'table' AND name='"+ evt_typ + "'", ["*"]).empty():
 			db.query("SELECT '" + evt_typ + "' as event, tbl.* FROM " + evt_typ + " AS tbl"
-			+ " LIMIT " + String(_amount) + current_range)
+			+ current_amount + current_range)
 			evt_lst.append_array(db.query_result.duplicate())
 	evt_lst.sort_custom(EventsSorter, "sort_descending")
 	return evt_lst
