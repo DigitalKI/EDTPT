@@ -36,20 +36,21 @@ margin_bottom = 595.0
 margin_right = 1014.0
 margin_bottom = 40.0
 
-[node name="ToolButton" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_right = 43.0
+[node name="ClearDatabase" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
+margin_right = 94.0
 margin_bottom = 40.0
-text = "Apply"
+hint_tooltip = "Clears the database and re-import all data"
+text = "Clear Database"
 
 [node name="DisplayByEventFile" type="CheckButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_left = 47.0
-margin_right = 193.0
+margin_left = 98.0
+margin_right = 244.0
 margin_bottom = 40.0
 text = "Show by file"
 
 [node name="EventTypeFilter" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_left = 197.0
-margin_right = 283.0
+margin_left = 248.0
+margin_right = 334.0
 margin_bottom = 40.0
 text = "Filter By type"
 items = [ "Item 0", null, 1, false, false, 0, 0, null, "", false, "Item 1", null, 1, false, false, 1, 0, null, "", false, "Item 2", null, 1, false, false, 2, 0, null, "", false ]
@@ -99,5 +100,6 @@ margin_top = 44.0
 margin_right = 1014.0
 margin_bottom = 84.0
 
+[connection signal="pressed" from="LogDetailContainer/VBoxContainer/ToolBarContainer/ClearDatabase" to="." method="_on_ClearDatabase_pressed"]
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/DisplayByEventFile" to="." method="_on_DisplayByEventFile_toggled"]
 [connection signal="item_selected" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]

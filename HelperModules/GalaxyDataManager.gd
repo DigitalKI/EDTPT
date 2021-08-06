@@ -12,10 +12,10 @@ func _ready():
 # Stores all the jump events, star systems addreses, and grpou jumps per system address
 func get_all_visited_systems():
 #	fsd_jumps_events = data_reader.get_all_db_events_by_type(["FSDJump"])
-	if data_reader.db.query("SELECT StarSystem, SystemAddress, StarPos, COUNT(*) Visits"
+	if data_reader.db.query("SELECT *, COUNT(*) Visits"
 											+ " FROM FSDJump"
-											+ " WHERE CMDRId = 1"
-											+ " GROUP BY StarSystem, SystemAddress, StarPos"
+											+ " WHERE CMDRId = " + String(data_reader.current_cmdr["Id"])
+											+ " GROUP BY SystemAddress HAVING MAX(timestamp)"
 											+ " ORDER BY COUNT(*) DESC"):
 		star_systems = data_reader.db.query_result
 	return star_systems

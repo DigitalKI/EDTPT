@@ -9,11 +9,11 @@ var not_usable_columns := ["Id", "ID"]
 var logs_path = "%s\\Saved Games\\Frontier Developments\\Elite Dangerous\\" % OS.get_environment('userprofile')
 var thread_reader : Thread = null
 var mutex
+var selected_cmdr setget _set_cmdr
+var current_cmdr : Dictionary = {}
 var log_events : String = ""
 var log_event_last : String = ""
 var cmdrs : Dictionary = {}
-var current_cmdr : Dictionary = {}
-var selected_cmdr
 var evt_types : Array = []
 var events : Array = []
 var logfiles : Array = []
@@ -51,6 +51,9 @@ func _ready():
 	# This shouldn't be here, but it's for dev purposes
 #	clean_database()
 	
+	var cmdrs = db.select_rows("Commander", "", ["*"])
+	if !cmdrs.empty():
+		current_cmdr = cmdrs[0]
 	get_new_log_objects()
 	write_events_to_db()
 	get_event_types()
@@ -59,6 +62,11 @@ func _exit_tree():
 	db.close_db()
 	if thread_reader.is_active():
 		thread_reader.wait_to_finish()
+
+func _set_cmdr(_value):
+	var cmdr_res = db.select_rows("Commander", "name = " + _value, ["*"])
+	if !cmdr_res.empty():
+		current_cmdr = cmdr_res[0]
 
 func timer_read_cache():
 	get_new_log_objects()

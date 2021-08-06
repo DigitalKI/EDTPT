@@ -105,3 +105,8 @@ func _on_DisplayByEventFile_toggled(button_pressed):
 	else:
 		log_entries.visible = false
 		add_all_events_by_type()
+
+
+func _on_ClearDatabase_pressed():
+	data_reader.clean_database()
+	data_reader._ready()

@@ -1,29 +1,50 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.gd" type="Script" id=1]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyCenter.tscn" type="PackedScene" id=2]
+[ext_resource path="res://TabScreens/GalaxyMap/DetailsWindow.tscn" type="PackedScene" id=3]
 [ext_resource path="res://TabScreens/GalaxyMap/galaxy_environment.tres" type="Environment" id=4]
 
 [sub_resource type="World" id=1]
+environment = ExtResource( 4 )
 
-[node name="GalaxyMap" type="ViewportContainer"]
+[node name="GalaxyMap" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-stretch = true
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Viewport" type="Viewport" parent="."]
+[node name="GalaxyMapView" type="ViewportContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="GalaxyMapView"]
 size = Vector2( 1024, 600 )
+own_world = true
 world = SubResource( 1 )
 handle_input_locally = false
 render_target_update_mode = 3
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Viewport"]
-environment = ExtResource( 4 )
+[node name="GalaxyCenter" parent="GalaxyMapView/Viewport" instance=ExtResource( 2 )]
 
-[node name="GalaxyCenter" parent="Viewport" instance=ExtResource( 2 )]
+[node name="SystemDetails" parent="." instance=ExtResource( 3 )]
+anchor_left = 1.0
+anchor_bottom = 0.0
+margin_left = -261.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = 288.0
+title = "Dromi"
+body = "I love this thing
+more than I imagined..."
 
-[connection signal="gui_input" from="." to="." method="_on_GalaxyMap_gui_input"]
+[connection signal="gui_input" from="GalaxyMapView" to="." method="_on_GalaxyMapView_gui_input"]
