@@ -11,7 +11,6 @@ environment = ExtResource( 4 )
 [node name="GalaxyMap" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 1 )
@@ -22,6 +21,7 @@ __meta__ = {
 [node name="GalaxyMapView" type="ViewportContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+size_flags_horizontal = 3
 stretch = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -36,15 +36,76 @@ render_target_update_mode = 3
 
 [node name="GalaxyCenter" parent="GalaxyMapView/Viewport" instance=ExtResource( 2 )]
 
-[node name="SystemDetails" parent="." instance=ExtResource( 3 )]
-anchor_left = 1.0
-anchor_bottom = 0.0
-margin_left = -261.0
-margin_top = 10.0
-margin_right = -10.0
-margin_bottom = 288.0
-title = "Dromi"
-body = "I love this thing
-more than I imagined..."
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
 
-[connection signal="gui_input" from="GalaxyMapView" to="." method="_on_GalaxyMapView_gui_input"]
+[node name="LeftButtonsContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 54.0
+margin_bottom = 600.0
+custom_constants/separation = 40
+
+[node name="Button" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
+margin_right = 54.0
+margin_bottom = 20.0
+text = "Galaxy"
+
+[node name="Button2" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
+margin_top = 60.0
+margin_right = 54.0
+margin_bottom = 80.0
+
+[node name="Button3" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
+margin_top = 120.0
+margin_right = 54.0
+margin_bottom = 140.0
+
+[node name="Button4" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
+margin_top = 180.0
+margin_right = 54.0
+margin_bottom = 200.0
+
+[node name="GalaxyContainer" type="Control" parent="HBoxContainer"]
+margin_left = 58.0
+margin_right = 966.0
+margin_bottom = 600.0
+mouse_filter = 1
+size_flags_horizontal = 3
+
+[node name="SystemDetails" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 230.0
+margin_bottom = 310.0
+title = "System"
+body = "Double-click on a star system to get it's details..."
+
+[node name="RightButtonsContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 970.0
+margin_right = 1024.0
+margin_bottom = 600.0
+custom_constants/separation = 40
+
+[node name="Button" type="Button" parent="HBoxContainer/RightButtonsContainer"]
+margin_right = 54.0
+margin_bottom = 20.0
+text = "Galaxy"
+
+[node name="Button2" type="Button" parent="HBoxContainer/RightButtonsContainer"]
+margin_top = 60.0
+margin_right = 54.0
+margin_bottom = 80.0
+
+[node name="Button3" type="Button" parent="HBoxContainer/RightButtonsContainer"]
+margin_top = 120.0
+margin_right = 54.0
+margin_bottom = 140.0
+
+[node name="Button4" type="Button" parent="HBoxContainer/RightButtonsContainer"]
+margin_top = 180.0
+margin_right = 54.0
+margin_bottom = 200.0
+
+[connection signal="gui_input" from="." to="." method="_on_GalaxyMap_gui_input"]

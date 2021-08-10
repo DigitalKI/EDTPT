@@ -2,7 +2,6 @@
 
 [resource]
 background_mode = 1
-background_energy = 0.0
 ambient_light_color = Color( 1, 1, 1, 1 )
 fog_color = Color( 0, 0, 0, 0.737255 )
 fog_sun_color = Color( 0.282353, 0.282353, 0.282353, 1 )

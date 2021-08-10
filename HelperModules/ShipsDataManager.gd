@@ -34,7 +34,7 @@ func get_stored_ships():
 
 func get_ships_loadoud():
 	ships_loadout.clear()
-	ships_loadout_events = data_reader.get_all_db_events_by_type(["Loadout"], 0)
+	ships_loadout_events = data_reader.get_all_db_events_by_type(["Loadout"], 10000)
 	if ships_loadout_events:
 		for ship_loadout in ships_loadout_events:
 			var evt_datetime = DateTime.new(ship_loadout["timestamp"]).unix_time

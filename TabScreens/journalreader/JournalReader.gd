@@ -11,8 +11,11 @@ var journal_event = preload("res://TabScreens/journalreader/JournalEvent.tscn")
 func _ready():
 	data_reader.connect("thread_completed_get_log_objects", self, "_on_DataReader_thread_completed_get_log_objects")
 	data_reader.connect("new_cached_events", self, "_on_DataReader_new_cached_events")
+
+func initialize_journal_reader():
 	data_reader.db_get_all_cmdrs()
 	fill_event_type_filter()
+	add_all_events_by_type()
 
 func _on_LogEntries_item_selected(index):
 	var journal_name = log_entries.get_item_text(index)
@@ -23,12 +26,9 @@ func _on_LogEntries_item_selected(index):
 	add_events(dataobject)
 
 func _on_DataReader_thread_completed_get_log_objects():
-	log_entries.clear()
-	for logobj_id in data_reader.logobjects.keys():
-		if data_reader.logobjects[logobj_id]["name"] == data_reader.selected_cmdr:
-			log_entries.add_item(logobj_id)
+	initialize_journal_reader()
 	# Automatically display the last journal entries:
-	add_all_events_by_type()
+#	add_all_events_by_type()
 
 func _on_DataReader_new_cached_events():
 	clear_events()

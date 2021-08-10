@@ -8,7 +8,7 @@ var forbidden_columns := ["From", "To", "Group", "By", "Sort", "Asc"]
 var not_usable_columns := ["Id", "ID"]
 var logs_path = "%s\\Saved Games\\Frontier Developments\\Elite Dangerous\\" % OS.get_environment('userprofile')
 var thread_reader : Thread = null
-var mutex
+var mutex : Mutex
 var selected_cmdr setget _set_cmdr
 var current_cmdr : Dictionary = {}
 var log_events : String = ""
@@ -54,9 +54,9 @@ func _ready():
 	var cmdrs = db.select_rows("Commander", "", ["*"])
 	if !cmdrs.empty():
 		current_cmdr = cmdrs[0]
-	get_new_log_objects()
-	write_events_to_db()
-	get_event_types()
+	
+	thread_reader.start(self, "write_new_events", null)
+#	write_new_events()
 
 func _exit_tree():
 	db.close_db()
@@ -75,6 +75,14 @@ func timer_read_cache():
 #	for cachefile in get_files(true):
 #		cached_events = get_file_events(cachefile)["events"]
 #		self.emit_signal("new_cached_events")
+
+func write_new_events(_nullparam = null):
+	mutex.lock()
+	get_new_log_objects()
+	write_events_to_db()
+	get_event_types()
+	mutex.unlock()
+	call_deferred("reset_thread")
 
 func log_event(_text):
 	log_event_last = _text
@@ -99,7 +107,6 @@ func clean_database():
 	db.query("VACUUM;")
 	db.query("CREATE TABLE IF NOT EXISTS Backpack (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,'timestamp' text,'Items' text,'Components' text,'Consumables' text,'Data' text);")
 	# I should also add a counter reset for the autoincrement fields
-
 
 func db_get_log_files(_filter = ""):
 	var selected_array = db.select_rows("Fileheader", _filter, ["*"])
@@ -226,8 +233,10 @@ func get_file_events(_filename : String):
 		log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
 	return {"name": cmdr, "FID" : fid, "events": events}
 
+func get_new_log_objects_threaded():
+	thread_reader.start(self, "get_new_log_objects", null)
+
 func get_new_log_objects(_nullparam = null):
-	mutex.lock()
 	get_files()
 	var total_files = logfiles.size()
 	var total_events = 0
@@ -247,11 +256,9 @@ func get_new_log_objects(_nullparam = null):
 			total_events += new_log_events[log_file]["events"].size()
 		else:
 			log_event("Journal already in database, skipped.")
-	mutex.unlock()
-	call_deferred("reset_thread")
 	print("total events : %s" % total_events)
 
-func write_events_to_db():
+func write_events_to_db(_nullparam = null):
 	var all_insert_events := {}
 	for log_file in new_log_events.keys():
 		if log_file.begins_with("Journal."):
@@ -371,24 +378,21 @@ func get_all_new_events_by_type(_event_types : Array):
 		evt_lst.append_array(get_events_by_type(_event_types, dobj))
 	return evt_lst
 
-class EventsSorter:
-	static func sort_ascending(a, b):
-		if a["timestamp"] < b["timestamp"]:
-			return true
-		return false
-	static func sort_descending(a, b):
-		if a["timestamp"] > b["timestamp"]:
-			return true
-		return false
-
-func get_all_db_events_by_type(_event_types : Array, _amount : int = 1000, _range : int = 0):
+func get_all_db_events_by_type(_event_types : Array, _amount : int = 1000, _range : int = 0, _timestart = "", _timeend = "") -> Array:
 	var evt_lst : Array = []
-	var current_amount = "" if _amount == 0 else " LIMIT " + String(_amount)
-	var current_range = "" if _range == 0 else (", " + String(_range))
+	var current_amount = " LIMIT " + String(_range)
+	var current_range = "" if _amount == 0 else (", " + String(_amount))
 	for evt_typ in _event_types:
 		if !db.select_rows("sqlite_master", "type = 'table' AND name='"+ evt_typ + "'", ["*"]).empty():
-			db.query("SELECT '" + evt_typ + "' as event, tbl.* FROM " + evt_typ + " AS tbl"
-			+ current_amount + current_range)
+			var table_select = "SELECT '" + evt_typ + "' as event, tbl.* FROM " + evt_typ + " AS tbl WHERE 1=1"
+			if _timestart:
+				table_select += " AND timestamp >= '" +_timestart + "'"
+			if _timeend:
+				table_select += " AND timestamp <= '" +_timeend + "'"
+				
+			table_select += " order by timestamp desc"
+			table_select +=  current_amount + current_range
+			db.query(table_select)
 			evt_lst.append_array(db.query_result.duplicate())
 	evt_lst.sort_custom(EventsSorter, "sort_descending")
 	return evt_lst
@@ -409,3 +413,33 @@ func get_all_db_events_by_file(_event_files : Array):
 				logobjects[file] = { "name": cmdr[0]["Name"], "FID": cmdr[0]["FID"], "dataobject": evt_lst.duplicate() }
 	return logobjects
 
+class EventsSorter:
+	static func sort_ascending(a, b):
+		if a["timestamp"] < b["timestamp"]:
+			return true
+		return false
+	static func sort_descending(a, b):
+		if a["timestamp"] > b["timestamp"]:
+			return true
+		return false
+
+class Sorter:
+	var key_sorter = ""
+	func _init(_key : String = "timestamp"):
+		key_sorter = _key
+	func sort_ascending(a, b):
+		if a[key_sorter] < b[key_sorter]:
+			return true
+		return false
+	func sort_descending(a, b):
+		if a[key_sorter] > b[key_sorter]:
+			return true
+		return false
+
+func sort_by_key(_array : Array, _key : String):
+	var _sorter = Sorter.new(_key)
+	_array.sort_custom(_sorter, "sort_descending")
+
+func get_value(_value):
+	var string_value = "null" if (_value == null) else String(_value)
+	return string_value

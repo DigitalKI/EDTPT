@@ -1,5 +1,6 @@
 tool
 extends Panel
+class_name DetailsWindow
 
 
 export(String) var title setget _set_title, _get_title
@@ -25,3 +26,9 @@ func _get_body():
 		return $MarginContainer/Panel/VBoxContainer/DetailsMargin/Body.text
 	else:
 		return ""
+
+
+func _on_Title_gui_input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == BUTTON_LEFT:
+			OS.clipboard = $MarginContainer/Panel/VBoxContainer/Title.text

@@ -6,6 +6,7 @@ var mouse_right_pressed : = false
 var rl_pressed : = false
 var fb_pressed : = false
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
+onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
 var zoom_speed = 0.1
 var rotation_speed = 0.025
 var movement_speed = 0.025
@@ -15,10 +16,13 @@ var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	pass
+
+func initialize_galaxy_map():
 	data_reader.galaxy_manager.get_all_visited_systems()
 	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems)
 
-func _on_GalaxyMapView_gui_input(event):
+func _on_GalaxyMap_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			mouse_left_pressed =  event.pressed
@@ -66,7 +70,7 @@ func _input(event):
 
 func get_clicked_star():
 	var mouse_pos = self.get_local_mouse_position()
-	var close_stars : Array = galaxy.get_stars_closer_than(mouse_pos, 10)
+	var close_stars : Array = galaxy.get_stars_closer_than(mouse_pos, 9)
 	var distance_to_camera := 99999.9999
 	var closest_star_idx = -1
 	var closest_star_pos : Vector3
@@ -78,13 +82,46 @@ func get_clicked_star():
 			closest_star_pos = starpos
 	
 	if closest_star_idx >= 0:
-		$SystemDetails.title = ""
-		$SystemDetails.body = ""
+		details.title = ""
+		details.body = ""
 		var found_star : Dictionary = data_reader.galaxy_manager.star_systems[closest_star_idx]
 		if found_star.has("StarSystem"):
-			$SystemDetails.title += found_star["StarSystem"] + ", " 
-			for key in found_star.keys():
-				var string_value = "null" if (found_star[key] == null) else String(found_star[key])
-				$SystemDetails.body += String(key) + " - " + string_value + "\n"
-		$SystemDetails.title = $SystemDetails.title.trim_suffix(", ")
+			details.title += found_star["StarSystem"]
+			details.body += "Last Visit: %s\n" % data_reader.get_value(found_star["timestamp"])
+			details.body += "Visits: %s\n" % data_reader.get_value(found_star["Visits"])
+			details.body += "Population: %s \n" % data_reader.get_value(found_star["Population"])
+			details.body += "Allegiance: %s \n" % data_reader.get_value(found_star["SystemAllegiance"])
+			details.body += "Economy: %s \n" % (found_star["SystemEconomy_Localised"] + ", " + found_star["SystemSecondEconomy_Localised"])
+			details.body += "Government: %s\n" % data_reader.get_value(found_star["SystemGovernment_Localised"])
+			details.body += "Security: %s\n" % data_reader.get_value(found_star["SystemSecurity_Localised"])
+		
+		var prospected_asteroids_events = []
+		if found_star.has("SystemAddress"):
+			prospected_asteroids_events = data_reader.galaxy_manager.get_events_per_location(String(found_star["SystemAddress"]), -1, ["ProspectedAsteroid"])
+			details.body += "\n-------------\n"
+			var all_events_per_location := {}
+			for events_loc in prospected_asteroids_events:
+				if !all_events_per_location.has(events_loc["BodyID"]):
+					all_events_per_location[events_loc["BodyID"]] = {"Body": events_loc["Body"], "Events_Materials": {}}
+				for event in events_loc["local_events"]:
+					if event["Remaining"] == 100:
+						var materials_json = parse_json(event["Materials"])
+						for mat in materials_json:
+							if !all_events_per_location[events_loc["BodyID"]]["Events_Materials"].has(mat["Name"]):
+								all_events_per_location[events_loc["BodyID"]]["Events_Materials"][mat["Name"]] = {"Name": mat["Name"], "total": 0, "count" : 0}
+							
+							all_events_per_location[events_loc["BodyID"]]["Events_Materials"][mat["Name"]]["total"] += mat["Proportion"]
+							all_events_per_location[events_loc["BodyID"]]["Events_Materials"][mat["Name"]]["count"] += 1
+				
+			for body_id in all_events_per_location:
+				var location = all_events_per_location[body_id]["Body"]
+				var location_events = all_events_per_location[body_id]["Events_Materials"].values()
+				data_reader.sort_by_key(location_events, "total")
+				if location_events:
+					details.body += "\n%s\n" % location
+					data_reader.sort_by_key(location_events, "total")
+					for mat in location_events:
+						if mat["count"] > 0:
+							details.body += "%s (%s): %.2f%%\n" % [mat["Name"], mat["count"], (mat["total"] / mat["count"])]
 		galaxy.camera_move_to(closest_star_pos)
+
