@@ -9,14 +9,28 @@ func _ready():
 	pass # Replace with function body.
 
 
-# Stores all the jump events, star systems addreses, and grpou jumps per system address
-func get_all_visited_systems():
+# Stores all the jump events, star systems addreses, and group jumps per system address
+func get_systems_by_visits():
 #	fsd_jumps_events = data_reader.get_all_db_events_by_type(["FSDJump"])
 	if data_reader.db.query("SELECT *, COUNT(*) Visits"
 											+ " FROM FSDJump"
 											+ " WHERE CMDRId = " + String(data_reader.current_cmdr["Id"])
 											+ " GROUP BY SystemAddress HAVING MAX(timestamp)"
 											+ " ORDER BY COUNT(*) DESC"):
+		star_systems = data_reader.db.query_result.duplicate()
+	return star_systems
+
+# Stores all the jump events, star systems addreses, and group jumps per system address
+func get_systems_by_rings():
+#	fsd_jumps_events = data_reader.get_all_db_events_by_type(["FSDJump"])
+	if data_reader.db.query("SELECT F.*, COUNT(DISTINCT S.BodyID) Rings"
+							+ " FROM FSDJump F"
+							+ " LEFT JOIN Scan S"
+							+ " ON (F.SystemAddress = S.SystemAddress AND S.BodyName LIKE '% Ring')"
+							+ " WHERE F.CMDRId = " + String(data_reader.current_cmdr["Id"])
+							+ " GROUP BY F.SystemAddress"
+							+ " HAVING MAX(F.timestamp)"
+							+ " ORDER BY COUNT(DISTINCT S.BodyID) DESC"):
 		star_systems = data_reader.db.query_result.duplicate()
 	return star_systems
 

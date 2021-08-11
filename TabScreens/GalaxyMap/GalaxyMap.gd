@@ -5,11 +5,12 @@ var mouse_middle_pressed : = false
 var mouse_right_pressed : = false
 var rl_pressed : = false
 var fb_pressed : = false
+var view_mode := "Galaxy"
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
 onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
-var zoom_speed = 0.1
-var rotation_speed = 0.025
-var movement_speed = 0.025
+var zoom_speed = 0.15
+var rotation_speed = 0.02
+var movement_speed = 0.03
 var relative_mov : Vector3 = Vector3()
 var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 
@@ -17,10 +18,6 @@ var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
-
-func initialize_galaxy_map():
-	data_reader.galaxy_manager.get_all_visited_systems()
-	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems)
 
 func _on_GalaxyMap_gui_input(event):
 	if event is InputEventMouseButton:
@@ -51,22 +48,40 @@ func _input(event):
 		if OS.get_scancode_string(event.scancode) == "A" && event.pressed:
 			fb_pressed = event.pressed
 			galaxy.camera_movement(movement_speed, "x", false)
+			details.visible = false
 		elif OS.get_scancode_string(event.scancode) == "D" && event.pressed:
 			fb_pressed = event.pressed
 			galaxy.camera_movement(movement_speed, "x", true)
+			details.visible = false
 			
 		# Allow to move forward or backward
 		if OS.get_scancode_string(event.scancode) == "W" && event.pressed:
 			rl_pressed = event.pressed
 			galaxy.camera_movement(movement_speed, "z", false)
+			details.visible = false
 		elif OS.get_scancode_string(event.scancode) == "S" && event.pressed:
 			rl_pressed = event.pressed
 			galaxy.camera_movement(movement_speed, "z", true)
+			details.visible = false
 		# Allow to move up or down relative to the alaxy plane
 		if OS.get_scancode_string(event.scancode) == "R" && event.pressed:
 			galaxy.plane_movement(movement_speed)
+			details.visible = false
 		elif OS.get_scancode_string(event.scancode) == "F" && event.pressed:
 			galaxy.plane_movement(-movement_speed)
+			details.visible = false
+
+func _on_BtMining_pressed():
+	view_mode = "Mining"
+	data_reader.galaxy_manager.get_systems_by_rings()
+	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Rings", 4, Color(0.0, 0.1, 0.5), Color(0.28, 1.0, 0.0))
+
+func _on_BtGalaxy_pressed():
+	data_reader.galaxy_manager.get_systems_by_visits()
+	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
+
+func initialize_galaxy_map():
+	_on_BtGalaxy_pressed()
 
 func get_clicked_star():
 	var mouse_pos = self.get_local_mouse_position()
@@ -88,7 +103,10 @@ func get_clicked_star():
 		if found_star.has("StarSystem"):
 			details.title += found_star["StarSystem"]
 			details.body += "Last Visit: %s\n" % data_reader.get_value(found_star["timestamp"])
-			details.body += "Visits: %s\n" % data_reader.get_value(found_star["Visits"])
+			if found_star.has("Visits"):
+				details.body += "Visits: %s\n" % data_reader.get_value(found_star["Visits"])
+			if found_star.has("Rings"):
+				details.body += "Rings: %s\n" % data_reader.get_value(found_star["Rings"])
 			details.body += "Population: %s \n" % data_reader.get_value(found_star["Population"])
 			details.body += "Allegiance: %s \n" % data_reader.get_value(found_star["SystemAllegiance"])
 			details.body += "Economy: %s \n" % (found_star["SystemEconomy_Localised"] + ", " + found_star["SystemSecondEconomy_Localised"])
@@ -123,5 +141,6 @@ func get_clicked_star():
 					for mat in location_events:
 						if mat["count"] > 0:
 							details.body += "%s (%s): %.2f%%\n" % [mat["Name"], mat["count"], (mat["total"] / mat["count"])]
+		details.visible = true
 		galaxy.camera_move_to(closest_star_pos)
 

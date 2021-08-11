@@ -68,18 +68,21 @@ selected = 0
 margin_top = 25.0
 margin_right = 100.0
 margin_bottom = 46.0
+disabled = true
 text = "Log Entries"
 
 [node name="BtShips" type="Button" parent="VBoxContainer/MainContainer/Panel/VBoxContainer"]
 margin_top = 50.0
 margin_right = 100.0
 margin_bottom = 71.0
+disabled = true
 text = "Ships"
 
 [node name="BtGalaxy" type="Button" parent="VBoxContainer/MainContainer/Panel/VBoxContainer"]
 margin_top = 75.0
 margin_right = 100.0
 margin_bottom = 96.0
+disabled = true
 text = "Galaxy Map"
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer/MainContainer"]

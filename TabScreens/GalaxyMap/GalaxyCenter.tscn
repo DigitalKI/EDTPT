@@ -1,38 +1,44 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://TabScreens/GalaxyMap/star.material" type="Material" id=1]
 [ext_resource path="res://TabScreens/GalaxyMap/grid.png" type="Texture" id=2]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyCenter.gd" type="Script" id=3]
 
-[sub_resource type="SphereMesh" id=1]
-material = ExtResource( 1 )
+[sub_resource type="SpatialMaterial" id=1]
+flags_unshaded = true
+vertex_color_use_as_albedo = true
 
-[sub_resource type="MultiMesh" id=2]
+[sub_resource type="SphereMesh" id=2]
+material = SubResource( 1 )
+
+[sub_resource type="MultiMesh" id=3]
 color_format = 2
 transform_format = 1
-mesh = SubResource( 1 )
+mesh = SubResource( 2 )
 
-[sub_resource type="PlaneMesh" id=3]
+[sub_resource type="PlaneMesh" id=4]
 size = Vector2( 9999, 9999 )
 
-[sub_resource type="SpatialMaterial" id=4]
+[sub_resource type="SpatialMaterial" id=5]
 flags_transparent = true
+flags_unshaded = true
 flags_world_triplanar = true
 params_cull_mode = 2
+albedo_color = Color( 1, 1, 1, 0.278431 )
 albedo_texture = ExtResource( 2 )
 uv1_scale = Vector3( 999, 999, 999 )
 
-[sub_resource type="PlaneMesh" id=5]
+[sub_resource type="PlaneMesh" id=6]
 
 [node name="GalaxyCenter" type="Spatial"]
 script = ExtResource( 3 )
 
 [node name="MultiMeshInstance" type="MultiMeshInstance" parent="."]
-multimesh = SubResource( 2 )
+multimesh = SubResource( 3 )
 
 [node name="PlaneGrid" type="MeshInstance" parent="."]
-mesh = SubResource( 3 )
-material/0 = SubResource( 4 )
+mesh = SubResource( 4 )
+material/0 = SubResource( 5 )
 
 [node name="CameraCenter" type="Spatial" parent="PlaneGrid"]
 
@@ -45,7 +51,7 @@ fov = 30.0
 far = 99999.0
 
 [node name="MeshInstance" type="MeshInstance" parent="PlaneGrid/CameraCenter"]
-mesh = SubResource( 5 )
+mesh = SubResource( 6 )
 material/0 = ExtResource( 1 )
 
 [node name="Tween" type="Tween" parent="."]

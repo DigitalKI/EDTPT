@@ -42,6 +42,9 @@ func _on_BtCMDR_item_selected(index):
 	$VBoxContainer/MainContainer/TabContainer/TabLogs/JournalReader._on_DataReader_thread_completed_get_log_objects()
 
 func _on_DataReader_thread_completed_get_log_objects():
+	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtLogs.disabled = false
+	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtShips.disabled = false
+	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtGalaxy.disabled = false
 	fill_cmdrs_listbox()
 
 
