@@ -9,6 +9,7 @@ var view_mode := "Galaxy"
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
 onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
 onready var navlabel : Label = $HBoxContainer/GalaxyContainer/LabelNav
+onready var search_text : LineEdit = $HBoxContainer/GalaxyContainer/Search
 onready var found_stars : PopupMenu = $HBoxContainer/GalaxyContainer/Search/PopupMenuFound
 var zoom_speed = 0.15
 var rotation_speed = 0.02
@@ -163,15 +164,19 @@ func set_selected_star(_star_idx, _star_pos):
 func _on_Search_text_changed(new_text):
 	if new_text.length() > 2:
 		found_stars.clear()
+		found_stars.rect_size.y = 20
 		for idx in range(data_reader.galaxy_manager.star_systems.size()):
 			var system = data_reader.galaxy_manager.star_systems[idx]
-			if system["StarSystem"].find(new_text) > -1:
+			if system["StarSystem"].to_upper().find(new_text.to_upper()) > -1 && found_stars.get_item_count() < 11:
 				found_stars.add_item(system["StarSystem"], idx)
 		if found_stars.get_item_count() > 0:
-			found_stars.visible = true
+			found_stars.rect_size.x = found_stars.get_parent().rect_size.x
+			found_stars.set_position(Vector2(found_stars.get_parent().rect_global_position.x, found_stars.get_parent().rect_size.y + 16))
+			found_stars.popup()
+			search_text.grab_focus()
 
 
 func _on_PopupMenuFound_id_pressed(id):
 	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
 	set_selected_star(id, starpos)
-	found_stars.visible = false
+#	found_stars.visible = false
