@@ -8,6 +8,7 @@ var fb_pressed : = false
 var view_mode := "Galaxy"
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
 onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
+onready var navlabel : Label = $HBoxContainer/GalaxyContainer/LabelNav
 var zoom_speed = 0.15
 var rotation_speed = 0.02
 var movement_speed = 0.03
@@ -37,10 +38,12 @@ func _on_GalaxyMap_gui_input(event):
 		if event.button_index == BUTTON_WHEEL_DOWN:
 			if galaxy.camera.translation.z < 100000:
 				galaxy.zoom(zoom_speed)
+		update_navlabel()
 	elif event is InputEventMouseMotion:
 		if mouse_left_pressed:
 			galaxy.camera_rotation.rotation_degrees.y += event.speed.x * rotation_speed
 			galaxy.camera_rotation.rotation_degrees.x += event.speed.y * rotation_speed
+		update_navlabel()
 
 func _input(event):
 	if event is InputEventKey:
@@ -70,18 +73,27 @@ func _input(event):
 		elif OS.get_scancode_string(event.scancode) == "F" && event.pressed:
 			galaxy.plane_movement(-movement_speed)
 			details.visible = false
+		update_navlabel()
 
 func _on_BtMining_pressed():
 	view_mode = "Mining"
 	data_reader.galaxy_manager.get_systems_by_rings()
 	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Rings", 4, Color(0.0, 0.1, 0.5), Color(0.28, 1.0, 0.0))
+	update_navlabel()
 
 func _on_BtGalaxy_pressed():
 	data_reader.galaxy_manager.get_systems_by_visits()
+	view_mode = "Galaxy"
 	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
+	update_navlabel()
 
 func initialize_galaxy_map():
 	_on_BtGalaxy_pressed()
+
+func update_navlabel():
+	var pos = galaxy.camera_center.global_transform.origin
+	var zoom = galaxy.camera.translation.z
+	navlabel.text = "%s view - Pos: %s/%s/%s-%s" % [view_mode, pos.x, pos.y, pos.z, zoom]
 
 func get_clicked_star():
 	var mouse_pos = self.get_local_mouse_position()

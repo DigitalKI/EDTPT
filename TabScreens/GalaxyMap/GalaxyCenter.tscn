@@ -54,6 +54,8 @@ far = 99999.0
 mesh = SubResource( 6 )
 material/0 = ExtResource( 1 )
 
-[node name="Tween" type="Tween" parent="."]
+[node name="TweenZoom" type="Tween" parent="."]
 
-[node name="Tween2" type="Tween" parent="."]
+[node name="TweenPos" type="Tween" parent="."]
+
+[node name="TweenPlane" type="Tween" parent="."]

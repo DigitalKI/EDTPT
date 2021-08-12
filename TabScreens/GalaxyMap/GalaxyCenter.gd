@@ -9,26 +9,35 @@ onready var camera := $PlaneGrid/CameraCenter/CameraRotation/Camera
 onready var camera_plane : Spatial = $PlaneGrid
 onready var camera_center : Spatial = $PlaneGrid/CameraCenter
 onready var camera_rotation : Spatial  = $PlaneGrid/CameraCenter/CameraRotation
-onready var tween_pos : Tween = $Tween
-onready var tween_pos2 : Tween = $Tween2
+onready var tween_pos : Tween = $TweenPos
+onready var tween_plane : Tween = $TweenPlane
+onready var tween_zoom : Tween = $TweenZoom
+
 
 func camera_move_to(_final_pos : Vector3):
 	var distance = camera_center.translation.distance_to(_final_pos)
 	var plane_final_pos := Vector3(camera_plane.translation.x, _final_pos.y, camera_plane.translation.z)
 	var camera_final_pos := Vector3(_final_pos.x, camera_center.translation.y, _final_pos.z)
-	var duration : float = distance * 0.01
+	# Tweaking the values below should make the movement feel a bit closer to ED
+	var duration : float = distance * 0.002
 	if duration > 5:
 		duration = 5
-	tween_pos.interpolate_property(camera_plane, "translation",
+	elif duration < 0.5:
+		duration = 0.5
+	tween_plane.interpolate_property(camera_plane, "translation",
 	camera_plane.translation, plane_final_pos, duration,
+	Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	tween_plane.start()
+	
+	tween_pos.interpolate_property(camera_center, "translation",
+	camera_center.translation, camera_final_pos, duration,
 	Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween_pos.start()
 	
-	tween_pos2.interpolate_property(camera_center, "translation",
-	camera_center.translation, camera_final_pos, distance * 0.01,
+	tween_zoom.interpolate_property(camera, "translation",
+	camera.translation, Vector3(camera.translation.x, camera.translation.y, 150), duration,
 	Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
-	tween_pos2.start()
-	
+	tween_zoom.start()
 
 func camera_movement(_movement_speed, _direction, _pos):
 	var final_pos : Vector3 = camera.translation
