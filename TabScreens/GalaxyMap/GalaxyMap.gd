@@ -9,6 +9,7 @@ var view_mode := "Galaxy"
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
 onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
 onready var navlabel : Label = $HBoxContainer/GalaxyContainer/LabelNav
+onready var found_stars : PopupMenu = $HBoxContainer/GalaxyContainer/Search/PopupMenuFound
 var zoom_speed = 0.15
 var rotation_speed = 0.02
 var movement_speed = 0.03
@@ -24,6 +25,7 @@ func _on_GalaxyMap_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			mouse_left_pressed =  event.pressed
+			$HBoxContainer/LeftButtonsContainer/BtGalaxy.grab_focus()
 			if !event.pressed:
 				galaxy.camera_rotation.transform = galaxy.camera_rotation.transform.orthonormalized()
 			if event.doubleclick:
@@ -45,7 +47,7 @@ func _on_GalaxyMap_gui_input(event):
 			galaxy.camera_rotation.rotation_degrees.x += event.speed.y * rotation_speed
 		update_navlabel()
 
-func _input(event):
+func _unhandled_input(event):
 	if event is InputEventKey:
 		# Allow to move left or right
 		if OS.get_scancode_string(event.scancode) == "A" && event.pressed:
@@ -107,11 +109,13 @@ func get_clicked_star():
 			distance_to_camera = starpos.distance_to(galaxy.camera_center.translation)
 			closest_star_idx = star_idx
 			closest_star_pos = starpos
-	
-	if closest_star_idx >= 0:
+	set_selected_star(closest_star_idx, closest_star_pos)
+
+func set_selected_star(_star_idx, _star_pos):
+	if _star_idx >= 0:
 		details.title = ""
 		details.body = ""
-		var found_star : Dictionary = data_reader.galaxy_manager.star_systems[closest_star_idx]
+		var found_star : Dictionary = data_reader.galaxy_manager.star_systems[_star_idx]
 		if found_star.has("StarSystem"):
 			details.title += found_star["StarSystem"]
 			details.body += "Last Visit: %s\n" % data_reader.get_value(found_star["timestamp"])
@@ -154,5 +158,20 @@ func get_clicked_star():
 						if mat["count"] > 0:
 							details.body += "%s (%s): %.2f%%\n" % [mat["Name"], mat["count"], (mat["total"] / mat["count"])]
 		details.visible = true
-		galaxy.camera_move_to(closest_star_pos)
+		galaxy.camera_move_to(_star_pos)
 
+func _on_Search_text_changed(new_text):
+	if new_text.length() > 2:
+		found_stars.clear()
+		for idx in range(data_reader.galaxy_manager.star_systems.size()):
+			var system = data_reader.galaxy_manager.star_systems[idx]
+			if system["StarSystem"].find(new_text) > -1:
+				found_stars.add_item(system["StarSystem"], idx)
+		if found_stars.get_item_count() > 0:
+			found_stars.visible = true
+
+
+func _on_PopupMenuFound_id_pressed(id):
+	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
+	set_selected_star(id, starpos)
+	found_stars.visible = false

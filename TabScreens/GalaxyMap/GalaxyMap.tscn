@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.gd" type="Script" id=1]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyCenter.tscn" type="PackedScene" id=2]
@@ -13,6 +13,9 @@ environment = ExtResource( 4 )
 [sub_resource type="DynamicFont" id=2]
 size = 12
 font_data = ExtResource( 6 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0, 0, 0, 0.505882 )
 
 [node name="GalaxyMap" type="Control"]
 anchor_right = 1.0
@@ -63,8 +66,8 @@ size_flags_vertical = 3
 
 [node name="BtGalaxy" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
 margin_top = 100.0
-margin_right = 50.0
-margin_bottom = 150.0
+margin_right = 49.0
+margin_bottom = 121.0
 text = "Galaxy"
 
 [node name="Control" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
@@ -76,8 +79,8 @@ size_flags_vertical = 3
 
 [node name="BtMining" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
 margin_top = 226.0
-margin_right = 50.0
-margin_bottom = 276.0
+margin_right = 49.0
+margin_bottom = 247.0
 text = "Mining"
 
 [node name="Control2" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
@@ -92,8 +95,8 @@ __meta__ = {
 
 [node name="Button3" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
 margin_top = 352.0
-margin_right = 50.0
-margin_bottom = 402.0
+margin_right = 49.0
+margin_bottom = 373.0
 
 [node name="Control3" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
 margin_top = 377.0
@@ -107,8 +110,8 @@ __meta__ = {
 
 [node name="Button4" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
 margin_top = 478.0
-margin_right = 50.0
-margin_bottom = 528.0
+margin_right = 49.0
+margin_bottom = 499.0
 
 [node name="Control4" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
 margin_top = 503.0
@@ -125,8 +128,8 @@ mouse_filter = 1
 size_flags_horizontal = 3
 
 [node name="SystemDetails" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 3 )]
-anchor_left = 1.0
-margin_left = -300.0
+anchor_left = 0.674
+margin_left = -0.0800171
 title = "System"
 body = "Double-click on a star system to get it's details..."
 
@@ -143,6 +146,26 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Search" type="LineEdit" parent="HBoxContainer/GalaxyContainer"]
+anchor_right = 0.665
+margin_left = -2.51984
+margin_right = -2.31989
+margin_bottom = 25.0
+focus_mode = 1
+custom_styles/normal = SubResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PopupMenuFound" type="PopupMenu" parent="HBoxContainer/GalaxyContainer/Search"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1.0
+margin_bottom = 20.0
+items = [ "Item 0", null, 0, false, false, 0, 0, null, "", false, "Item 1", null, 0, false, false, 1, 0, null, "", false ]
+hide_on_state_item_selection = true
+
 [node name="LeftButtonsContainer2" type="VBoxContainer" parent="HBoxContainer"]
 margin_left = 977.0
 margin_right = 1024.0
@@ -157,8 +180,8 @@ size_flags_vertical = 3
 
 [node name="Button" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 100.0
-margin_right = 50.0
-margin_bottom = 150.0
+margin_right = 47.0
+margin_bottom = 121.0
 text = "Galaxy"
 
 [node name="Control" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
@@ -170,8 +193,8 @@ size_flags_vertical = 3
 
 [node name="Button2" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 226.0
-margin_right = 50.0
-margin_bottom = 276.0
+margin_right = 47.0
+margin_bottom = 247.0
 
 [node name="Control2" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 251.0
@@ -185,8 +208,8 @@ __meta__ = {
 
 [node name="Button3" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 352.0
-margin_right = 50.0
-margin_bottom = 402.0
+margin_right = 47.0
+margin_bottom = 373.0
 
 [node name="Control3" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 377.0
@@ -200,8 +223,8 @@ __meta__ = {
 
 [node name="Button4" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 478.0
-margin_right = 50.0
-margin_bottom = 528.0
+margin_right = 47.0
+margin_bottom = 499.0
 
 [node name="Control4" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 503.0
@@ -213,3 +236,5 @@ size_flags_vertical = 3
 [connection signal="gui_input" from="." to="." method="_on_GalaxyMap_gui_input"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtGalaxy" to="." method="_on_BtGalaxy_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtMining" to="." method="_on_BtMining_pressed"]
+[connection signal="text_changed" from="HBoxContainer/GalaxyContainer/Search" to="." method="_on_Search_text_changed"]
+[connection signal="id_pressed" from="HBoxContainer/GalaxyContainer/Search/PopupMenuFound" to="." method="_on_PopupMenuFound_id_pressed"]
