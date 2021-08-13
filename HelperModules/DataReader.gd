@@ -22,8 +22,9 @@ var new_log_events : Dictionary = {}
 var cached_events : Array = []
 
 var timer : Timer
-var ships_manager : ShipsDataManager = ShipsDataManager.new()
-var galaxy_manager : GalaxyDataManager = GalaxyDataManager.new()
+onready var edsm_manager : edsmDataManager = edsmDataManager.new()
+onready var ships_manager : ShipsDataManager = ShipsDataManager.new()
+onready var galaxy_manager : GalaxyDataManager = GalaxyDataManager.new()
 
 #signal thread_completed_get_files
 signal thread_completed_get_log_objects
@@ -36,8 +37,12 @@ func _ready():
 	mutex = Mutex.new()
 	log_event(logs_path)
 	
+	var current_scene = get_tree().current_scene
+	edsm_manager.add_html_reader()
+	current_scene.add_child(edsm_manager.http_request)
+	
 	timer = Timer.new()
-	get_tree().current_scene.add_child(timer)
+	current_scene.add_child(timer)
 	timer.wait_time = 5
 	timer.connect("timeout", self, "timer_read_cache")
 #	timer.start()
@@ -88,6 +93,7 @@ func log_event(_text):
 	log_event_last = _text
 	log_events += _text + "\n"
 	self.emit_signal("log_event_generated", _text)
+	print(log_event_last)
 
 func clean_database():
 	var tables = db.select_rows("sqlite_master", "type = 'table'", ["*"]).duplicate()

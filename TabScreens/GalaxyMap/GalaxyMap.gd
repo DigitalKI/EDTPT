@@ -3,8 +3,8 @@ extends Control
 var mouse_left_pressed : = false
 var mouse_middle_pressed : = false
 var mouse_right_pressed : = false
-var rl_pressed : = false
-var fb_pressed : = false
+var rl_pressed := false
+var fb_pressed := false
 var view_mode := "Galaxy"
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
 onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
@@ -147,7 +147,7 @@ func set_selected_star(_star_idx, _star_pos):
 							
 							all_events_per_location[events_loc["BodyID"]]["Events_Materials"][mat["Name"]]["total"] += mat["Proportion"]
 							all_events_per_location[events_loc["BodyID"]]["Events_Materials"][mat["Name"]]["count"] += 1
-				
+			
 			for body_id in all_events_per_location:
 				var location = all_events_per_location[body_id]["Body"]
 				var location_events = all_events_per_location[body_id]["Events_Materials"].values()
@@ -174,7 +174,6 @@ func _on_Search_text_changed(new_text):
 			found_stars.set_position(Vector2(found_stars.get_parent().rect_global_position.x, found_stars.get_parent().rect_size.y + 16))
 			found_stars.popup()
 			search_text.grab_focus()
-
 
 func _on_PopupMenuFound_id_pressed(id):
 	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin

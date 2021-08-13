@@ -48,6 +48,11 @@ _global_script_classes=[ {
 "class": "ShipsDataManager",
 "language": "GDScript",
 "path": "res://HelperModules/ShipsDataManager.gd"
+}, {
+"base": "Node",
+"class": "edsmDataManager",
+"language": "GDScript",
+"path": "res://HelperModules/edsmDataManager.gd"
 } ]
 _global_script_class_icons={
 "DataReader": "",
@@ -57,7 +62,8 @@ _global_script_class_icons={
 "GalaxyDataManager": "",
 "JournalEvent": "",
 "ShipButton": "",
-"ShipsDataManager": ""
+"ShipsDataManager": "",
+"edsmDataManager": ""
 }
 
 [application]
