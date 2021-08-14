@@ -4,7 +4,8 @@ class_name GalaxyCenter
 var relative_mov : Vector3 = Vector3()
 var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 
-onready var stars_multimesh : MultiMeshInstance = $MultiMeshInstance
+onready var stars_multimesh : MultiMeshInstance = $StarsMultiMesh
+onready var edsm_multimesh : MultiMeshInstance = $EDSMMultiMesh
 onready var camera := $PlaneGrid/CameraCenter/CameraRotation/Camera
 onready var camera_plane : Spatial = $PlaneGrid
 onready var camera_center : Spatial = $PlaneGrid/CameraCenter
@@ -18,6 +19,10 @@ func camera_move_to(_final_pos : Vector3):
 	var distance = camera_center.translation.distance_to(_final_pos)
 	var plane_final_pos := Vector3(camera_plane.translation.x, _final_pos.y, camera_plane.translation.z)
 	var camera_final_pos := Vector3(_final_pos.x, camera_center.translation.y, _final_pos.z)
+	var camera_final_zoom : float = 150.0
+	
+	if camera.translation.z < camera_final_zoom:
+		camera_final_zoom = camera.translation.z
 	# Tweaking the values below should make the movement feel a bit closer to ED
 	var duration : float = distance * 0.002
 	if duration > 5:
@@ -35,7 +40,7 @@ func camera_move_to(_final_pos : Vector3):
 	tween_pos.start()
 	
 	tween_zoom.interpolate_property(camera, "translation",
-	camera.translation, Vector3(camera.translation.x, camera.translation.y, 150), duration,
+	camera.translation, Vector3(camera.translation.x, camera.translation.y, camera_final_zoom), duration,
 	Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween_zoom.start()
 
@@ -85,6 +90,23 @@ func spawn_stars(_stars : Array, _interpolation_key : String, _maxval : float, _
 		var star_size : Basis = Basis().scaled(Vector3(0.5,0.5,0.5).linear_interpolate(Vector3(2.5,2.5,2.5),intensity))
 		stars_multimesh.multimesh.set_instance_transform(idx, Transform(star_size, sys_coord))
 		stars_multimesh.multimesh.set_instance_color(idx, star_color)
+
+func spawn_edsm_stars(_stars : Array, _interpolation_key : String, _maxval : float, _star_color_low : Color = Color(1.0, 0.2, 0.2), _star_color_high : Color = Color(1.0, 1.0, 1.0)):
+	edsm_multimesh.multimesh.color_format = MultiMesh.COLOR_FLOAT
+	edsm_multimesh.multimesh.instance_count = _stars.size()
+	edsm_multimesh.multimesh.visible_instance_count = _stars.size()
+	for idx in _stars.size():
+		var sys_coord_json = _stars[idx]["coords"]
+		var sys_coord : Vector3 = Vector3(sys_coord_json["x"], sys_coord_json["y"], sys_coord_json["z"])
+			
+		var intensity : float = _stars[idx][_interpolation_key]/_maxval
+		if intensity > 1:
+			intensity = 1
+		var color_intensity = intensity #ease(intensity, 0.5)
+		var star_color : Color = _star_color_low.linear_interpolate(_star_color_high, color_intensity)
+		var star_size : Basis = Basis().scaled(Vector3(0.5,0.5,0.5).linear_interpolate(Vector3(2.5,2.5,2.5),intensity))
+		edsm_multimesh.multimesh.set_instance_transform(idx, Transform(star_size, sys_coord))
+		edsm_multimesh.multimesh.set_instance_color(idx, star_color)
 
 func get_stars_closer_than(_mouse_pos : Vector2, _max_distance : float):
 	var close_stars := []

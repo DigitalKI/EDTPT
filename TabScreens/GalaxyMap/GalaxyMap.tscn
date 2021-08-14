@@ -98,10 +98,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button3" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
+[node name="BtEDSM" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
 margin_top = 352.0
 margin_right = 49.0
 margin_bottom = 373.0
+text = "EDSM"
 
 [node name="Control3" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
 margin_top = 377.0
@@ -241,8 +242,12 @@ margin_bottom = 600.0
 mouse_filter = 1
 size_flags_vertical = 3
 
+[node name="Timer" type="Timer" parent="."]
+
 [connection signal="gui_input" from="." to="." method="_on_GalaxyMap_gui_input"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtGalaxy" to="." method="_on_BtGalaxy_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtMining" to="." method="_on_BtMining_pressed"]
+[connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtEDSM" to="." method="_on_BtEDSM_pressed"]
 [connection signal="text_changed" from="HBoxContainer/GalaxyContainer/Search" to="." method="_on_Search_text_changed"]
 [connection signal="id_pressed" from="HBoxContainer/GalaxyContainer/Search/PopupMenuFound" to="." method="_on_PopupMenuFound_id_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

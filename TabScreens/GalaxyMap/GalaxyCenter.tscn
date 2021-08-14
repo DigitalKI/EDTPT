@@ -1,20 +1,26 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://TabScreens/GalaxyMap/star.material" type="Material" id=1]
 [ext_resource path="res://TabScreens/GalaxyMap/grid.png" type="Texture" id=2]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyCenter.gd" type="Script" id=3]
-
-[sub_resource type="SpatialMaterial" id=1]
-flags_unshaded = true
-vertex_color_use_as_albedo = true
-
-[sub_resource type="SphereMesh" id=2]
-material = SubResource( 1 )
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyStar.tres" type="SphereMesh" id=5]
 
 [sub_resource type="MultiMesh" id=3]
 color_format = 2
 transform_format = 1
-mesh = SubResource( 2 )
+mesh = ExtResource( 5 )
+
+[sub_resource type="SpatialMaterial" id=9]
+flags_unshaded = true
+vertex_color_use_as_albedo = true
+
+[sub_resource type="PointMesh" id=10]
+material = SubResource( 9 )
+
+[sub_resource type="MultiMesh" id=8]
+color_format = 2
+transform_format = 1
+mesh = SubResource( 10 )
 
 [sub_resource type="PlaneMesh" id=4]
 size = Vector2( 9999, 9999 )
@@ -24,9 +30,12 @@ flags_transparent = true
 flags_unshaded = true
 flags_world_triplanar = true
 params_cull_mode = 2
-albedo_color = Color( 1, 1, 1, 0.278431 )
+albedo_color = Color( 0.917647, 0.937255, 1, 0.580392 )
 albedo_texture = ExtResource( 2 )
 uv1_scale = Vector3( 999, 999, 999 )
+distance_fade_mode = 1
+distance_fade_min_distance = 0.0
+distance_fade_max_distance = 220.0
 
 [sub_resource type="SpatialMaterial" id=6]
 flags_transparent = true
@@ -38,8 +47,11 @@ material = SubResource( 6 )
 [node name="GalaxyCenter" type="Spatial"]
 script = ExtResource( 3 )
 
-[node name="MultiMeshInstance" type="MultiMeshInstance" parent="."]
+[node name="StarsMultiMesh" type="MultiMeshInstance" parent="."]
 multimesh = SubResource( 3 )
+
+[node name="EDSMMultiMesh" type="MultiMeshInstance" parent="."]
+multimesh = SubResource( 8 )
 
 [node name="PlaneGrid" type="MeshInstance" parent="."]
 mesh = SubResource( 4 )

@@ -11,7 +11,6 @@ var journal_event = preload("res://TabScreens/journalreader/JournalEvent.tscn")
 func _ready():
 	data_reader.connect("thread_completed_get_log_objects", self, "_on_DataReader_thread_completed_get_log_objects")
 	data_reader.connect("new_cached_events", self, "_on_DataReader_new_cached_events")
-	data_reader.edsm_manager.connect("systems_received", self, "_on_edsm_manager_systems_received")
 
 func initialize_journal_reader():
 	data_reader.db_get_all_cmdrs()
@@ -112,9 +111,3 @@ func _on_ClearDatabase_pressed():
 	data_reader.clean_database()
 	data_reader._ready()
 
-
-func _on_GetEDSMSystems_pressed():
-	data_reader.edsm_manager.get_systems_in_cube(Vector3(), 50)
-
-func _on_edsm_manager_systems_received():
-	pass

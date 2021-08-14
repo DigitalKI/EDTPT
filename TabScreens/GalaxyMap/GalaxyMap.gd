@@ -21,10 +21,13 @@ var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	details.visible = false
+	# Sorry EDSM, I'm going to bother you more than I should
+	data_reader.edsm_manager.connect("systems_received", self, "_on_edsm_manager_systems_received")
 	pass
 
 func _on_GalaxyMap_gui_input(event):
 	if event is InputEventMouseButton:
+		pause_unpause_game()
 		if event.button_index == BUTTON_LEFT:
 			mouse_left_pressed =  event.pressed
 			$HBoxContainer/LeftButtonsContainer/BtGalaxy.grab_focus()
@@ -45,12 +48,14 @@ func _on_GalaxyMap_gui_input(event):
 		update_navlabel()
 	elif event is InputEventMouseMotion:
 		if mouse_left_pressed:
+			pause_unpause_game()
 			galaxy.camera_rotation.rotation_degrees.y += event.speed.x * rotation_speed
 			galaxy.camera_rotation.rotation_degrees.x += event.speed.y * rotation_speed
-		update_navlabel()
+			update_navlabel()
 
 func _unhandled_input(event):
 	if event is InputEventKey:
+		pause_unpause_game()
 		# Allow to move left or right
 		if OS.get_scancode_string(event.scancode) == "A" && event.pressed:
 			fb_pressed = event.pressed
@@ -91,6 +96,30 @@ func _on_BtGalaxy_pressed():
 	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
 	update_navlabel()
 
+func _on_BtEDSM_pressed():
+	data_reader.edsm_manager.get_systems_in_cube(galaxy.camera_center.global_transform.origin, 200)
+
+func _on_PopupMenuFound_id_pressed(id):
+	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
+	set_selected_star(id, starpos)
+#	found_stars.visible = false
+
+func _on_Timer_timeout():
+	pause_unpause_game(true)
+	$Timer.stop()
+
+func _on_edsm_manager_systems_received():
+	galaxy.spawn_edsm_stars(data_reader.edsm_manager.star_systems, "bodyCount", 100, Color(0.1, 0.1, 0.1), Color(0.6, 0.6, 0.6))
+	$Timer.stop()
+
+func pause_unpause_game(_pause : bool = false):
+	if _pause:
+		$GalaxyMapView/Viewport.render_target_update_mode = Viewport.UPDATE_ONCE
+	else:
+		$GalaxyMapView/Viewport.render_target_update_mode = Viewport.UPDATE_WHEN_VISIBLE
+		$Timer.start(1)
+#	print("Game %s" % "Paused" if _pause else "Unpaused")
+
 func initialize_galaxy_map():
 	_on_BtGalaxy_pressed()
 
@@ -101,14 +130,14 @@ func update_navlabel():
 
 func get_clicked_star():
 	var mouse_pos = self.get_local_mouse_position()
-	var close_stars : Array = galaxy.get_stars_closer_than(mouse_pos, 9)
+	var close_stars : Array = galaxy.get_stars_closer_than(mouse_pos, 20)
 	var distance_to_camera := 99999.9999
 	var closest_star_idx = -1
 	var closest_star_pos : Vector3
 	for star_idx in close_stars:
 		var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(star_idx).origin
-		if  starpos.distance_to(galaxy.camera_center.translation) < distance_to_camera:
-			distance_to_camera = starpos.distance_to(galaxy.camera_center.translation)
+		if  starpos.distance_to(galaxy.camera.global_transform.origin) < distance_to_camera:
+			distance_to_camera = starpos.distance_to(galaxy.camera.global_transform.origin)
 			closest_star_idx = star_idx
 			closest_star_pos = starpos
 	set_selected_star(closest_star_idx, closest_star_pos)
@@ -176,7 +205,3 @@ func _on_Search_text_changed(new_text):
 			found_stars.popup()
 			search_text.grab_focus()
 
-func _on_PopupMenuFound_id_pressed(id):
-	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
-	set_selected_star(id, starpos)
-#	found_stars.visible = false

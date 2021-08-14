@@ -15,10 +15,11 @@ func add_html_reader():
 		http_request.connect("request_completed", self, "_http_request_completed")
 
 func get_systems_in_cube(_coords : Vector3, _size_ly : float):
-	var params := "?x=%s&y=%s&z=%s&size=%s&showId=1&showCoordinates=1&showPermit=1&showInformation=1&showPrimaryStar=1" % [_coords.x, _coords.y, _coords.z, _size_ly]
-	var error = http_request.request(get_systems_cube + params)
-	if error != OK:
-		data_reader.log_event("An error occurred in the HTTP request.")
+	if http_request.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
+		var params := "?x=%s&y=%s&z=%s&size=%s&showId=1&showCoordinates=1&showPermit=1&showInformation=1&showPrimaryStar=1" % [_coords.x, _coords.y, _coords.z, _size_ly]
+		var error = http_request.request(get_systems_cube + params)
+		if error != OK:
+			data_reader.log_event("An error occurred in the HTTP request.")
 
 func _http_request_completed(result, response_code, headers, body):
 	star_systems = parse_json(body.get_string_from_utf8())
