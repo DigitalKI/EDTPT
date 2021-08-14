@@ -20,6 +20,7 @@ var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	details.visible = false
 	pass
 
 func _on_GalaxyMap_gui_input(event):

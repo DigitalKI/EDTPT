@@ -37,10 +37,15 @@ func _ready():
 	mutex = Mutex.new()
 	log_event(logs_path)
 	
+	# Some nodes that are inside data managers need to be added to a node tree
+	# We do it programmatically so that we don't need a scene for them
 	var current_scene = get_tree().current_scene
+	
+	# First one is the HttpRequest node
 	edsm_manager.add_html_reader()
 	current_scene.add_child(edsm_manager.http_request)
 	
+	# The second is the timer
 	timer = Timer.new()
 	current_scene.add_child(timer)
 	timer.wait_time = 5

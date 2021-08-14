@@ -114,7 +114,7 @@ func _on_ClearDatabase_pressed():
 
 
 func _on_GetEDSMSystems_pressed():
-	data_reader.edsm_manager.get_systems_in_cube(Vector3(), 10)
+	data_reader.edsm_manager.get_systems_in_cube(Vector3(), 50)
 
 func _on_edsm_manager_systems_received():
 	pass
