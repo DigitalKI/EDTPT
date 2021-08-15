@@ -99,7 +99,7 @@ func spawn_edsm_stars(_stars : Array, _interpolation_key : String, _maxval : flo
 		var sys_coord_json = _stars[idx]["coords"]
 		var sys_coord : Vector3 = Vector3(sys_coord_json["x"], sys_coord_json["y"], sys_coord_json["z"])
 			
-		var intensity : float = _stars[idx][_interpolation_key]/_maxval
+		var intensity : float = (_stars[idx][_interpolation_key]/_maxval) if _stars[idx][_interpolation_key] else 0
 		if intensity > 1:
 			intensity = 1
 		var color_intensity = intensity #ease(intensity, 0.5)

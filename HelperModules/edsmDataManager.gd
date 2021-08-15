@@ -22,6 +22,10 @@ func get_systems_in_cube(_coords : Vector3, _size_ly : float):
 			data_reader.log_event("An error occurred in the HTTP request.")
 
 func _http_request_completed(result, response_code, headers, body):
-	star_systems = parse_json(body.get_string_from_utf8())
+	var string_result : String = body.get_string_from_utf8()
+	if string_result.length() > 2:
+		star_systems = parse_json(string_result)
+	else:
+		star_systems = []
 	emit_signal("systems_received")
 

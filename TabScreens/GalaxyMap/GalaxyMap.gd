@@ -97,7 +97,7 @@ func _on_BtGalaxy_pressed():
 	update_navlabel()
 
 func _on_BtEDSM_pressed():
-	data_reader.edsm_manager.get_systems_in_cube(galaxy.camera_center.global_transform.origin, 200)
+	data_reader.edsm_manager.get_systems_in_cube(galaxy.camera_center.global_transform.origin, 70)
 
 func _on_PopupMenuFound_id_pressed(id):
 	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
@@ -109,7 +109,7 @@ func _on_Timer_timeout():
 	$Timer.stop()
 
 func _on_edsm_manager_systems_received():
-	galaxy.spawn_edsm_stars(data_reader.edsm_manager.star_systems, "bodyCount", 100, Color(0.1, 0.1, 0.1), Color(0.6, 0.6, 0.6))
+	galaxy.spawn_edsm_stars(data_reader.edsm_manager.star_systems, "bodyCount", 100, Color(0.1, 0.1, 0.1), Color(0.9, 0.9, 0.9))
 	$Timer.stop()
 
 func pause_unpause_game(_pause : bool = false):
