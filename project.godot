@@ -34,6 +34,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://HelperModules/GalaxyDataManager.gd"
 }, {
+"base": "Spatial",
+"class": "GalaxyParticles",
+"language": "GDScript",
+"path": "res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyParticles.gd"
+}, {
 "base": "Control",
 "class": "JournalEvent",
 "language": "GDScript",
@@ -60,6 +65,7 @@ _global_script_class_icons={
 "DetailsWindow": "",
 "GalaxyCenter": "",
 "GalaxyDataManager": "",
+"GalaxyParticles": "",
 "JournalEvent": "",
 "ShipButton": "",
 "ShipsDataManager": "",

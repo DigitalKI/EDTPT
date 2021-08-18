@@ -40,11 +40,9 @@ func _on_GalaxyMap_gui_input(event):
 		if event.button_index == BUTTON_RIGHT:
 			mouse_right_pressed =  event.pressed
 		if event.button_index == BUTTON_WHEEL_UP:
-			if galaxy.camera.translation.z >= 10:
-				galaxy.zoom(- zoom_speed)
+			galaxy.zoom(- zoom_speed)
 		if event.button_index == BUTTON_WHEEL_DOWN:
-			if galaxy.camera.translation.z < 100000:
-				galaxy.zoom(zoom_speed)
+			galaxy.zoom(zoom_speed)
 		update_navlabel()
 	elif event is InputEventMouseMotion:
 		if mouse_left_pressed:
@@ -89,20 +87,27 @@ func _on_BtMining_pressed():
 	data_reader.galaxy_manager.get_systems_by_rings()
 	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Rings", 4, Color(0.0, 0.1, 0.5), Color(0.28, 1.0, 0.0))
 	update_navlabel()
+	pause_unpause_game()
 
 func _on_BtGalaxy_pressed():
 	data_reader.galaxy_manager.get_systems_by_visits()
 	view_mode = "Galaxy"
 	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
 	update_navlabel()
+	pause_unpause_game()
 
 func _on_BtEDSM_pressed():
-	data_reader.edsm_manager.get_systems_in_cube(galaxy.camera_center.global_transform.origin, 70)
+	data_reader.edsm_manager.get_systems_in_cube(galaxy.camera_center.global_transform.origin, 200)
+	pause_unpause_game()
+
+func _on_Bt2dOverlay_pressed():
+	galaxy.GalaxyPlaneOnOff()
+	pause_unpause_game()
 
 func _on_PopupMenuFound_id_pressed(id):
 	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
 	set_selected_star(id, starpos)
-#	found_stars.visible = false
+	pause_unpause_game()
 
 func _on_Timer_timeout():
 	pause_unpause_game(true)
@@ -117,10 +122,11 @@ func pause_unpause_game(_pause : bool = false):
 		$GalaxyMapView/Viewport.render_target_update_mode = Viewport.UPDATE_ONCE
 	else:
 		$GalaxyMapView/Viewport.render_target_update_mode = Viewport.UPDATE_WHEN_VISIBLE
-		$Timer.start(1)
+		$Timer.start(5)
 #	print("Game %s" % "Paused" if _pause else "Unpaused")
 
 func initialize_galaxy_map():
+	galaxy.start_timer()
 	_on_BtGalaxy_pressed()
 
 func update_navlabel():
@@ -141,6 +147,7 @@ func get_clicked_star():
 			closest_star_idx = star_idx
 			closest_star_pos = starpos
 	set_selected_star(closest_star_idx, closest_star_pos)
+	pause_unpause_game()
 
 func set_selected_star(_star_idx, _star_pos):
 	if _star_idx >= 0:
@@ -204,4 +211,5 @@ func _on_Search_text_changed(new_text):
 			found_stars.set_position(Vector2(found_stars.get_parent().rect_global_position.x, found_stars.get_parent().rect_size.y + 16))
 			found_stars.popup()
 			search_text.grab_focus()
+
 
