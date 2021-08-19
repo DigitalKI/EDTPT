@@ -30,9 +30,9 @@ func _on_DataReader_thread_completed_get_log_objects():
 	# Automatically display the last journal entries:
 #	add_all_events_by_type()
 
-func _on_DataReader_new_cached_events():
-	clear_events()
-	add_events(data_reader.cached_events)
+func _on_DataReader_new_cached_events(_events):
+	clear_events(_events.size())
+	add_events(_events)
 
 func get_data_object_text(_current_logobject):
 	if _current_logobject:
@@ -45,9 +45,13 @@ func get_data_object_text(_current_logobject):
 			objtext += "------------------------\n"
 		return objtext
 
-func clear_events():
-	for old_evt in log_details.get_children():
-		old_evt.queue_free()
+func clear_events(_limit = 0):
+	var count = 0
+	for idx in range(log_details.get_child_count() - 1, -1, -1):
+		if _limit > 0 && count > _limit:
+			break
+		log_details.get_child(idx).queue_free()
+		count += 1
 
 func add_all_events_by_type():
 	clear_events()
@@ -87,7 +91,7 @@ func fill_event_type_filter():
 		var last_idx = log_filter.get_popup().get_item_count() - 1
 		log_filter.get_popup().set_item_checked(last_idx, true)
 	log_filter.get_popup().connect("id_pressed",self,"_on_filter_selected")
-	
+
 func _on_filter_selected(_index):
 	log_filter.get_popup().set_item_checked(_index, !log_filter.get_popup().is_item_checked(_index))
 	var _lst_event_types : Array = []
@@ -97,7 +101,6 @@ func _on_filter_selected(_index):
 			_lst_event_types.append(popup.get_item_text(_itm_idx))
 	add_all_events_by_type()
 
-
 func _on_DisplayByEventFile_toggled(button_pressed):
 	$LogDetailContainer/VBoxContainer/HBoxContainer/ScrollContainer.scroll_vertical = 0
 	if button_pressed:
@@ -106,8 +109,10 @@ func _on_DisplayByEventFile_toggled(button_pressed):
 		log_entries.visible = false
 		add_all_events_by_type()
 
-
 func _on_ClearDatabase_pressed():
 	data_reader.clean_database()
 	data_reader._ready()
 
+func _on_BtUpdate_pressed():
+#	data_reader.update_events_from_last_log()
+	data_reader.update_events_from_last_log_threaded()

@@ -28,7 +28,7 @@ onready var galaxy_manager : GalaxyDataManager = GalaxyDataManager.new()
 
 #signal thread_completed_get_files
 signal thread_completed_get_log_objects
-signal new_cached_events
+signal new_cached_events(new_events)
 
 signal log_event_generated(log_text)
 
@@ -80,16 +80,13 @@ func _set_cmdr(_value):
 
 func timer_read_cache():
 	get_new_log_objects()
-	write_events_to_db()
-	self.emit_signal("new_cached_events")
-#	for cachefile in get_files(true):
-#		cached_events = get_file_events(cachefile)["events"]
-#		self.emit_signal("new_cached_events")
+	write_all_events_to_db()
+	self.emit_signal("new_cached_events", null)
 
 func write_new_events(_nullparam = null):
 	mutex.lock()
 	get_new_log_objects()
-	write_events_to_db()
+	write_all_events_to_db()
 	get_event_types()
 	mutex.unlock()
 	call_deferred("reset_thread")
@@ -122,6 +119,10 @@ func clean_database():
 func db_get_log_files(_filter = ""):
 	var selected_array = db.select_rows("Fileheader", _filter, ["*"])
 	return selected_array
+
+func db_get_last_logfile():
+	db.query("SELECT * FROM Fileheader ORDER BY filename desc LIMIT 1;")
+	return db.query_result.duplicate()
 
 func db_get_all_cmdrs():
 	var selected_array = db.select_rows("Commander", "", ["*"])
@@ -244,9 +245,6 @@ func get_file_events(_filename : String):
 		log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
 	return {"name": cmdr, "FID" : fid, "events": events}
 
-func get_new_log_objects_threaded():
-	thread_reader.start(self, "get_new_log_objects", null)
-
 func get_new_log_objects(_nullparam = null):
 	get_files()
 	var total_files = logfiles.size()
@@ -265,95 +263,124 @@ func get_new_log_objects(_nullparam = null):
 					selected_cmdr = curr_logobj["name"]
 			new_log_events[log_file] = curr_logobj.duplicate()
 			total_events += new_log_events[log_file]["events"].size()
-		else:
-			log_event("Journal already in database, skipped.")
+#		else:
+#			log_event("Journal already in database, skipped.")
 	print("total events : %s" % total_events)
 
-func write_events_to_db(_nullparam = null):
+func write_all_events_to_db(_nullparam = null):
 	var all_insert_events := {}
 	for log_file in new_log_events.keys():
 		if log_file.begins_with("Journal."):
 			var fid = new_log_events[log_file]["FID"]
 			var dobj = new_log_events[log_file]["events"]
-			var fileheader : Dictionary = {}
-			var fileheader_last_id = 0
-			for header_evt in get_events_by_type(["Fileheader"], dobj, true):
-				fileheader = header_evt
-				fileheader["filename"] = log_file
-			if !fileheader.empty():
-				var ir = db.insert_row("Fileheader",
-				{"part": fileheader["part"]
-				, "language": fileheader["language"]
-				, "Odyssey": fileheader["Odyssey"] if fileheader.has("Odyssey") else 0
-				, "gameversion": fileheader["gameversion"]
-				, "build": fileheader["build"]
-				, "filename": fileheader["filename"]
-				})
-				fileheader_last_id = db.last_insert_rowid
-			else:
-				print("Fileheader not found! Skipping log file.")
-				continue
-			var cmdr_id_result = db.select_rows("Commander", "FID = '" + fid + "'", ["*"])
-			if !cmdr_id_result.empty():
-				var cmdr_id = cmdr_id_result[0]["Id"]
-				var event_tables = get_all_event_tables()
-				for evt in dobj:
-					if evt is Dictionary && evt.has("event"):
-						# Creates the event type table, but not for commander and fileheader, that are there by default
-						var current_event_type = evt["event"]
-						if !all_insert_events.has(current_event_type):
-							all_insert_events[current_event_type] = []
-						if !event_tables.has(current_event_type) && current_event_type != "Commander" && current_event_type != "Fileheader":
-							if !db_create_table_from_event(evt):
-								log_event("There was an error creating table %s" % current_event_type)
-								print("Problem creating table %s" % current_event_type)
-							#If you just createad a new event type table, then refresh the list of them
-							event_tables = get_all_event_tables()
-						if fileheader_last_id <= 0:
-							print("No fileheader id to use! Aborting")
-							continue
-						if current_event_type != "Commander" && current_event_type != "Fileheader":
-							# Removing event column as each type goes into a separate table
-							evt.erase("event")
-							#CNDRId and FileheaderId are added and assigned
-							evt["CMDRId"] = cmdr_id
-							evt["FileheaderId"] = fileheader_last_id
-							# we now assign the appropriate value to certain fields
-							# such as true/false, Dictionary, Array
-							for col_key in evt.keys():
-								if evt[col_key] is Array:
-									evt[col_key] = JSON.print(evt[col_key])
-								elif evt[col_key] is Dictionary:
-									evt[col_key] = JSON.print(evt[col_key])
-								elif evt[col_key] is String:
-									if evt[col_key] == "false":
-										evt[col_key] = 0
-									elif evt[col_key] == "true":
-										evt[col_key] = 1
-								
-								# Some columns have to be changed as they are reserved keywords or already used
-								# leave this code last, as it is iterating through the columns
-								if forbidden_columns.has(col_key):
-									evt["'" + col_key + "'"] = evt[col_key]
-									evt.erase(col_key)
-								elif not_usable_columns.has(col_key):
-									evt[col_key + "_" + col_key] = evt[col_key]
-									evt.erase(col_key)
-							all_insert_events[current_event_type].append(evt)
+			get_insert_events_from_object(dobj, fid, log_file, all_insert_events)
 	# Ready to insert values!
 	for table_name in all_insert_events.keys():
-		print("Adding %s events of type %s" % [all_insert_events[table_name].size(), table_name])
+		log_event("Adding %s events of type %s" % [all_insert_events[table_name].size(), table_name])
 		if !db.insert_rows(table_name, all_insert_events[table_name]):
 			log_event("There was a problem adding event for table %s" % table_name)
+	new_log_events.clear()
+
+func get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name, _all_insert_events : Dictionary = {}):
+	if _log_file_name.begins_with("Journal."):
+		var fileheader : Dictionary = {}
+		var fileheader_last_id = 0
+		for header_evt in get_events_by_type(["Fileheader"], _dobj, true):
+			fileheader = header_evt
+			fileheader["filename"] = _log_file_name
+		if !fileheader.empty():
+			var ir = db.insert_row("Fileheader",
+			{"part": fileheader["part"]
+			, "language": fileheader["language"]
+			, "Odyssey": fileheader["Odyssey"] if fileheader.has("Odyssey") else 0
+			, "gameversion": fileheader["gameversion"]
+			, "build": fileheader["build"]
+			, "filename": fileheader["filename"]
+			})
+			fileheader_last_id = db.last_insert_rowid
+		else:
+			log_event("Fileheader not found! Skipping log file.")
+		var cmdr_id_result = db.select_rows("Commander", "FID = '" + _fid + "'", ["*"])
+		if !cmdr_id_result.empty():
+			var cmdr_id = cmdr_id_result[0]["Id"]
+			var event_tables = get_all_event_tables()
+			for evt in _dobj:
+				if evt is Dictionary && evt.has("event"):
+					# Creates the event type table, but not for commander and fileheader, that are there by default
+					var current_event_type = evt["event"]
+					if !_all_insert_events.has(current_event_type):
+						_all_insert_events[current_event_type] = []
+					if !event_tables.has(current_event_type) && current_event_type != "Commander" && current_event_type != "Fileheader":
+						if !db_create_table_from_event(evt):
+							log_event("There was an error creating table %s" % current_event_type)
+							print("Problem creating table %s" % current_event_type)
+						#If you just createad a new event type table, then refresh the list of them
+						event_tables = get_all_event_tables()
+					if fileheader_last_id <= 0:
+						log_event("No fileheader id to use! Aborting")
+						continue
+					if current_event_type != "Commander" && current_event_type != "Fileheader":
+						# Removing event column as each type goes into a separate table
+						evt.erase("event")
+						#CNDRId and FileheaderId are added and assigned
+						evt["CMDRId"] = cmdr_id
+						evt["FileheaderId"] = fileheader_last_id
+						# we now assign the appropriate value to certain fields
+						# such as true/false, Dictionary, Array
+						for col_key in evt.keys():
+							if evt[col_key] is Array:
+								evt[col_key] = JSON.print(evt[col_key])
+							elif evt[col_key] is Dictionary:
+								evt[col_key] = JSON.print(evt[col_key])
+							elif evt[col_key] is String:
+								if evt[col_key] == "false":
+									evt[col_key] = 0
+								elif evt[col_key] == "true":
+									evt[col_key] = 1
+							
+							# Some columns have to be changed as they are reserved keywords or already used
+							# leave this code last, as it is iterating through the columns
+							if forbidden_columns.has(col_key):
+								evt["'" + col_key + "'"] = evt[col_key]
+								evt.erase(col_key)
+							elif not_usable_columns.has(col_key):
+								evt[col_key + "_" + col_key] = evt[col_key]
+								evt.erase(col_key)
+						_all_insert_events[current_event_type].append(evt)
+	return _all_insert_events
+
+func update_events_from_last_log_threaded():
+	thread_reader.start(self, "update_events_from_last_log", null)
+
+func update_events_from_last_log(_nullparam = null):
+	mutex.lock()
+	var lf : Array = db_get_last_logfile()
+	var new_events = []
+	if !lf.empty():
+		var evts = get_file_events(lf[0]["filename"])
+		var insert_events : Dictionary = get_insert_events_from_object(evts["events"], evts["FID"], lf[0]["filename"])
+		# Ready to insert values!
+		for table_name in insert_events.keys():
+			for evt in insert_events[table_name]:
+				var existing_data = db.select_rows(table_name, "timestamp = '%s'" % evt["timestamp"], ["*"])
+				if existing_data.empty():
+					new_events.append(evt)
+					db.insert_row(table_name, evt)
+					log_event("Adding event of type %s with timestamp %s" % [table_name, evt["timestamp"]])
+		new_events.sort_custom(EventsSorter, "sort_descending")
+	mutex.unlock()
+	call_deferred("reset_new_cached_events_thread", new_events)
+
+func reset_new_cached_events_thread(_new_events):
+	if thread_reader.is_active():
+		thread_reader.wait_to_finish()
+	emit_signal("new_cached_events", _new_events)
 
 func get_all_event_tables():
 	var table_evt_types := []
 	for evt_tbl in db.select_rows("sqlite_master", "type = 'table'", ["*"]):
 		table_evt_types.append(evt_tbl["name"])
 	return table_evt_types
-
-func get_all_log_objects_threaded():
-	thread_reader.start(self, "get_all_log_objects", null)
 
 func reset_thread():
 	if thread_reader.is_active():

@@ -46,4 +46,4 @@ func to_unix_time():
 	unix_time = OS.get_unix_time_from_datetime(dictime)
 
 func _to_string():
-	return "%s/%s/%s - %s:%s" % [year, month, day, hour, second]
+	return "%s/%s/%s - %s:%s:%s" % [year, month, day, hour, minute, second]

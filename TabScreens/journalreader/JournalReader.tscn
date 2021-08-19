@@ -55,6 +55,13 @@ margin_bottom = 40.0
 text = "Filter By type"
 items = [ "Item 0", null, 1, false, false, 0, 0, null, "", false, "Item 1", null, 1, false, false, 1, 0, null, "", false, "Item 2", null, 1, false, false, 2, 0, null, "", false ]
 
+[node name="BtUpdate" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
+margin_left = 338.0
+margin_right = 434.0
+margin_bottom = 40.0
+hint_tooltip = "Clears the database and re-import all data"
+text = "Update Journal"
+
 [node name="HBoxContainer" type="HBoxContainer" parent="LogDetailContainer/VBoxContainer"]
 margin_top = 44.0
 margin_right = 1014.0
@@ -102,4 +109,5 @@ margin_bottom = 84.0
 
 [connection signal="pressed" from="LogDetailContainer/VBoxContainer/ToolBarContainer/ClearDatabase" to="." method="_on_ClearDatabase_pressed"]
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/DisplayByEventFile" to="." method="_on_DisplayByEventFile_toggled"]
+[connection signal="pressed" from="LogDetailContainer/VBoxContainer/ToolBarContainer/BtUpdate" to="." method="_on_BtUpdate_pressed"]
 [connection signal="item_selected" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]
