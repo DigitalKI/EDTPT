@@ -7,6 +7,7 @@ flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
 vertex_color_use_as_albedo = true
 params_billboard_mode = 3
 particles_anim_h_frames = 1

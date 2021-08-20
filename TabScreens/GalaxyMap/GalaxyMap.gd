@@ -104,6 +104,10 @@ func _on_Bt2dOverlay_pressed():
 	galaxy.GalaxyPlaneOnOff()
 	pause_unpause_game()
 
+func _on_Bt3dOverlay_pressed():
+	galaxy.GalaxyParticlesPlaneOnOff()
+	pause_unpause_game()
+
 func _on_PopupMenuFound_id_pressed(id):
 	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
 	set_selected_star(id, starpos)
@@ -211,5 +215,4 @@ func _on_Search_text_changed(new_text):
 			found_stars.set_position(Vector2(found_stars.get_parent().rect_global_position.x, found_stars.get_parent().rect_size.y + 16))
 			found_stars.popup()
 			search_text.grab_focus()
-
 

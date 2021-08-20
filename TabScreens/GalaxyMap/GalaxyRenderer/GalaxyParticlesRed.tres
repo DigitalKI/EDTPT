@@ -17,4 +17,4 @@ albedo_texture = ExtResource( 1 )
 
 [resource]
 material = SubResource( 1 )
-size = Vector2( 0.2, 0.2 )
+size = Vector2( 0.1, 0.1 )

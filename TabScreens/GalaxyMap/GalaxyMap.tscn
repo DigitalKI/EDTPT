@@ -59,39 +59,39 @@ __meta__ = {
 }
 
 [node name="LeftButtonsContainer" type="VBoxContainer" parent="HBoxContainer"]
-margin_right = 53.0
+margin_right = 64.0
 margin_bottom = 600.0
 alignment = 1
 
 [node name="Control0" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_right = 53.0
-margin_bottom = 96.0
+margin_right = 64.0
+margin_bottom = 75.0
 mouse_filter = 1
 size_flags_vertical = 3
 
 [node name="BtGalaxy" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 100.0
-margin_right = 53.0
-margin_bottom = 121.0
+margin_top = 79.0
+margin_right = 64.0
+margin_bottom = 100.0
 text = "Galaxy"
 
 [node name="Control" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 125.0
-margin_right = 53.0
-margin_bottom = 222.0
+margin_top = 104.0
+margin_right = 64.0
+margin_bottom = 180.0
 mouse_filter = 1
 size_flags_vertical = 3
 
 [node name="BtMining" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 226.0
-margin_right = 53.0
-margin_bottom = 247.0
+margin_top = 184.0
+margin_right = 64.0
+margin_bottom = 205.0
 text = "Mining"
 
 [node name="Control2" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 251.0
-margin_right = 53.0
-margin_bottom = 348.0
+margin_top = 209.0
+margin_right = 64.0
+margin_bottom = 285.0
 mouse_filter = 1
 size_flags_vertical = 3
 __meta__ = {
@@ -99,15 +99,15 @@ __meta__ = {
 }
 
 [node name="BtEDSM" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 352.0
-margin_right = 53.0
-margin_bottom = 373.0
+margin_top = 289.0
+margin_right = 64.0
+margin_bottom = 310.0
 text = "EDSM"
 
 [node name="Control3" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 377.0
-margin_right = 53.0
-margin_bottom = 474.0
+margin_top = 314.0
+margin_right = 64.0
+margin_bottom = 390.0
 mouse_filter = 1
 size_flags_vertical = 3
 __meta__ = {
@@ -115,20 +115,33 @@ __meta__ = {
 }
 
 [node name="Bt2dOverlay" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 478.0
-margin_right = 53.0
-margin_bottom = 499.0
+margin_top = 394.0
+margin_right = 64.0
+margin_bottom = 415.0
 text = "2D grid"
 
 [node name="Control4" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 503.0
-margin_right = 53.0
+margin_top = 419.0
+margin_right = 64.0
+margin_bottom = 495.0
+mouse_filter = 1
+size_flags_vertical = 3
+
+[node name="Bt3dOverlay" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
+margin_top = 499.0
+margin_right = 64.0
+margin_bottom = 520.0
+text = "3d Galaxy"
+
+[node name="Control5" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
+margin_top = 524.0
+margin_right = 64.0
 margin_bottom = 600.0
 mouse_filter = 1
 size_flags_vertical = 3
 
 [node name="GalaxyContainer" type="Control" parent="HBoxContainer"]
-margin_left = 57.0
+margin_left = 68.0
 margin_right = 973.0
 margin_bottom = 600.0
 mouse_filter = 1
@@ -250,6 +263,7 @@ size_flags_vertical = 3
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtMining" to="." method="_on_BtMining_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtEDSM" to="." method="_on_BtEDSM_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt2dOverlay" to="." method="_on_Bt2dOverlay_pressed"]
+[connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt3dOverlay" to="." method="_on_Bt3dOverlay_pressed"]
 [connection signal="text_changed" from="HBoxContainer/GalaxyContainer/Search" to="." method="_on_Search_text_changed"]
 [connection signal="id_pressed" from="HBoxContainer/GalaxyContainer/Search/PopupMenuFound" to="." method="_on_PopupMenuFound_id_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

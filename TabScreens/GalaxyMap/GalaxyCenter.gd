@@ -2,7 +2,7 @@ extends Spatial
 class_name GalaxyCenter
 
 var min_zoom = 10.0
-var max_zoom = 110000.0
+var max_zoom = 130000.0
 var galaxy_clouds_fade_dist_close = 1100.0
 var galaxy_clouds_fade_dist = 20000.0
 
@@ -95,6 +95,9 @@ func zoom(_zoom_speed):
 
 func GalaxyPlaneOnOff():
 	$GalaxyPlane.visible = !$GalaxyPlane.visible
+
+func GalaxyParticlesPlaneOnOff():
+	$GalaxyParticles.visible = !$GalaxyParticles.visible
 
 func spawn_stars(_stars : Array, _interpolation_key : String, _maxval : float, _star_color_low : Color = Color(1.0, 0.2, 0.2), _star_color_high : Color = Color(1.0, 1.0, 1.0)):
 #	stars_multimesh.multimesh.mesh.material.vertex_color_use_as_albedo = true

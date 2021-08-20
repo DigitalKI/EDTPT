@@ -8,7 +8,6 @@ fog_color = Color( 0, 0, 0, 0.737255 )
 fog_sun_color = Color( 0.282353, 0.282353, 0.282353, 1 )
 fog_depth_end = 700.0
 fog_transmit_enabled = true
-glow_enabled = true
 glow_strength = 1.07
 glow_bloom = 0.44
 adjustment_enabled = true
