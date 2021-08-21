@@ -65,7 +65,8 @@ func _ready():
 	if !cmdrs.empty():
 		current_cmdr = cmdrs[0]
 	
-	thread_reader.start(self, "write_new_events", null)
+	thread_reader.start(self, "journal_updates", null)
+#	thread_reader.start(self, "write_new_events", null)
 #	write_new_events()
 
 func _exit_tree():
@@ -82,6 +83,10 @@ func timer_read_cache():
 	get_new_log_objects()
 	write_all_events_to_db()
 	self.emit_signal("new_cached_events", null)
+
+func journal_updates(_nullparam = null):
+	update_events_from_last_log()
+	write_new_events()
 
 func write_new_events(_nullparam = null):
 	mutex.lock()
@@ -191,7 +196,8 @@ func get_files(_get_cache := false):
 		var file_name : String = dir.get_next()
 		while file_name != "":
 			if dir.current_is_dir():
-				log_event("Found directory: " + file_name)
+				pass
+#				log_event("Found directory: " + file_name)
 			elif _get_cache && file_name.get_extension() == "cache":
 				logfiles.append(file_name)
 			elif file_name.begins_with("Journal."):
