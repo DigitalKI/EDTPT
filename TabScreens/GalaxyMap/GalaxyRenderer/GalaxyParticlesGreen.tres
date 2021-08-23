@@ -5,7 +5,6 @@
 [sub_resource type="SpatialMaterial" id=1]
 flags_transparent = true
 flags_unshaded = true
-flags_no_depth_test = true
 flags_do_not_receive_shadows = true
 vertex_color_use_as_albedo = true
 params_billboard_mode = 3

@@ -150,8 +150,8 @@ size_flags_horizontal = 3
 [node name="SystemDetails" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 3 )]
 anchor_left = 0.674
 margin_left = -0.0800171
-title = "System"
-body = "Double-click on a star system to get it's details..."
+title = ""
+body = ""
 
 [node name="LabelNav" type="Label" parent="HBoxContainer/GalaxyContainer"]
 anchor_top = 1.0
@@ -173,6 +173,7 @@ margin_right = 0.199951
 margin_bottom = 33.0
 focus_mode = 1
 custom_styles/normal = SubResource( 3 )
+placeholder_text = "Search by system name"
 __meta__ = {
 "_edit_use_anchors_": false
 }
