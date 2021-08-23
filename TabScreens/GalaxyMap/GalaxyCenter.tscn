@@ -70,7 +70,7 @@ mesh = SubResource( 6 )
 material/0 = null
 
 [node name="GalaxyParticles" parent="." instance=ExtResource( 4 )]
-transform = Transform( 9315, 0, 0, 0, 9315, 0, 0, 0, 9315, 25.219, -20.906, 25900 )
+transform = Transform( -9315, 0, -0.000814343, 0, 9315, 0, 0.000814343, 0, -9315, 25.219, -20.906, 25900 )
 
 [node name="TweenZoom" type="Tween" parent="."]
 

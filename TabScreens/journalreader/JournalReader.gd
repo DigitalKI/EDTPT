@@ -1,16 +1,21 @@
 extends Control
 
-onready var log_entries = $LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries
+onready var log_entries : ItemList = $LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries
 onready var log_details : Tree = $LogDetailContainer/VBoxContainer/HBoxContainer/LogDetails
-onready var log_filter = $LogDetailContainer/VBoxContainer/ToolBarContainer/EventTypeFilter
+onready var log_filter : MenuButton = $LogDetailContainer/VBoxContainer/ToolBarContainer/EventTypeFilter
+onready var log_filter_popup : PopupMenu = log_filter.get_popup()
+onready var time_range : MenuButton = $LogDetailContainer/VBoxContainer/ToolBarContainer/TimeRange
+onready var time_range_popup : PopupMenu = time_range.get_popup()
 
-var journal_event = preload("res://TabScreens/journalreader/JournalEvent.tscn")
-
+var journal_events := []
+var timerange := 24
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	data_reader.connect("thread_completed_get_log_objects", self, "_on_DataReader_thread_completed_get_log_objects")
 	data_reader.connect("new_cached_events", self, "_on_DataReader_new_cached_events")
+	if !time_range_popup.is_connected("id_pressed", self, "_on_timerange_selected"):
+		time_range_popup.connect("id_pressed",self,"_on_timerange_selected")
 
 func initialize_journal_reader():
 	data_reader.db_get_all_cmdrs()
@@ -27,12 +32,11 @@ func _on_LogEntries_item_selected(index):
 
 func _on_DataReader_thread_completed_get_log_objects():
 	initialize_journal_reader()
-	# Automatically display the last journal entries:
-#	add_all_events_by_type()
 
-func _on_DataReader_new_cached_events(_events):
-#	clear_events(_events.size())
-	add_events(_events)
+func _on_DataReader_new_cached_events(_events: Array):
+	journal_events.append_array(_events)
+	clear_events()
+	add_events(journal_events)
 
 func get_data_object_text(_current_logobject):
 	if _current_logobject:
@@ -58,19 +62,22 @@ func clear_events(_limit = 0):
 			count += 1
 
 func add_all_events_by_type():
+	var startfrom : DateTime = DateTime.new()
+	startfrom.date_add("hour", -timerange)
+	journal_events = data_reader.get_all_db_events_by_type(get_all_selected_event_types(), 0, 0, startfrom._to_string(true))
 	clear_events()
-	add_events(data_reader.get_all_db_events_by_type(get_all_selected_event_types()))
+	add_events(journal_events)
 
 func get_all_selected_event_types():
 	var selected_types := []
-	for idx in log_filter.get_popup().get_item_count():
-		if log_filter.get_popup().is_item_checked(idx):
-			selected_types.append(log_filter.get_popup().get_item_text(idx))
+	for idx in log_filter_popup.get_item_count():
+		if log_filter_popup.is_item_checked(idx):
+			selected_types.append(log_filter_popup.get_item_text(idx))
 	return selected_types
 
 # Adds an event to the list using the event object
+# evey new event is put at the beginning of the tree
 func add_events(_current_logobject : Array):
-	var counter := 0
 	var tree_root : TreeItem = log_details.get_root()
 	if !tree_root:
 		log_details.set_column_titles_visible(true)
@@ -84,48 +91,52 @@ func add_events(_current_logobject : Array):
 		log_details.set_column_expand(2, true)
 		log_details.set_column_min_width(2, 150.0)
 		tree_root = log_details.create_item()
+	
 	if _current_logobject:
 		for log_obj in _current_logobject:
 			if log_obj is Dictionary:
 				var objtext : String = ""
 				var evt := log_details.create_item(tree_root)
-				counter += 1
+				evt.move_to_top() # here it moves it at the top IMPORTANT
 				if log_obj.has("event"):
 					evt.set_text(1, log_obj["event"])
 				if log_obj.has("timestamp"):
 					var date : DateTime = DateTime.new(log_obj["timestamp"])
 					evt.set_text(0, date.to_string())
+					evt.set_tooltip(0, log_obj["timestamp"])
 				for idx in log_obj.keys():
 					if !["event", "timestamp", "Id", "CMDRId", "FileheaderId"].has(idx):
 						var value = "" if log_obj[idx] == null else String(log_obj[idx])
 						objtext +=  String(idx) + " - " + value + " | "
 				evt.set_text(2, objtext.trim_suffix(" | "))
 				evt.set_tooltip(2, objtext.trim_suffix(" | ").replace("|", "\n").replace("},{", "}\n{"))
-			if counter > 1000:
-				break
 
 func fill_event_type_filter():
-	log_filter.get_popup().clear()
-	log_filter.get_popup().add_item("Select all")
-	log_filter.get_popup().add_item("Select none")
+	log_filter_popup.clear()
+	log_filter_popup.add_item("Select all")
+	log_filter_popup.add_item("Select none")
 	for evt_tpy in data_reader.evt_types:
-		log_filter.get_popup().add_check_item(evt_tpy)
-		var last_idx = log_filter.get_popup().get_item_count() - 1
-		log_filter.get_popup().set_item_checked(last_idx, true)
-	log_filter.get_popup().connect("id_pressed",self,"_on_filter_selected")
+		log_filter_popup.add_check_item(evt_tpy)
+		var last_idx = log_filter_popup.get_item_count() - 1
+		log_filter_popup.set_item_checked(last_idx, true)
+	if !log_filter_popup.is_connected("id_pressed", self, "_on_filter_selected"):
+		log_filter_popup.connect("id_pressed",self,"_on_filter_selected")
 
 func _on_filter_selected(_index):
-	var popup : PopupMenu = log_filter.get_popup()
-	popup.set_item_checked(_index, !log_filter.get_popup().is_item_checked(_index))
+	log_filter_popup.set_item_checked(_index, !log_filter_popup.is_item_checked(_index))
 	var _lst_event_types : Array = []
-	for _itm_idx in popup.get_item_count():
-		if popup.get_item_text(_index) == "Select none":
-			popup.set_item_checked(_itm_idx, false)
-		if popup.get_item_text(_index) == "Select all":
-			popup.set_item_checked(_itm_idx, true)
-			_lst_event_types.append(popup.get_item_text(_itm_idx))
-		elif popup.is_item_checked(_itm_idx):
-			_lst_event_types.append(popup.get_item_text(_itm_idx))
+	for _itm_idx in log_filter_popup.get_item_count():
+		if log_filter_popup.get_item_text(_index) == "Select none":
+			log_filter_popup.set_item_checked(_itm_idx, false)
+		if log_filter_popup.get_item_text(_index) == "Select all":
+			log_filter_popup.set_item_checked(_itm_idx, true)
+			_lst_event_types.append(log_filter_popup.get_item_text(_itm_idx))
+		elif log_filter_popup.is_item_checked(_itm_idx):
+			_lst_event_types.append(log_filter_popup.get_item_text(_itm_idx))
+	add_all_events_by_type()
+
+func _on_timerange_selected(_id):
+	timerange = _id
 	add_all_events_by_type()
 
 func _on_DisplayByEventFile_toggled(button_pressed):
@@ -143,3 +154,4 @@ func _on_ClearDatabase_pressed():
 func _on_BtUpdate_pressed():
 #	data_reader.update_events_from_last_log()
 	data_reader.update_events_from_last_log_threaded()
+

@@ -11,7 +11,6 @@ func _ready():
 
 # Stores all the jump events, star systems addreses, and group jumps per system address
 func get_systems_by_visits():
-#	fsd_jumps_events = data_reader.get_all_db_events_by_type(["FSDJump"])
 	if data_reader.db.query("SELECT *, COUNT(*) Visits"
 											+ " FROM FSDJump"
 											+ " WHERE CMDRId = " + String(data_reader.current_cmdr["Id"])
@@ -22,7 +21,6 @@ func get_systems_by_visits():
 
 # Stores all the jump events, star systems addreses, and group jumps per system address
 func get_systems_by_rings():
-#	fsd_jumps_events = data_reader.get_all_db_events_by_type(["FSDJump"])
 	if data_reader.db.query("SELECT F.*, COUNT(DISTINCT S.BodyID) Rings"
 							+ " FROM FSDJump F"
 							+ " LEFT JOIN Scan S"

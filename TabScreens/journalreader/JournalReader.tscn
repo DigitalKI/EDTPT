@@ -54,9 +54,17 @@ margin_bottom = 40.0
 text = "Filter By type"
 items = [ "Item 0", null, 1, false, false, 0, 0, null, "", false, "Item 1", null, 1, false, false, 1, 0, null, "", false, "Item 2", null, 1, false, false, 2, 0, null, "", false ]
 
-[node name="BtUpdate" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
+[node name="TimeRange" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
 margin_left = 338.0
-margin_right = 434.0
+margin_right = 419.0
+margin_bottom = 40.0
+focus_mode = 2
+text = "Select range"
+items = [ "2 hours", null, 0, false, false, 2, 0, null, "", false, "4 hours", null, 0, false, false, 4, 0, null, "", false, "6 hours", null, 0, false, false, 6, 0, null, "", false, "12 hours", null, 0, false, false, 12, 0, null, "", false, "24 hours", null, 0, false, false, 24, 0, null, "", false, "7 days", null, 0, false, false, 168, 0, null, "", false, "All", null, 0, false, false, 0, 0, null, "", false ]
+
+[node name="BtUpdate" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
+margin_left = 423.0
+margin_right = 519.0
 margin_bottom = 40.0
 hint_tooltip = "Clears the database and re-import all data"
 text = "Update Journal"

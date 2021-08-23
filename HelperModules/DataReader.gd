@@ -1,3 +1,7 @@
+# This script is in charge of reading events from the log journals
+# and write them to the database.
+# It needs to be cleaned up a bit, it's already a bit messy.
+
 extends Node
 class_name DataReader
 
@@ -61,9 +65,9 @@ func _ready():
 	# This shouldn't be here, but it's for dev purposes
 #	clean_database()
 	
-	var cmdrs = db.select_rows("Commander", "", ["*"])
-	if !cmdrs.empty():
-		current_cmdr = cmdrs[0]
+	var curr_cmdrs = db.select_rows("Commander", "", ["*"])
+	if !curr_cmdrs.empty():
+		current_cmdr = curr_cmdrs[0]
 	
 	thread_reader.start(self, "journal_updates", null)
 #	thread_reader.start(self, "write_new_events", null)
@@ -80,9 +84,7 @@ func _set_cmdr(_value):
 		current_cmdr = cmdr_res[0]
 
 func timer_read_cache():
-	get_new_log_objects()
-	write_all_events_to_db()
-	self.emit_signal("new_cached_events", null)
+	update_events_from_last_log_threaded()
 
 func journal_updates(_nullparam = null):
 	update_events_from_last_log()
@@ -208,12 +210,13 @@ func get_files(_get_cache := false):
 	return logfiles
 
 func get_files_threaded():
-	thread_reader.start(self, "get_files", null)
+	if !thread_reader.is_active():
+		thread_reader.start(self, "get_files", null)
 
 func get_file_events(_filename : String):
 	var file = File.new()
 	var jjournal : JSONParseResult
-	var events = []
+	var f_events = []
 	var cmdr = ""
 	var fid = ""
 	var file_status = file.open(logs_path + _filename, File.READ)
@@ -237,7 +240,7 @@ func get_file_events(_filename : String):
 									{"FID": fid, "name": cmdr}
 								]):
 									log_event("There was a problem adding a new CMDR")
-						events.append(jjournal.result)
+						f_events.append(jjournal.result)
 					else:
 						log_event("Problem with this file: %s" % _filename)
 						log_event("Here: %s" % content)
@@ -245,11 +248,11 @@ func get_file_events(_filename : String):
 			if content:
 				jjournal = JSON.parse(content)
 				if jjournal.result:
-					events.append(jjournal.result)
+					f_events.append(jjournal.result)
 		file.close()
 	else:
 		log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
-	return {"name": cmdr, "FID" : fid, "events": events}
+	return {"name": cmdr, "FID" : fid, "events": f_events}
 
 func get_new_log_objects(_nullparam = null):
 	get_files()
@@ -295,15 +298,19 @@ func get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name,
 			fileheader = header_evt
 			fileheader["filename"] = _log_file_name
 		if !fileheader.empty():
-			var ir = db.insert_row("Fileheader",
-			{"part": fileheader["part"]
-			, "language": fileheader["language"]
-			, "Odyssey": fileheader["Odyssey"] if fileheader.has("Odyssey") else 0
-			, "gameversion": fileheader["gameversion"]
-			, "build": fileheader["build"]
-			, "filename": fileheader["filename"]
-			})
-			fileheader_last_id = db.last_insert_rowid
+			var existing_fileheader = db.select_rows("Fileheader", "filename = '" + _log_file_name + "'", ["*"])
+			if existing_fileheader.empty():
+				db.insert_row("Fileheader",
+				{"part": fileheader["part"]
+				, "language": fileheader["language"]
+				, "Odyssey": fileheader["Odyssey"] if fileheader.has("Odyssey") else 0
+				, "gameversion": fileheader["gameversion"]
+				, "build": fileheader["build"]
+				, "filename": fileheader["filename"]
+				})
+				fileheader_last_id = db.last_insert_rowid
+			else:
+				fileheader_last_id = existing_fileheader["Id"]
 		else:
 			log_event("Fileheader not found! Skipping log file.")
 		var cmdr_id_result = db.select_rows("Commander", "FID = '" + _fid + "'", ["*"])
@@ -319,7 +326,7 @@ func get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name,
 					if !event_tables.has(current_event_type) && current_event_type != "Commander" && current_event_type != "Fileheader":
 						if !db_create_table_from_event(evt):
 							log_event("There was an error creating table %s" % current_event_type)
-							print("Problem creating table %s" % current_event_type)
+							log_event("Problem creating table %s" % current_event_type)
 						#If you just createad a new event type table, then refresh the list of them
 						event_tables = get_all_event_tables()
 					if fileheader_last_id <= 0:
@@ -356,7 +363,8 @@ func get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name,
 	return _all_insert_events
 
 func update_events_from_last_log_threaded():
-	thread_reader.start(self, "update_events_from_last_log", null)
+	if !thread_reader.is_active():
+		thread_reader.start(self, "update_events_from_last_log", null)
 
 func update_events_from_last_log(_nullparam = null):
 	mutex.lock()
@@ -368,12 +376,17 @@ func update_events_from_last_log(_nullparam = null):
 		# Ready to insert values!
 		for table_name in insert_events.keys():
 			for evt in insert_events[table_name]:
+				# checks for existing data based on type and timestamp,
+				# this should be reliable enough to avoid duplicates or loosing events
+				# yet, it should be checked if FSSSignalDiscovered isn't affected,
+				# timestamps are identical for each time it is triggered,
+				# yet, as thy are triggered simultaneously, they al should be logged alltogether.
 				var existing_data = db.select_rows(table_name, "timestamp = '%s'" % evt["timestamp"], ["*"])
 				if existing_data.empty():
 					new_events.append(evt)
 					db.insert_row(table_name, evt)
 					log_event("Adding event of type %s with timestamp %s" % [table_name, evt["timestamp"]])
-		new_events.sort_custom(EventsSorter, "sort_descending")
+		new_events.sort_custom(EventsSorter, "sort_ascending")
 	mutex.unlock()
 	call_deferred("reset_new_cached_events_thread", new_events)
 
@@ -424,7 +437,7 @@ func get_all_new_events_by_type(_event_types : Array):
 
 func get_all_db_events_by_type(_event_types : Array, _amount : int = 1000, _range : int = 0, _timestart = "", _timeend = "") -> Array:
 	var evt_lst : Array = []
-	var current_amount = " LIMIT " + String(_range)
+	var current_amount = (" LIMIT " + String(_range)) if _amount > 0 else ""
 	var current_range = "" if _amount == 0 else (", " + String(_amount))
 	for evt_typ in _event_types:
 		if !db.select_rows("sqlite_master", "type = 'table' AND name='"+ evt_typ + "'", ["*"]).empty():
@@ -438,7 +451,7 @@ func get_all_db_events_by_type(_event_types : Array, _amount : int = 1000, _rang
 			table_select +=  current_amount + current_range
 			db.query(table_select)
 			evt_lst.append_array(db.query_result.duplicate())
-	evt_lst.sort_custom(EventsSorter, "sort_descending")
+	evt_lst.sort_custom(EventsSorter, "sort_ascending")
 	return evt_lst
 
 func get_all_db_events_by_file(_event_files : Array):
@@ -480,10 +493,11 @@ class Sorter:
 			return true
 		return false
 
-func sort_by_key(_array : Array, _key : String):
+func sort_by_key(_array : Array, _key : String, _desc : bool = 1):
 	var _sorter = Sorter.new(_key)
-	_array.sort_custom(_sorter, "sort_descending")
+	_array.sort_custom(_sorter, "sort_descending" if _desc else "sort_ascending")
 
+# this function gets a string value even when data is null
 func get_value(_value):
 	var string_value = "null" if (_value == null) else String(_value)
 	return string_value
