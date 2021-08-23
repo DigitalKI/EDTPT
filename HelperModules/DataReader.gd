@@ -8,6 +8,10 @@ class_name DataReader
 const SQLite = preload("res://addons/godot-sqlite/bin/gdsqlite.gdns")
 var db : SQLite
 
+var db_creation_script := "res://Database/db_json_schema"
+var db_path := "user://Database/"
+var db_name := "edtpt"
+
 var forbidden_columns := ["From", "To", "Group", "By", "Sort", "Asc"]
 var not_usable_columns := ["Id", "ID"]
 var logs_path = "%s\\Saved Games\\Frontier Developments\\Elite Dangerous\\" % OS.get_environment('userprofile')
@@ -55,13 +59,7 @@ func _ready():
 	timer.wait_time = 5
 	timer.connect("timeout", self, "timer_read_cache")
 #	timer.start()
-	
-	db = SQLite.new()
-	db.path = "res://Database/edtpt"
-#	db.verbose_mode = true
-	# Open the database using the db_name found in the path variable
-	db.open_db()
-	
+	prepare_database()
 	# This shouldn't be here, but it's for dev purposes
 #	clean_database()
 	
@@ -70,8 +68,7 @@ func _ready():
 		current_cmdr = curr_cmdrs[0]
 	
 	thread_reader.start(self, "journal_updates", null)
-#	thread_reader.start(self, "write_new_events", null)
-#	write_new_events()
+#	journal_updates()
 
 func _exit_tree():
 	db.close_db()
@@ -103,6 +100,22 @@ func log_event(_text):
 	log_events += _text + "\n"
 	self.emit_signal("log_event_generated", _text)
 	print(log_event_last)
+
+func prepare_database(_verbose : bool = false):
+	var result := true
+	var dir : Directory = Directory.new()
+	if !dir.dir_exists(db_path):
+		dir.make_dir(db_path)
+	
+	db = SQLite.new()
+	db.path = "user://Database/edtpt"
+	db.verbose_mode = _verbose
+	# Open the database using the db_name found in the path variable
+	db.open_db()
+#	db.export_to_json("user://Database/edtpt_jsnbkp")
+	if db.select_rows("sqlite_master", "type = 'table'", ["*"]).empty():
+		result = db.import_from_json(db_creation_script)
+	return result
 
 func clean_database():
 	var tables = db.select_rows("sqlite_master", "type = 'table'", ["*"]).duplicate()
@@ -137,18 +150,18 @@ func db_get_all_cmdrs():
 		cmdrs[cmdr["FID"]] = cmdr["Name"]
 	return cmdrs
 
+func db_set_event_type(_event_type):
+	# Create the event type
+	if db.select_rows("event_types", "event_type = '" + _event_type + "'", ["*"]).empty():
+		if !db.insert_rows("event_types", [{"event_type": _event_type}]):
+			log_event("There was a problem adding a new event type")
+
 # Creates a table from the event type, 
 # automatically generating columns with its respective type.
 # Table is not created if it already exists in the database.
 func db_create_table_from_event(_event : Dictionary):
 	var table_name = _event["event"]
-	
-	
-	# Create the event type
-	if db.select_rows("event_types", "event_type = '" + table_name + "'", ["*"]).empty():
-		if !db.insert_rows("event_types", [{"event_type": table_name}]):
-			log_event("There was a problem adding a new event type")
-	
+	db_set_event_type(table_name)
 	# Do not create if exists already
 	if db.select_rows("sqlite_master", "type = 'table' AND name='"+ table_name + "'", ["*"]).empty():
 		#Let's get the event with most rows, as some new where added and we need the most up-to-date
@@ -310,7 +323,7 @@ func get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name,
 				})
 				fileheader_last_id = db.last_insert_rowid
 			else:
-				fileheader_last_id = existing_fileheader["Id"]
+				fileheader_last_id = existing_fileheader[0]["Id"]
 		else:
 			log_event("Fileheader not found! Skipping log file.")
 		var cmdr_id_result = db.select_rows("Commander", "FID = '" + _fid + "'", ["*"])
