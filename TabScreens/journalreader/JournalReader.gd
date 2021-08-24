@@ -6,6 +6,7 @@ onready var log_filter : MenuButton = $LogDetailContainer/VBoxContainer/ToolBarC
 onready var log_filter_popup : PopupMenu = log_filter.get_popup()
 onready var time_range : MenuButton = $LogDetailContainer/VBoxContainer/ToolBarContainer/TimeRange
 onready var time_range_popup : PopupMenu = time_range.get_popup()
+onready var autoupdate_toggle : CheckButton = $LogDetailContainer/VBoxContainer/ToolBarContainer/BtUpdate
 
 var journal_events := []
 var timerange := 24
@@ -19,6 +20,7 @@ func _ready():
 
 func initialize_journal_reader():
 	data_reader.db_get_all_cmdrs()
+	data_reader.autoupdate = autoupdate_toggle.pressed
 	fill_event_type_filter()
 	add_all_events_by_type()
 
@@ -61,12 +63,15 @@ func clear_events(_limit = 0):
 				log_details.get_root().get_prev().free()
 			count += 1
 
-func add_all_events_by_type():
+func add_all_events_by_type(_autoupdate : bool = false):
 	var startfrom : DateTime = DateTime.new()
 	startfrom.date_add("hour", -timerange)
-	journal_events = data_reader.get_all_db_events_by_type(get_all_selected_event_types(), 0, 0, startfrom._to_string(true))
-	clear_events()
-	add_events(journal_events)
+	if _autoupdate:
+		data_reader.journal_updates_threaded()
+	else:
+		journal_events = data_reader.get_all_db_events_by_type(get_all_selected_event_types(), 0, 0, startfrom._to_string(true))
+		clear_events()
+		add_events(journal_events)
 
 func get_all_selected_event_types():
 	var selected_types := []
@@ -137,7 +142,7 @@ func _on_filter_selected(_index):
 
 func _on_timerange_selected(_id):
 	timerange = _id
-	add_all_events_by_type()
+	add_all_events_by_type(autoupdate_toggle.pressed)
 
 func _on_DisplayByEventFile_toggled(button_pressed):
 	log_details.scroll_to_item(log_details.get_root())
@@ -151,7 +156,5 @@ func _on_ClearDatabase_pressed():
 	data_reader.clean_database()
 	data_reader._ready()
 
-func _on_BtUpdate_pressed():
-#	data_reader.update_events_from_last_log()
-	data_reader.update_events_from_last_log_threaded()
-
+func _on_BtUpdate_toggled(button_pressed):
+	data_reader.autoupdate = button_pressed

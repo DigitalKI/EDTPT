@@ -30,6 +30,7 @@ var new_log_events : Dictionary = {}
 var cached_events : Array = []
 
 var timer : Timer
+var autoupdate := true
 onready var edsm_manager : edsmDataManager = edsmDataManager.new()
 onready var ships_manager : ShipsDataManager = ShipsDataManager.new()
 onready var galaxy_manager : GalaxyDataManager = GalaxyDataManager.new()
@@ -56,9 +57,13 @@ func _ready():
 	# The second is the timer
 	timer = Timer.new()
 	current_scene.add_child(timer)
-	timer.wait_time = 5
+	timer.wait_time = 2
+	timer.one_shot = true
 	timer.connect("timeout", self, "timer_read_cache")
-#	timer.start()
+	# maybe I shouldn't start it immediately as I have to prepare the database
+	# and read eventual new files
+	timer.start()
+	
 	prepare_database()
 	# This shouldn't be here, but it's for dev purposes
 #	clean_database()
@@ -67,7 +72,7 @@ func _ready():
 	if !curr_cmdrs.empty():
 		current_cmdr = curr_cmdrs[0]
 	
-	thread_reader.start(self, "journal_updates", null)
+	journal_updates_threaded()
 #	journal_updates()
 
 func _exit_tree():
@@ -82,6 +87,11 @@ func _set_cmdr(_value):
 
 func timer_read_cache():
 	update_events_from_last_log_threaded()
+
+func journal_updates_threaded():
+	if thread_reader.is_active():
+		thread_reader.wait_to_finish()
+	thread_reader.start(self, "journal_updates", null)
 
 func journal_updates(_nullparam = null):
 	update_events_from_last_log()
@@ -396,8 +406,10 @@ func update_events_from_last_log(_nullparam = null):
 				# yet, as thy are triggered simultaneously, they al should be logged alltogether.
 				var existing_data = db.select_rows(table_name, "timestamp = '%s'" % evt["timestamp"], ["*"])
 				if existing_data.empty():
-					new_events.append(evt)
 					db.insert_row(table_name, evt)
+					# I have to add back the event type
+					evt["event"] = table_name
+					new_events.append(evt)
 					log_event("Adding event of type %s with timestamp %s" % [table_name, evt["timestamp"]])
 		new_events.sort_custom(EventsSorter, "sort_ascending")
 	mutex.unlock()
@@ -406,6 +418,8 @@ func update_events_from_last_log(_nullparam = null):
 func reset_new_cached_events_thread(_new_events):
 	if thread_reader.is_active():
 		thread_reader.wait_to_finish()
+	if autoupdate:
+		timer.start()
 	emit_signal("new_cached_events", _new_events)
 
 func get_all_event_tables():
