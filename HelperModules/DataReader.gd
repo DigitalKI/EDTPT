@@ -24,7 +24,6 @@ var log_event_last : String = ""
 var cmdrs : Dictionary = {}
 var evt_types : Array = []
 var events : Array = []
-var logfiles : Array = []
 var logobjects : Dictionary = {}
 var new_log_events : Dictionary = {}
 var cached_events : Array = []
@@ -214,9 +213,9 @@ func db_create_table_from_event(_event : Dictionary):
 		return false
 
 func get_files(_get_cache := false):
+	var _logfiles := []
 	var dir = Directory.new()
 	if dir.open(logs_path) == OK:
-		logfiles.clear()
 		dir.list_dir_begin()
 		var file_name : String = dir.get_next()
 		while file_name != "":
@@ -224,26 +223,24 @@ func get_files(_get_cache := false):
 				pass
 #				log_event("Found directory: " + file_name)
 			elif _get_cache && file_name.get_extension() == "cache":
-				logfiles.append(file_name)
+				_logfiles.append(file_name)
 			elif file_name.begins_with("Journal."):
-				logfiles.append(file_name)
+				_logfiles.append(file_name)
 			file_name = dir.get_next()
 	else:
 		log_event("An error occurred when trying to access the path.")
-	return logfiles
-
-func get_files_threaded():
-	if !thread_reader.is_active():
-		thread_reader.start(self, "get_files", null)
+	return _logfiles
 
 func get_file_events(_filename : String):
 	var file = File.new()
+	var fliesize := 0
 	var jjournal : JSONParseResult
 	var f_events = []
 	var cmdr = ""
 	var fid = ""
 	var file_status = file.open(logs_path + _filename, File.READ)
 	if file_status == OK:
+		fliesize = file.get_len()
 		var content : String = ""
 		while !file.eof_reached():
 			if _filename.get_extension() == "json":
@@ -275,14 +272,14 @@ func get_file_events(_filename : String):
 		file.close()
 	else:
 		log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
-	return {"name": cmdr, "FID" : fid, "events": f_events}
+	return {"name": cmdr, "FID" : fid, "filesize" : fliesize, "events": f_events}
 
 func get_new_log_objects(_nullparam = null):
-	get_files()
-	var total_files = logfiles.size()
+	var log_files = get_files()
+	var total_files = log_files.size()
 	var total_events = 0
 	var current_file = 1
-	for log_file in logfiles:
+	for log_file in log_files:
 		var parsed_logfiles = db_get_log_files("filename = '" + log_file + "'")
 		if parsed_logfiles.empty():
 			log_event("reading \"%s\" %s of %s"  % [log_file, current_file, total_files])
@@ -305,7 +302,8 @@ func write_all_events_to_db(_nullparam = null):
 		if log_file.begins_with("Journal."):
 			var fid = new_log_events[log_file]["FID"]
 			var dobj = new_log_events[log_file]["events"]
-			get_insert_events_from_object(dobj, fid, log_file, all_insert_events)
+			var filesize = new_log_events[log_file]["filesize"]
+			get_insert_events_from_object(dobj, fid, log_file, filesize, all_insert_events)
 	# Ready to insert values!
 	for table_name in all_insert_events.keys():
 		log_event("Adding %s events of type %s" % [all_insert_events[table_name].size(), table_name])
@@ -313,7 +311,7 @@ func write_all_events_to_db(_nullparam = null):
 			log_event("There was a problem adding event for table %s" % table_name)
 	new_log_events.clear()
 
-func get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name, _all_insert_events : Dictionary = {}):
+func get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name : String, _log_fise_size : int, _all_insert_events : Dictionary = {}):
 	if _log_file_name.begins_with("Journal."):
 		var fileheader : Dictionary = {}
 		var fileheader_last_id = 0
@@ -330,6 +328,7 @@ func get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name,
 				, "gameversion": fileheader["gameversion"]
 				, "build": fileheader["build"]
 				, "filename": fileheader["filename"]
+				, "filesize": _log_fise_size
 				})
 				fileheader_last_id = db.last_insert_rowid
 			else:
@@ -395,7 +394,7 @@ func update_events_from_last_log(_nullparam = null):
 	var new_events = []
 	if !lf.empty():
 		var evts = get_file_events(lf[0]["filename"])
-		var insert_events : Dictionary = get_insert_events_from_object(evts["events"], evts["FID"], lf[0]["filename"])
+		var insert_events : Dictionary = get_insert_events_from_object(evts["events"], evts["FID"], lf[0]["filename"], lf[0]["filesize"])
 		# Ready to insert values!
 		for table_name in insert_events.keys():
 			for evt in insert_events[table_name]:

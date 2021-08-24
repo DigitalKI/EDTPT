@@ -17,7 +17,7 @@
 	},
 	{
 		"name": "Fileheader",
-		"sql": "CREATE TABLE \"Fileheader\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"part\"\tINTEGER NOT NULL,\r\n\t\"language\"\tTEXT NOT NULL,\r\n\t\"Odyssey\"\tINTEGER NOT NULL,\r\n\t\"gameversion\"\tTEXT NOT NULL,\r\n\t\"build\"\tTEXT NOT NULL,\r\n\t\"filename\"\tTEXT NOT NULL,\r\n\tPRIMARY KEY(\"Id\")\r\n)",
+		"sql": "CREATE TABLE \"Fileheader\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"part\"\tINTEGER NOT NULL,\n\t\"language\"\tTEXT NOT NULL,\n\t\"Odyssey\"\tINTEGER NOT NULL,\n\t\"gameversion\"\tTEXT NOT NULL,\n\t\"build\"\tTEXT NOT NULL,\n\t\"filename\"\tTEXT NOT NULL,\n\t\"filesize\"\tINTEGER NOT NULL DEFAULT 0,\n\tPRIMARY KEY(\"Id\")\n)",
 		"type": "table",
 		"row_array": [
 
