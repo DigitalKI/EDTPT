@@ -10,19 +10,34 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
+"class": "ArraySorter",
+"language": "GDScript",
+"path": "res://HelperModules/GeneralHelpers/Sorter.gd"
+}, {
+"base": "Node",
 "class": "DataReader",
 "language": "GDScript",
 "path": "res://HelperModules/DataReader.gd"
 }, {
+"base": "Node",
+"class": "DatabaseManager",
+"language": "GDScript",
+"path": "res://HelperModules/DatabaseManager.gd"
+}, {
 "base": "Object",
 "class": "DateTime",
 "language": "GDScript",
-"path": "res://HelperModules/DateTime.gd"
+"path": "res://HelperModules/GeneralHelpers/DateTime.gd"
 }, {
 "base": "Panel",
 "class": "DetailsWindow",
 "language": "GDScript",
 "path": "res://TabScreens/GalaxyMap/DetailsWindow.gd"
+}, {
+"base": "Node",
+"class": "FileReader",
+"language": "GDScript",
+"path": "res://HelperModules/FileReader.gd"
 }, {
 "base": "Spatial",
 "class": "GalaxyCenter",
@@ -44,6 +59,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://TabScreens/journalreader/JournalEvent.gd"
 }, {
+"base": "Node",
+"class": "Logger",
+"language": "GDScript",
+"path": "res://HelperModules/GeneralHelpers/Logger.gd"
+}, {
 "base": "Button",
 "class": "ShipButton",
 "language": "GDScript",
@@ -60,13 +80,17 @@ _global_script_classes=[ {
 "path": "res://HelperModules/edsmDataManager.gd"
 } ]
 _global_script_class_icons={
+"ArraySorter": "",
 "DataReader": "",
+"DatabaseManager": "",
 "DateTime": "",
 "DetailsWindow": "",
+"FileReader": "",
 "GalaxyCenter": "",
 "GalaxyDataManager": "",
 "GalaxyParticles": "",
 "JournalEvent": "",
+"Logger": "",
 "ShipButton": "",
 "ShipsDataManager": "",
 "edsmDataManager": ""
@@ -80,6 +104,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
+logger="*res://HelperModules/GeneralHelpers/Logger.gd"
 data_reader="*res://HelperModules/DataReader.gd"
 main_container="*res://MainContainer.tscn"
 

@@ -77,4 +77,7 @@ func _to_string(_original_format = false):
 	if _original_format:
 		return "%s-%02d-%02dT%02d:%02d:%02dZ" % [year, month, day, hour, minute, second]
 	else:
-		return "%s/%s/%s - %s:%s:%s" % [year, month, day, hour, minute, second]
+		return "%02d/%02d/%02d - %02d:%02d:%02d" % [year, month, day, hour, minute, second]
+
+static func format_timestamp(_timestamp : String):
+	return _timestamp.replace("-", "/").replace("T", " - ")

@@ -3,6 +3,8 @@ class_name GalaxyCenter
 
 var min_zoom = 10.0
 var max_zoom = 130000.0
+var max_tween_duration := 4.0
+var min_tween_duration := 0.5
 var galaxy_clouds_fade_dist_close = 1100.0
 var galaxy_clouds_fade_dist = 20000.0
 
@@ -35,10 +37,10 @@ func camera_move_to(_final_pos : Vector3):
 	
 	# Tweaking the values below should make the movement feel a bit closer to ED
 	var duration : float = distance * 0.002
-	if duration > 5:
-		duration = 5
-	elif duration < 0.5:
-		duration = 0.5
+	if duration > max_tween_duration:
+		duration = max_tween_duration
+	elif duration < min_tween_duration:
+		duration = min_tween_duration
 	tween_plane.interpolate_property(camera_plane, "translation",
 	camera_plane.translation, plane_final_pos, duration,
 	Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)

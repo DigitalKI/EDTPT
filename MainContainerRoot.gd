@@ -3,22 +3,23 @@ extends Control
 export onready var notification_text setget _set_notification, _get_notification
 
 func _ready():
-	data_reader.connect("thread_completed_get_log_objects", self, "_on_DataReader_thread_completed_get_log_objects")
-	data_reader.connect("log_event_generated", self, "_set_notification")
-	$VBoxContainer/Notifications.text = data_reader.log_event_last
-	$NotificationsHistory/NotificationsText.text = data_reader.log_events
+	data_reader.connect("new_cached_events", self, "_on_DataReader_new_cached_events")
+	logger.connect("log_event_generated", self, "_set_notification")
+	$VBoxContainer/Notifications.text = logger.log_event_last
+	$NotificationsHistory/NotificationsText.text = logger.log_events
+	$VBoxContainer/MainContainer/TabContainer/TabLogs/JournalReader.initialize_journal_reader()
 
 func _set_notification(_value):
-	$VBoxContainer/Notifications.text = data_reader.log_event_last
-	$NotificationsHistory/NotificationsText.text = data_reader.log_events
+	$VBoxContainer/Notifications.text = logger.log_event_last
+	$NotificationsHistory/NotificationsText.text = logger.log_events
 	
 func _get_notification():
 	return $VBoxContainer/Notifications.text
 
 
 func _on_Notifications_button_down():
-	$VBoxContainer/Notifications.text = data_reader.log_event_last
-	$NotificationsHistory/NotificationsText.text = data_reader.log_events
+	$VBoxContainer/Notifications.text = logger.log_event_last
+	$NotificationsHistory/NotificationsText.text = logger.log_events
 	$NotificationsHistory.visible = !$NotificationsHistory.visible
 
 func _on_Notifications_pressed():
@@ -39,9 +40,9 @@ func _on_BtGalaxy_pressed():
 
 func _on_BtCMDR_item_selected(index):
 	data_reader.selected_cmdr = $VBoxContainer/MainContainer/Panel/VBoxContainer/BtCMDR.get_item_text(index)
-	$VBoxContainer/MainContainer/TabContainer/TabLogs/JournalReader._on_DataReader_thread_completed_get_log_objects()
+#	$VBoxContainer/MainContainer/TabContainer/TabLogs/JournalReader._on_DataReader_new_cached_events()
 
-func _on_DataReader_thread_completed_get_log_objects():
+func _on_DataReader_new_cached_events(_evts):
 	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtLogs.disabled = false
 	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtShips.disabled = false
 	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtGalaxy.disabled = false
