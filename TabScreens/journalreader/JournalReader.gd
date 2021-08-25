@@ -58,10 +58,13 @@ func clear_events(_limit = 0):
 				log_details.get_root().get_prev().free()
 			count += 1
 
-func add_all_events_by_type():
+func get_start_timestamp():
 	var startfrom : DateTime = DateTime.new()
 	startfrom.date_add("hour", -timerange)
-	journal_events = data_reader.get_all_db_events_by_type(get_all_selected_event_types(), 0, 0, startfrom._to_string(true))
+	return startfrom._to_string(true)
+
+func add_all_events_by_type():
+	journal_events = data_reader.get_all_db_events_by_type(get_all_selected_event_types(), 0, 0, get_start_timestamp())
 	clear_events()
 	add_events(journal_events)
 
@@ -90,16 +93,21 @@ func add_events(_current_logobject : Array):
 		tree_root = log_details.create_item()
 	
 	if _current_logobject:
+		logger.log_event("Adding %s events to journal reader" % _current_logobject.size())
 		for log_obj in _current_logobject:
 			if log_obj is Dictionary:
-				var objtext : String = ""
-				var evt := log_details.create_item(tree_root)
-				evt.move_to_top() # here it moves it at the top IMPORTANT
-				if log_obj.has("event"):
-					evt.set_text(1, log_obj["event"])
+				var evt : TreeItem
 				if log_obj.has("timestamp"):
+				# we skip this entry if it's before the oldest timestamp we're looking for
+					if log_obj["timestamp"] < get_start_timestamp():
+						continue
+					evt = log_details.create_item(tree_root)
+					evt.move_to_top() # here it moves it at the top IMPORTANT
 					evt.set_text(0, DateTime.format_timestamp(log_obj["timestamp"]))
 					evt.set_tooltip(0, log_obj["timestamp"])
+				if log_obj.has("event"):
+					evt.set_text(1, log_obj["event"])
+				var objtext : String = ""
 				for idx in log_obj.keys():
 					if !["event", "timestamp", "Id", "CMDRId", "FileheaderId"].has(idx):
 						var value = "" if log_obj[idx] == null else String(log_obj[idx])

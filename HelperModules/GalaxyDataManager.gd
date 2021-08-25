@@ -11,17 +11,17 @@ func _ready():
 
 # Stores all the jump events, star systems addreses, and group jumps per system address
 func get_systems_by_visits():
-	if data_reader.db.query("SELECT *, COUNT(*) Visits"
+	if data_reader.dbm.db.query("SELECT *, COUNT(*) Visits"
 											+ " FROM FSDJump"
 											+ " WHERE CMDRId = " + String(data_reader.current_cmdr["Id"])
 											+ " GROUP BY SystemAddress HAVING MAX(timestamp)"
 											+ " ORDER BY COUNT(*) DESC"):
-		star_systems = data_reader.db.query_result.duplicate()
+		star_systems = data_reader.dbm.db.query_result.duplicate()
 	return star_systems
 
 # Stores all the jump events, star systems addreses, and group jumps per system address
 func get_systems_by_rings():
-	if data_reader.db.query("SELECT F.*, COUNT(DISTINCT S.BodyID) Rings"
+	if data_reader.dbm.db.query("SELECT F.*, COUNT(DISTINCT S.BodyID) Rings"
 							+ " FROM FSDJump F"
 							+ " LEFT JOIN Scan S"
 							+ " ON (F.SystemAddress = S.SystemAddress AND S.BodyName LIKE '% Ring')"
@@ -29,7 +29,7 @@ func get_systems_by_rings():
 							+ " GROUP BY F.SystemAddress"
 							+ " HAVING MAX(F.timestamp)"
 							+ " ORDER BY COUNT(DISTINCT S.BodyID) DESC"):
-		star_systems = data_reader.db.query_result.duplicate()
+		star_systems = data_reader.dbm.db.query_result.duplicate()
 	return star_systems
 
 
@@ -45,8 +45,8 @@ func _get_location_time_periods(_sysaddress : String, _bodyId : int = -1) -> Arr
 		query += " AND A.BodyID = " + String(_bodyId)
 	query += " GROUP BY A.Id, A.BodyID" \
 			+ " HAVING MIN(B.timestamp) = b.timestamp"
-	if data_reader.db.query(query):
-		result = data_reader.db.query_result.duplicate()
+	if data_reader.dbm.db.query(query):
+		result = data_reader.dbm.db.query_result.duplicate()
 	return result
 
 func get_events_per_location( _sysaddress : String, _bodyId : int = -1, _types : Array = []):

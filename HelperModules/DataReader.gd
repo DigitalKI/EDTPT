@@ -144,6 +144,10 @@ func get_new_log_objects(_nullparam = null):
 		if !existing_logfile.empty():
 			seek_to = existing_logfile[0]["filesize"]
 		var curr_logobj = file_reader.get_file_events(file_to_parse, seek_to)
+		# here you should update the filesize in the db
+		# so that next time it will seek to the right position
+		if !existing_logfile.empty():
+			dbm.db.update_rows("Fileheader", "filename = '" + file_to_parse + "'", {"filesize": curr_logobj["filesize"]})
 		# Inserts new commander if that's the case.
 		if dbm.db.select_rows("Commander", "FID = '" + curr_logobj["FID"] + "'", ["*"]).empty():
 			if !dbm.db.insert_rows("Commander", [
@@ -218,6 +222,9 @@ func _get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name
 			# we use that
 			fileheader_last_id = existing_fileheader[0]["Id"]
 		else:
+			# In case there is no existing fileheader and neither a new one
+			# it probably means the file is empty, save it anyhow in order
+			# to avoid reading it over and over.
 			logger.log_event("Fileheader not found! Skipping log file.")
 			return _all_insert_events
 		var cmdr_id_result = dbm.db.select_rows("Commander", "FID = '" + _fid + "'", ["*"])

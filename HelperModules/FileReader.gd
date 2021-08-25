@@ -43,8 +43,8 @@ func get_file_events(_filename : String, _seekto : int = 0):
 	var fid = ""
 	var file_status = file.open(logs_path + _filename, File.READ)
 	if file_status == OK:
-		file.seek(_seekto)
 		fliesize = file.get_len()
+		file.seek(_seekto)
 		var content : String = ""
 		while !file.eof_reached():
 			if _filename.get_extension() == "json":
