@@ -34,3 +34,12 @@ func initialize_ships_tab():
 			ship_btn.Hull = ship_loadout["HullValue"] if ship_loadout.has("HullValue") else 0
 			ship_btn.Jump = ship_loadout["MaxJumpRange"] if ship_loadout.has("MaxJumpRange") else 0
 		$MarginContainer/HBoxContainer/ScrollContainer/VBoxContainer.add_child(ship_btn)
+
+func pause_unpause_viewport(_pause : bool = false):
+	if _pause:
+		$MarginContainer/HBoxContainer/TextureRect/Viewport.render_target_update_mode = Viewport.UPDATE_ONCE
+	else:
+		$MarginContainer/HBoxContainer/TextureRect/Viewport.render_target_update_mode = Viewport.UPDATE_WHEN_VISIBLE
+
+func _on_Ships_visibility_changed():
+	pause_unpause_viewport(!self.is_visible_in_tree())

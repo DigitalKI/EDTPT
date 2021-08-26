@@ -93,7 +93,7 @@ func add_events(_current_logobject : Array):
 		tree_root = log_details.create_item()
 	
 	if _current_logobject:
-		logger.log_event("Adding %s events to journal reader" % _current_logobject.size())
+		logger.log_event("Showing %s events in journal reader" % _current_logobject.size())
 		for log_obj in _current_logobject:
 			if log_obj is Dictionary:
 				var evt : TreeItem

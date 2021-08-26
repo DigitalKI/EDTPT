@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/EDgalaxy3d_bulge.obj-0c6c8ce7b36af1a0498a5dc9bb8173c4.mesh"
+
+[deps]
+
+files=[ "res://.import/EDgalaxy3d_bulge.obj-0c6c8ce7b36af1a0498a5dc9bb8173c4.mesh" ]
+
+source_file="res://TabScreens/GalaxyMap/GalaxyRes/EDgalaxy3d_bulge.obj"
+dest_files=[ "res://.import/EDgalaxy3d_bulge.obj-0c6c8ce7b36af1a0498a5dc9bb8173c4.mesh", "res://.import/EDgalaxy3d_bulge.obj-0c6c8ce7b36af1a0498a5dc9bb8173c4.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

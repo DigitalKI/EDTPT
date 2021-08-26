@@ -13,8 +13,6 @@ var cmdrs : Dictionary = {}
 var evt_types : Array
 var events : Array = []
 var cached_events : Array = []
-var not_usable_columns := ["Id", "ID"]
-var forbidden_columns := ["From", "To", "Group", "By", "Sort", "Asc"]
 
 var timer : Timer
 var autoupdate := false setget _set_autoupdate
@@ -61,6 +59,8 @@ func _set_autoupdate(_value):
 	autoupdate = _value
 	if autoupdate:
 		timer.start()
+	else:
+		timer.stop()
 
 func _set_cmdr(_value):
 	var cmdr_res = dbm.db.select_rows("Commander", "name = " + _value, ["*"])
@@ -89,7 +89,7 @@ func journal_updates_threaded():
 func journal_updates(_threaded = false):
 	if _threaded:
 		mutex.lock()
-	var new_logs = get_new_log_objects()
+	var new_logs = _get_new_log_objects()
 	_write_all_events_to_db(new_logs["byfile"])
 	if _threaded:
 		mutex.unlock()
@@ -97,7 +97,7 @@ func journal_updates(_threaded = false):
 		return new_logs["events"]
 	else:
 		emit_signal("new_cached_events", new_logs["events"])
-		timer.start()
+		_set_autoupdate(autoupdate)
 		return null
 
 func reset_thread():
@@ -121,7 +121,7 @@ func db_get_all_cmdrs():
 		cmdrs[cmdr["FID"]] = cmdr["Name"]
 	return cmdrs
 
-func get_new_log_objects(_nullparam = null):
+func _get_new_log_objects(_nullparam = null):
 	var events : Array = []
 	var new_log_events : Dictionary = {}
 	var all_log_files = file_reader.get_files()
@@ -163,7 +163,8 @@ func get_new_log_objects(_nullparam = null):
 		new_log_events[file_to_parse] = curr_logobj.duplicate()
 		events.append_array(new_log_events[file_to_parse]["events"])
 		total_events += new_log_events[file_to_parse]["events"].size()
-	logger.log_event("total events : %s" % total_events)
+	if total_events:
+		logger.log_event("total events : %s" % total_events)
 	return {"byfile": new_log_events, "events": events}
 
 # The file writes all events to the database,
@@ -225,6 +226,17 @@ func _get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name
 			# In case there is no existing fileheader and neither a new one
 			# it probably means the file is empty, save it anyhow in order
 			# to avoid reading it over and over.
+			if _log_fise_size == 0:
+				if !dbm.db.insert_row("Fileheader",
+					{"part": 0
+					, "language": ""
+					, "Odyssey": 0
+					, "gameversion": ""
+					, "build": ""
+					, "filename": _log_file_name
+					, "filesize": _log_fise_size
+					}):
+					logger.log_event("Error writing empty fileheader entry.")
 			logger.log_event("Fileheader not found! Skipping log file.")
 			return _all_insert_events
 		var cmdr_id_result = dbm.db.select_rows("Commander", "FID = '" + _fid + "'", ["*"])
@@ -269,10 +281,10 @@ func _get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name
 							
 							# Some columns have to be changed as they are reserved keywords or already used
 							# leave this code last, as it is iterating through the columns
-							if forbidden_columns.has(col_key):
+							if dbm.forbidden_columns.has(col_key):
 								evt["'" + col_key + "'"] = evt[col_key]
 								evt.erase(col_key)
-							elif not_usable_columns.has(col_key):
+							elif dbm.not_usable_columns.has(col_key):
 								evt[col_key + "_" + col_key] = evt[col_key]
 								evt.erase(col_key)
 						_all_insert_events[current_event_type].append(evt)

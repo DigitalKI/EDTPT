@@ -1,0 +1,24 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxySector.gd" type="Script" id=1]
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyRes/GalaxyStar.tres" type="SphereMesh" id=2]
+
+[sub_resource type="MultiMesh" id=1]
+color_format = 2
+transform_format = 1
+mesh = ExtResource( 2 )
+
+[sub_resource type="SpatialMaterial" id=2]
+
+[sub_resource type="CapsuleMesh" id=3]
+material = SubResource( 2 )
+
+[node name="GalaxySector" type="Spatial"]
+script = ExtResource( 1 )
+
+[node name="StarsAclose" type="MultiMeshInstance" parent="."]
+multimesh = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+mesh = SubResource( 3 )
+material/0 = null

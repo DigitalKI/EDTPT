@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=2]
+
+[sub_resource type="ParticlesMaterial" id=1]
+emission_shape = 2
+emission_box_extents = Vector3( 0.1, 10, 10 )
+spread = 0.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 10.0
+initial_velocity_random = 0.1
+scale = 0.5
+scale_random = 0.25
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 1, 0.854902, 0.0431373, 1 )
+
+[sub_resource type="SphereMesh" id=3]
+material = SubResource( 2 )
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_color = Color( 0, 0.415686, 1, 1 )
+
+[sub_resource type="SphereMesh" id=6]
+material = SubResource( 5 )
+radius = 0.5
+height = 1.0
+
+[node name="CoolFX" type="Spatial"]
+
+[node name="Particles" type="Particles" parent="."]
+transform = Transform( 2, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 0 )
+amount = 200
+lifetime = 5.0
+visibility_aabb = AABB( -58.9292, -4, -4, 117.858, 8, 8 )
+process_material = SubResource( 1 )
+draw_pass_1 = SubResource( 3 )
+
+[node name="Particles2" type="Particles" parent="."]
+transform = Transform( 2, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 0 )
+amount = 200
+lifetime = 5.0
+visibility_aabb = AABB( -41.5736, -4, -4, 83.1473, 8, 8 )
+process_material = SubResource( 1 )
+draw_pass_1 = SubResource( 6 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15 )

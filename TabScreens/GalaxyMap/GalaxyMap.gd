@@ -9,8 +9,6 @@ var view_mode := "Galaxy"
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
 onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
 onready var navlabel : Label = $HBoxContainer/GalaxyContainer/LabelNav
-onready var search_text : LineEdit = $HBoxContainer/GalaxyContainer/Search
-onready var found_stars : PopupMenu = $HBoxContainer/GalaxyContainer/Search/PopupMenuFound
 var zoom_speed = 0.15
 var rotation_speed = 0.02
 var movement_speed = 0.03
@@ -108,11 +106,6 @@ func _on_Bt3dOverlay_pressed():
 	galaxy.GalaxyParticlesPlaneOnOff()
 	pause_unpause_game()
 
-func _on_PopupMenuFound_id_pressed(id):
-	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
-	set_selected_star(id, starpos)
-	pause_unpause_game()
-
 func _on_Timer_timeout():
 	pause_unpause_game(true)
 	$Timer.stop()
@@ -127,7 +120,6 @@ func pause_unpause_game(_pause : bool = false):
 	else:
 		$GalaxyMapView/Viewport.render_target_update_mode = Viewport.UPDATE_WHEN_VISIBLE
 		$Timer.start(5)
-#	print("Game %s" % "Paused" if _pause else "Unpaused")
 
 func initialize_galaxy_map():
 	galaxy.start_timer()
@@ -140,17 +132,8 @@ func update_navlabel():
 
 func get_clicked_star():
 	var mouse_pos = self.get_local_mouse_position()
-	var close_stars : Array = galaxy.get_stars_closer_than(mouse_pos, 20)
-	var distance_to_camera := 99999.9999
-	var closest_star_idx = -1
-	var closest_star_pos : Vector3
-	for star_idx in close_stars:
-		var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(star_idx).origin
-		if  starpos.distance_to(galaxy.camera.global_transform.origin) < distance_to_camera:
-			distance_to_camera = starpos.distance_to(galaxy.camera.global_transform.origin)
-			closest_star_idx = star_idx
-			closest_star_pos = starpos
-	set_selected_star(closest_star_idx, closest_star_pos)
+	var clicked_star = galaxy.get_clicked_star(mouse_pos)
+	set_selected_star(clicked_star["idx"], clicked_star["pos"])
 	pause_unpause_game()
 
 func set_selected_star(_star_idx, _star_pos):
@@ -192,27 +175,18 @@ func set_selected_star(_star_idx, _star_pos):
 			for body_id in all_events_per_location:
 				var location = all_events_per_location[body_id]["Body"]
 				var location_events = all_events_per_location[body_id]["Events_Materials"].values()
-				data_reader.sort_by_key(location_events, "total")
+				ArraySorter.sort_by_key(location_events, "total")
 				if location_events:
 					details.body += "\n%s\n" % location
-					data_reader.sort_by_key(location_events, "total")
+					ArraySorter.sort_by_key(location_events, "total")
 					for mat in location_events:
 						if mat["count"] > 0:
 							details.body += "%s (%s): %.2f%%\n" % [mat["Name"], mat["count"], (mat["total"] / mat["count"])]
 		details.visible = true
 		galaxy.camera_move_to(_star_pos)
 
-func _on_Search_text_changed(new_text):
-	if new_text.length() > 2:
-		found_stars.clear()
-		found_stars.rect_size.y = 20
-		for idx in range(data_reader.galaxy_manager.star_systems.size()):
-			var system = data_reader.galaxy_manager.star_systems[idx]
-			if system["StarSystem"].to_upper().find(new_text.to_upper()) > -1 && found_stars.get_item_count() < 11:
-				found_stars.add_item(system["StarSystem"], idx)
-		if found_stars.get_item_count() > 0:
-			found_stars.rect_size.x = found_stars.get_parent().rect_size.x
-			found_stars.set_position(Vector2(found_stars.get_parent().rect_global_position.x, found_stars.get_parent().rect_size.y + 16))
-			found_stars.popup()
-			search_text.grab_focus()
 
+func _on_Search_SearchItemSelected(id):
+	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
+	set_selected_star(id, starpos)
+	pause_unpause_game()

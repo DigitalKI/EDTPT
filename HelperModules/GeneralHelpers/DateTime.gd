@@ -80,4 +80,4 @@ func _to_string(_original_format = false):
 		return "%02d/%02d/%02d - %02d:%02d:%02d" % [year, month, day, hour, minute, second]
 
 static func format_timestamp(_timestamp : String):
-	return _timestamp.replace("-", "/").replace("T", " - ")
+	return _timestamp.replace("-", "/").replace("T", " - ").trim_suffix("Z")

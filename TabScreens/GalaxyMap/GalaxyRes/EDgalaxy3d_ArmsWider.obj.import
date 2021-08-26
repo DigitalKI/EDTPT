@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/EDgalaxy3d_ArmsWider.obj-3446b8bbb70f880672683d9f632fe0df.mesh"
+
+[deps]
+
+files=[ "res://.import/EDgalaxy3d_ArmsWider.obj-3446b8bbb70f880672683d9f632fe0df.mesh" ]
+
+source_file="res://TabScreens/GalaxyMap/GalaxyRes/EDgalaxy3d_ArmsWider.obj"
+dest_files=[ "res://.import/EDgalaxy3d_ArmsWider.obj-3446b8bbb70f880672683d9f632fe0df.mesh", "res://.import/EDgalaxy3d_ArmsWider.obj-3446b8bbb70f880672683d9f632fe0df.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

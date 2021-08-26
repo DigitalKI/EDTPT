@@ -32,7 +32,7 @@ _global_script_classes=[ {
 "base": "Panel",
 "class": "DetailsWindow",
 "language": "GDScript",
-"path": "res://TabScreens/GalaxyMap/DetailsWindow.gd"
+"path": "res://TabScreens/GalaxyMap/GalaxyMapControls/DetailsWindow.gd"
 }, {
 "base": "Node",
 "class": "FileReader",
@@ -42,7 +42,7 @@ _global_script_classes=[ {
 "base": "Spatial",
 "class": "GalaxyCenter",
 "language": "GDScript",
-"path": "res://TabScreens/GalaxyMap/GalaxyCenter.gd"
+"path": "res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyCenter.gd"
 }, {
 "base": "Node",
 "class": "GalaxyDataManager",
@@ -53,6 +53,16 @@ _global_script_classes=[ {
 "class": "GalaxyParticles",
 "language": "GDScript",
 "path": "res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyParticles.gd"
+}, {
+"base": "MeshInstance",
+"class": "GalaxyPlane",
+"language": "GDScript",
+"path": "res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyPlane.gd"
+}, {
+"base": "Spatial",
+"class": "GalaxySector",
+"language": "GDScript",
+"path": "res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxySector.gd"
 }, {
 "base": "Control",
 "class": "JournalEvent",
@@ -89,6 +99,8 @@ _global_script_class_icons={
 "GalaxyCenter": "",
 "GalaxyDataManager": "",
 "GalaxyParticles": "",
+"GalaxyPlane": "",
+"GalaxySector": "",
 "JournalEvent": "",
 "Logger": "",
 "ShipButton": "",
@@ -106,7 +118,6 @@ config/icon="res://icon.png"
 
 logger="*res://HelperModules/GeneralHelpers/Logger.gd"
 data_reader="*res://HelperModules/DataReader.gd"
-main_container="*res://MainContainer.tscn"
 
 [display]
 

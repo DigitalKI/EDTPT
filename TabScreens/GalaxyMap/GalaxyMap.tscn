@@ -1,11 +1,12 @@
 [gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.gd" type="Script" id=1]
-[ext_resource path="res://TabScreens/GalaxyMap/GalaxyCenter.tscn" type="PackedScene" id=2]
-[ext_resource path="res://TabScreens/GalaxyMap/DetailsWindow.tscn" type="PackedScene" id=3]
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyCenter.tscn" type="PackedScene" id=2]
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/DetailsWindow.tscn" type="PackedScene" id=3]
 [ext_resource path="res://TabScreens/GalaxyMap/galaxy_environment.tres" type="Environment" id=4]
 [ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=5]
 [ext_resource path="res://Fonts/Ubuntu-Regular.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/Search.tscn" type="PackedScene" id=7]
 
 [sub_resource type="World" id=1]
 environment = ExtResource( 4 )
@@ -13,14 +14,6 @@ environment = ExtResource( 4 )
 [sub_resource type="DynamicFont" id=2]
 size = 12
 font_data = ExtResource( 6 )
-
-[sub_resource type="StyleBoxFlat" id=3]
-bg_color = Color( 0, 0, 0, 0.505882 )
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color( 0.32549, 0.32549, 0.32549, 0.784314 )
 
 [node name="GalaxyMap" type="Control"]
 anchor_right = 1.0
@@ -150,8 +143,6 @@ size_flags_horizontal = 3
 [node name="SystemDetails" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 3 )]
 anchor_left = 0.674
 margin_left = -0.0800171
-title = ""
-body = ""
 
 [node name="LabelNav" type="Label" parent="HBoxContainer/GalaxyContainer"]
 anchor_top = 1.0
@@ -166,29 +157,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Search" type="LineEdit" parent="HBoxContainer/GalaxyContainer"]
-anchor_right = 0.665
-margin_top = 8.0
-margin_right = 0.199951
-margin_bottom = 33.0
-focus_mode = 1
-custom_styles/normal = SubResource( 3 )
-placeholder_text = "Search by system name"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PopupMenuFound" type="PopupMenu" parent="HBoxContainer/GalaxyContainer/Search"]
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = 4.0
-margin_bottom = 58.0
-items = [ "Item 0", null, 0, false, false, 0, 0, null, "", false, "Item 1", null, 0, false, false, 1, 0, null, "", false ]
-hide_on_state_item_selection = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="Search" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 7 )]
 
 [node name="LeftButtonsContainer2" type="VBoxContainer" parent="HBoxContainer"]
 margin_left = 977.0
@@ -265,6 +234,5 @@ size_flags_vertical = 3
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtEDSM" to="." method="_on_BtEDSM_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt2dOverlay" to="." method="_on_Bt2dOverlay_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt3dOverlay" to="." method="_on_Bt3dOverlay_pressed"]
-[connection signal="text_changed" from="HBoxContainer/GalaxyContainer/Search" to="." method="_on_Search_text_changed"]
-[connection signal="id_pressed" from="HBoxContainer/GalaxyContainer/Search/PopupMenuFound" to="." method="_on_PopupMenuFound_id_pressed"]
+[connection signal="SearchItemSelected" from="HBoxContainer/GalaxyContainer/Search" to="." method="_on_Search_SearchItemSelected"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

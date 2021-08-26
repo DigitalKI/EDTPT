@@ -24,6 +24,6 @@ class Sorter:
 			return true
 		return false
 
-func sort_by_key(_array : Array, _key : String, _desc : bool = 1):
+static func sort_by_key(_array : Array, _key : String, _desc : bool = 1):
 	var _sorter = Sorter.new(_key)
 	_array.sort_custom(_sorter, "sort_descending" if _desc else "sort_ascending")
