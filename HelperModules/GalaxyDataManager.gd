@@ -26,6 +26,12 @@ func get_systems_by_rings():
 							+ " HAVING MAX(F.timestamp)"
 							+ " ORDER BY COUNT(DISTINCT S.BodyID) DESC"):
 		star_systems = data_reader.dbm.db.query_result.duplicate()
+		for star in star_systems:
+			star["prospected"] = false
+			var prospecting_events = get_events_per_location(String(star["SystemAddress"]), -1, ["ProspectedAsteroid"])
+			if prospecting_events.size() > 0:
+				star["prospected"] = true
+				print("%s is %s" % [star["StarSystem"], star["prospected"]])
 	return star_systems
 
 # Gets the initial and final timestamps per location, and store them in an array,

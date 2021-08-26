@@ -83,7 +83,10 @@ func _unhandled_input(event):
 func _on_BtMining_pressed():
 	view_mode = "Mining"
 	data_reader.galaxy_manager.get_systems_by_rings()
-	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Rings", 4, Color(0.0, 0.1, 0.5), Color(0.28, 1.0, 0.0))
+	var color_matrix = {"False": Color(0.0, 0.1, 0.5), "True": Color(0.28, 1.0, 0.0)}
+	var size_matrix = {"min": 0.0, "max": 10.0, "min_scale": .5, "max_scale": 4.0}
+	galaxy.spawn_sector_stars(data_reader.galaxy_manager.star_systems, ["prospected"], color_matrix, ["Rings"], size_matrix)
+#	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Rings", 4, Color(0.0, 0.1, 0.5), Color(0.28, 1.0, 0.0))
 	update_navlabel()
 	pause_unpause_game()
 

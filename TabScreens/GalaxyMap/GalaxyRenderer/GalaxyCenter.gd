@@ -20,6 +20,7 @@ onready var camera_center : Spatial = $PlaneGrid/CameraCenter
 onready var camera_rotation : Spatial  = $PlaneGrid/CameraCenter/CameraRotation
 onready var galaxy_particles : GalaxyParticles = $GalaxyParticles
 onready var galaxy_plane_mesh : GalaxyPlane = $GalaxyPlane
+onready var galaxy_sector : GalaxySector = $GalaxySector
 onready var tween_pos : Tween = $TweenPos
 onready var tween_plane : Tween = $TweenPlane
 onready var tween_zoom : Tween = $TweenZoom
@@ -120,6 +121,9 @@ func GalaxyPlaneOnOff():
 func GalaxyParticlesPlaneOnOff():
 	$GalaxyParticles.visible = !$GalaxyParticles.visible
 
+func spawn_sector_stars(_stars : Array, _colors_addr: Array, _colors : Dictionary, _scale_addr: Array, _scales: Dictionary):
+	galaxy_sector.spawn_stars(_stars, _colors_addr, _colors, _scale_addr, _scales)
+
 func spawn_stars(_stars : Array, _interpolation_key : String, _maxval : float, _star_color_low : Color = Color(1.0, 0.2, 0.2), _star_color_high : Color = Color(1.0, 1.0, 1.0)):
 	stars_multimesh.multimesh.instance_count = _stars.size()
 	stars_multimesh.multimesh.visible_instance_count = _stars.size()
@@ -153,8 +157,8 @@ func spawn_edsm_stars(_stars : Array, _interpolation_key : String, _maxval : flo
 
 func get_stars_closer_than(_mouse_pos : Vector2, _max_distance : float):
 	var close_stars := []
-	for idx in range(stars_multimesh.multimesh.instance_count):
-		var star_transform = stars_multimesh.multimesh.get_instance_transform(idx)
+	for idx in range(galaxy_sector.get_multimesh().instance_count):
+		var star_transform = galaxy_sector.get_multimesh().get_instance_transform(idx)
 		var distance = _mouse_pos.distance_to(camera.unproject_position(star_transform.origin))
 		if distance < _max_distance:
 			close_stars.append(idx)
@@ -166,7 +170,7 @@ func get_clicked_star(_mouse_pos : Vector2):
 	var closest_star_idx = -1
 	var closest_star_pos : Vector3
 	for star_idx in close_stars:
-		var starpos := stars_multimesh.multimesh.get_instance_transform(star_idx).origin
+		var starpos : Vector3 = galaxy_sector.get_multimesh().get_instance_transform(star_idx).origin
 		if  starpos.distance_to(camera.global_transform.origin) < distance_to_camera:
 			distance_to_camera = starpos.distance_to(camera.global_transform.origin)
 			closest_star_idx = star_idx

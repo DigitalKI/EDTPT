@@ -18,12 +18,17 @@ func _ready():
 	$StarsAclose.multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	$StarsAclose.multimesh.mesh = star_aclose_mesh
 
+func get_multimesh():
+	return $StarsAclose.multimesh
+
 # This function spawns stars in a sector giving each a certain color and size
 # sector is entered manually, it does not check on actual stars positions
 # Parameters expected values:
 #	_colors = { "federation": Color(1.0, 0.0, 0.0)
 #				, "empire": Color(0.0, 1.0, 0.0)
 #				, "indipendent": Color(0.0, 0.0, 1.0)}
+#	_colors = { "min": Color(1.0, 0.0, 0.0)
+#				, "max": Color(0.0, 1.0, 0.0)}
 #	_scales = {
 #			  "min": the min value expected from _stars data
 #			, "max": the max value expected from _stars data
@@ -34,14 +39,26 @@ func spawn_stars(_stars : Array, _colors_addr: Array, _colors : Dictionary, _sca
 	$StarsAclose.multimesh.instance_count = _stars.size()
 	$StarsAclose.multimesh.visible_instance_count = _stars.size()
 	for idx in _stars.size():
-		var sys_coord = parse_json(_stars[idx]["StarPos"])
+		var sys_coord = get_position_vector(_stars[idx]["StarPos"])
 		var color_value = get_value_from_dict_address(_colors_addr, _stars[idx])
-		var star_color : Color = _colors[color_value]
+		var star_color : Color = _colors[String(color_value)]
 		var scale_value = get_value_from_dict_address(_scale_addr, _stars[idx])
 		var scale_normalized = inverse_lerp(_scales["min"], _scales["max"], scale_value)
-		var star_size : Basis = Basis().scaled(_scales["min_scale"].linear_interpolate(_scales["max_scale"],scale_normalized))
-		$StarsAclose.multimesh.set_instance_transform(idx, Transform(star_size, Vector3(sys_coord["x"], sys_coord["y"], sys_coord["x"])))
+		var scale = Vector3(_scales["min_scale"],_scales["min_scale"],_scales["min_scale"]).linear_interpolate(Vector3(_scales["max_scale"], _scales["max_scale"], _scales["max_scale"]), scale_normalized)
+		var star_size : Basis = Basis().scaled(scale)
+		$StarsAclose.multimesh.set_instance_transform(idx, Transform(star_size, sys_coord))
 		$StarsAclose.multimesh.set_instance_color(idx, star_color)
+#		print("adding system %s with scale %s" % [_stars[idx]["StarSystem"], scale.length()])
+
+func get_position_vector(_position_data):
+	var position = Vector3()
+	if _position_data is String:
+		var json_pos = parse_json(_position_data)
+		if json_pos is Array:
+			position = Vector3(json_pos[0], json_pos[1], json_pos[2])
+		if json_pos is Dictionary:
+			position = Vector3(json_pos["x"], json_pos["y"], json_pos["x"])
+	return position
 
 # Given an array we find the value that corresponds to that "address"
 # each element of the array goes deep 1 level of the Dictionary
