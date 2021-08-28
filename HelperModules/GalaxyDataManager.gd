@@ -17,14 +17,15 @@ func get_systems_by_visits():
 
 # Stores all the jump events, star systems addreses, and group jumps per system address
 func get_systems_by_rings():
-	if data_reader.dbm.db.query("SELECT F.*, COUNT(DISTINCT S.BodyID) Rings"
-							+ " FROM FSDJump F"
-							+ " LEFT JOIN Scan S"
-							+ " ON (F.SystemAddress = S.SystemAddress AND S.BodyName LIKE '% Ring')"
-							+ " WHERE F.CMDRId = " + String(data_reader.current_cmdr["Id"])
-							+ " GROUP BY F.SystemAddress"
-							+ " HAVING MAX(F.timestamp)"
-							+ " ORDER BY COUNT(DISTINCT S.BodyID) DESC"):
+	var query = "SELECT F.*, COUNT(DISTINCT S.BodyID) RingsAmount, IIF(COUNT(DISTINCT S.BodyID) > 0, 1, 0) Ringed" \
+							+ " FROM FSDJump F" \
+							+ " LEFT JOIN Scan S" \
+							+ " ON (F.SystemAddress = S.SystemAddress AND length(S.Rings) > 0)" \
+							+ " WHERE F.CMDRId = " + String(data_reader.current_cmdr["Id"]) \
+							+ " GROUP BY F.SystemAddress" \
+							+ " HAVING MAX(F.timestamp)" \
+							+ " ORDER BY COUNT(DISTINCT S.BodyID) DESC"
+	if data_reader.dbm.db.query(query):
 		star_systems = data_reader.dbm.db.query_result.duplicate()
 		for star in star_systems:
 			star["prospected"] = false
@@ -32,6 +33,8 @@ func get_systems_by_rings():
 			if prospecting_events.size() > 0:
 				star["prospected"] = true
 				print("%s is %s" % [star["StarSystem"], star["prospected"]])
+	else:
+		star_systems = []
 	return star_systems
 
 # Gets the initial and final timestamps per location, and store them in an array,

@@ -78,8 +78,8 @@ func initialize_timer(_current_scene_root):
 #	timer.start()
 
 func timer_read_cache():
-#	journal_updates_threaded()
-	journal_updates()
+	journal_updates_threaded()
+#	journal_updates()
 
 func journal_updates_threaded():
 	if thread_reader.is_active():

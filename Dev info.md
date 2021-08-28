@@ -62,12 +62,13 @@ order by timestamp desc
 ## Find Systems with rings
 TRying to make a query to get rings from Scan table, as it has more data, apparentyl.
 
-This returns 19 systems with rings:
+This query is probably best to get info about rings, it returned 632 systems:
 ````
-SELECT SystemAddress, StarSystem, COUNT(BodyId)
+SELECT StarSystem, COUNT(DISTINCT BodyName)
 FROM Scan S
-WHERE BodyName LIKE '% Ring'
-GROUP BY SystemAddress, StarSystem
+WHERE length(Rings) > 0
+GROUP BY StarSystem
+ORDER BY COUNT(DISTINCT BodyName) DESC
 ````
 
 This only 2, somethins is wrong.

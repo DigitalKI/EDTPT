@@ -82,18 +82,37 @@ func _unhandled_input(event):
 
 func _on_BtMining_pressed():
 	view_mode = "Mining"
-	data_reader.galaxy_manager.get_systems_by_rings()
-	var color_matrix = {"False": Color(0.0, 0.1, 0.5), "True": Color(0.28, 1.0, 0.0)}
-	var size_matrix = {"min": 0.0, "max": 10.0, "min_scale": .5, "max_scale": 4.0}
-	galaxy.spawn_sector_stars(data_reader.galaxy_manager.star_systems, ["prospected"], color_matrix, ["Rings"], size_matrix)
-#	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Rings", 4, Color(0.0, 0.1, 0.5), Color(0.28, 1.0, 0.0))
+	var _config = [
+	{"addr": ["Ringed"]
+	, "color_matrix": {"1": Color(0.0,0.5,0.5)
+					, "0": Color(0.0,0.0,1.0)}
+	, "is_array": false}
+	,{"addr": ["prospected"]
+	, "color_matrix":{"True": Color(1.0,0.0,0.0)}
+	, "is_array": false}
+	,{"addr": ["RingsAmount"]
+	, "size_scales":{"min": 0, "max": 15, "min_scale": 0.5, "max_scale": 4}
+	, "is_array": false}]
+	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_rings(), _config)
 	update_navlabel()
 	pause_unpause_game()
 
 func _on_BtGalaxy_pressed():
-	data_reader.galaxy_manager.get_systems_by_visits()
 	view_mode = "Galaxy"
-	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
+	var _config = [
+	{"addr": ["SystemEconomy"]
+	, "color_matrix": {"$economy_Refinery;": Color(1.0,0.0,0.0)
+					, "$economy_HighTech;": Color(0.0,0.0,1.0)
+					, "$economy_Agri;": Color(0.0,1.0,0.0)}
+	, "is_array": false}
+	,{"addr": ["Visits"]
+	, "color_matrix":{"0": Color(0.5,0.5,0.0)}
+	, "is_array": false}
+	,{"addr": ["Visits"]
+	, "size_scales":{"min": 1, "max": 150, "min_scale": 0.5, "max_scale": 6}
+	, "is_array": false}]
+	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_visits(), _config)
+#	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
 	update_navlabel()
 	pause_unpause_game()
 

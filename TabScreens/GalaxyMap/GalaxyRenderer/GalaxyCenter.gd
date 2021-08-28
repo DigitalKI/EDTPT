@@ -121,8 +121,8 @@ func GalaxyPlaneOnOff():
 func GalaxyParticlesPlaneOnOff():
 	$GalaxyParticles.visible = !$GalaxyParticles.visible
 
-func spawn_sector_stars(_stars : Array, _colors_addr: Array, _colors : Dictionary, _scale_addr: Array, _scales: Dictionary):
-	galaxy_sector.spawn_stars(_stars, _colors_addr, _colors, _scale_addr, _scales)
+func spawn_sector_stars(_stars : Array, _config : Array):
+	galaxy_sector.spawn_stars(_stars, _config)
 
 func spawn_stars(_stars : Array, _interpolation_key : String, _maxval : float, _star_color_low : Color = Color(1.0, 0.2, 0.2), _star_color_high : Color = Color(1.0, 1.0, 1.0)):
 	stars_multimesh.multimesh.instance_count = _stars.size()
