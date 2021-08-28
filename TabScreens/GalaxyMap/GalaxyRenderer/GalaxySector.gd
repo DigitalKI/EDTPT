@@ -66,7 +66,7 @@ func _config_star(_star : Dictionary, _star_idx : int, _config : Array, _default
 	var final_color : Color = _default_color
 	var star_size : Basis = Basis().scaled(Vector3(_default_size, _default_size, _default_size))
 	var color_unassigned = true
-	var sys_coord = get_position_vector(_star["StarPos"])
+	var sys_coord : Vector3 = DataConverter.get_position_vector(_star["StarPos"])
 	for _c in _config:
 		if _c.has("color_matrix"):
 			if _c["is_array"]:

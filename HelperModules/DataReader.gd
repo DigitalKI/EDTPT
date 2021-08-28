@@ -78,8 +78,8 @@ func initialize_timer(_current_scene_root):
 #	timer.start()
 
 func timer_read_cache():
-	journal_updates_threaded()
-#	journal_updates()
+#	journal_updates_threaded()
+	journal_updates()
 
 func journal_updates_threaded():
 	if thread_reader.is_active():
@@ -87,18 +87,21 @@ func journal_updates_threaded():
 	thread_reader.start(self, "journal_updates", true)
 
 func journal_updates(_threaded = false):
+	var returnval = null
 	if _threaded:
 		mutex.lock()
 	var new_logs = _get_new_log_objects()
-	_write_all_events_to_db(new_logs["byfile"])
 	if _threaded:
 		mutex.unlock()
 		call_deferred("reset_thread")
-		return new_logs["events"]
+		returnval = new_logs["events"]
 	else:
 		emit_signal("new_cached_events", new_logs["events"])
 		_set_autoupdate(autoupdate)
-		return null
+	# As it manipulates the events dictionary, it's left last,
+	# so that the journal reader will still be intact
+	_write_all_events_to_db(new_logs["byfile"])
+	return returnval
 
 func reset_thread():
 	if thread_reader.is_active():

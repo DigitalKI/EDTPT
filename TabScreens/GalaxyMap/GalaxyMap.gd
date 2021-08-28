@@ -8,6 +8,7 @@ var fb_pressed := false
 var view_mode := "Galaxy"
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
 onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
+onready var table : FloatingTable = $HBoxContainer/GalaxyContainer/FloatingTable
 onready var navlabel : Label = $HBoxContainer/GalaxyContainer/LabelNav
 var zoom_speed = 0.15
 var rotation_speed = 0.02
@@ -57,27 +58,33 @@ func _unhandled_input(event):
 			fb_pressed = event.pressed
 			galaxy.camera_movement(movement_speed, "x", false)
 			details.visible = false
+			table.visible = false
 		elif OS.get_scancode_string(event.scancode) == "D" && event.pressed:
 			fb_pressed = event.pressed
 			galaxy.camera_movement(movement_speed, "x", true)
 			details.visible = false
+			table.visible = false
 			
 		# Allow to move forward or backward
 		if OS.get_scancode_string(event.scancode) == "W" && event.pressed:
 			rl_pressed = event.pressed
 			galaxy.camera_movement(movement_speed, "z", false)
 			details.visible = false
+			table.visible = false
 		elif OS.get_scancode_string(event.scancode) == "S" && event.pressed:
 			rl_pressed = event.pressed
 			galaxy.camera_movement(movement_speed, "z", true)
 			details.visible = false
+			table.visible = false
 		# Allow to move up or down relative to the alaxy plane
 		if OS.get_scancode_string(event.scancode) == "R" && event.pressed:
 			galaxy.plane_movement(movement_speed)
 			details.visible = false
+			table.visible = false
 		elif OS.get_scancode_string(event.scancode) == "F" && event.pressed:
 			galaxy.plane_movement(-movement_speed)
 			details.visible = false
+			table.visible = false
 		update_navlabel()
 
 func _on_BtMining_pressed():
@@ -128,6 +135,14 @@ func _on_Bt3dOverlay_pressed():
 	galaxy.GalaxyParticlesPlaneOnOff()
 	pause_unpause_game()
 
+func _on_btTravelHistory_pressed():
+	table.visible = !table.visible
+	if table.visible:
+		details.visible = false
+		table.title_text = "Travel History"
+		table.visible_columns = ["timestamp", "event", "StarSystem", "Population"]
+		table.table_array = data_reader.get_all_db_events_by_type(["FSDJump"])
+
 func _on_Timer_timeout():
 	pause_unpause_game(true)
 	$Timer.stop()
@@ -155,30 +170,30 @@ func update_navlabel():
 func get_clicked_star():
 	var mouse_pos = self.get_local_mouse_position()
 	var clicked_star = galaxy.get_clicked_star(mouse_pos)
-	set_selected_star(clicked_star["idx"], clicked_star["pos"])
-	pause_unpause_game()
+	if clicked_star["idx"] >= 0:
+		var found_star : Dictionary = data_reader.galaxy_manager.star_systems[clicked_star["idx"]]
+		set_selected_star(found_star, clicked_star["pos"])
+		pause_unpause_game()
 
-func set_selected_star(_star_idx, _star_pos):
-	if _star_idx >= 0:
+func set_selected_star(_star, _star_pos):
 		details.title = ""
 		details.body = ""
-		var found_star : Dictionary = data_reader.galaxy_manager.star_systems[_star_idx]
-		if found_star.has("StarSystem"):
-			details.title += found_star["StarSystem"]
-			details.body += "Last Visit: %s\n" % data_reader.get_value(found_star["timestamp"])
-			if found_star.has("Visits"):
-				details.body += "Visits: %s\n" % data_reader.get_value(found_star["Visits"])
-			if found_star.has("Rings"):
-				details.body += "Rings: %s\n" % data_reader.get_value(found_star["Rings"])
-			details.body += "Population: %s \n" % data_reader.get_value(found_star["Population"])
-			details.body += "Allegiance: %s \n" % data_reader.get_value(found_star["SystemAllegiance"])
-			details.body += "Economy: %s \n" % (found_star["SystemEconomy_Localised"] + ", " + found_star["SystemSecondEconomy_Localised"])
-			details.body += "Government: %s\n" % data_reader.get_value(found_star["SystemGovernment_Localised"])
-			details.body += "Security: %s\n" % data_reader.get_value(found_star["SystemSecurity_Localised"])
+		if _star.has("StarSystem"):
+			details.title += _star["StarSystem"]
+			details.body += "Last Visit: %s\n" % data_reader.get_value(_star["timestamp"])
+			if _star.has("Visits"):
+				details.body += "Visits: %s\n" % data_reader.get_value(_star["Visits"])
+			if _star.has("Rings"):
+				details.body += "Rings: %s\n" % data_reader.get_value(_star["Rings"])
+			details.body += "Population: %s \n" % data_reader.get_value(_star["Population"])
+			details.body += "Allegiance: %s \n" % data_reader.get_value(_star["SystemAllegiance"])
+			details.body += "Economy: %s \n" % (_star["SystemEconomy_Localised"] + ", " + _star["SystemSecondEconomy_Localised"])
+			details.body += "Government: %s\n" % data_reader.get_value(_star["SystemGovernment_Localised"])
+			details.body += "Security: %s\n" % data_reader.get_value(_star["SystemSecurity_Localised"])
 		
 		var prospected_asteroids_events = []
-		if found_star.has("SystemAddress"):
-			prospected_asteroids_events = data_reader.galaxy_manager.get_events_per_location(String(found_star["SystemAddress"]), -1, ["ProspectedAsteroid"])
+		if _star.has("SystemAddress"):
+			prospected_asteroids_events = data_reader.galaxy_manager.get_events_per_location(String(_star["SystemAddress"]), -1, ["ProspectedAsteroid"])
 			details.body += "\n-------------\n"
 			var all_events_per_location := {}
 			for events_loc in prospected_asteroids_events:
@@ -205,10 +220,16 @@ func set_selected_star(_star_idx, _star_pos):
 						if mat["count"] > 0:
 							details.body += "%s (%s): %.2f%%\n" % [mat["Name"], mat["count"], (mat["total"] / mat["count"])]
 		details.visible = true
+		table.visible = false
 		galaxy.camera_move_to(_star_pos)
 
 
 func _on_Search_SearchItemSelected(id):
 	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
 	set_selected_star(id, starpos)
+	pause_unpause_game()
+
+func _on_FloatingTable_item_selected(tree_item):
+	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
+	set_selected_star(tree_item, starpos)
 	pause_unpause_game()

@@ -14,6 +14,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://HelperModules/GeneralHelpers/Sorter.gd"
 }, {
+"base": "Object",
+"class": "DataConverter",
+"language": "GDScript",
+"path": "res://HelperModules/GeneralHelpers/DataConverter.gd"
+}, {
 "base": "Node",
 "class": "DataReader",
 "language": "GDScript",
@@ -38,6 +43,11 @@ _global_script_classes=[ {
 "class": "FileReader",
 "language": "GDScript",
 "path": "res://HelperModules/FileReader.gd"
+}, {
+"base": "Panel",
+"class": "FloatingTable",
+"language": "GDScript",
+"path": "res://TabScreens/GalaxyMap/GalaxyMapControls/FloatingTable.gd"
 }, {
 "base": "Spatial",
 "class": "GalaxyCenter",
@@ -91,11 +101,13 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "ArraySorter": "",
+"DataConverter": "",
 "DataReader": "",
 "DatabaseManager": "",
 "DateTime": "",
 "DetailsWindow": "",
 "FileReader": "",
+"FloatingTable": "",
 "GalaxyCenter": "",
 "GalaxyDataManager": "",
 "GalaxyParticles": "",

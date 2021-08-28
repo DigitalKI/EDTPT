@@ -128,8 +128,7 @@ func spawn_stars(_stars : Array, _interpolation_key : String, _maxval : float, _
 	stars_multimesh.multimesh.instance_count = _stars.size()
 	stars_multimesh.multimesh.visible_instance_count = _stars.size()
 	for idx in _stars.size():
-		var sys_coord_json = JSON.parse(_stars[idx]["StarPos"]).result
-		var sys_coord : Vector3 = Vector3(sys_coord_json[0], sys_coord_json[1], sys_coord_json[2])
+		var sys_coord : Vector3 = DataConverter.get_position_vector(_stars[idx]["StarPos"])
 		var intensity : float = _stars[idx][_interpolation_key]/_maxval
 		if intensity > 1:
 			intensity = 1
@@ -143,8 +142,7 @@ func spawn_edsm_stars(_stars : Array, _interpolation_key : String, _maxval : flo
 	edsm_multimesh.multimesh.instance_count = _stars.size()
 	edsm_multimesh.multimesh.visible_instance_count = _stars.size()
 	for idx in _stars.size():
-		var sys_coord_json = _stars[idx]["coords"]
-		var sys_coord : Vector3 = Vector3(sys_coord_json["x"], sys_coord_json["y"], sys_coord_json["z"])
+		var sys_coord : Vector3 = DataConverter.get_position_vector(_stars[idx]["StarPos"])
 			
 		var intensity : float = (_stars[idx][_interpolation_key]/_maxval) if _stars[idx][_interpolation_key] else 0
 		if intensity > 1:

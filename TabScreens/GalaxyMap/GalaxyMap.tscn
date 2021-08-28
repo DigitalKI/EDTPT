@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.gd" type="Script" id=1]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyCenter.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=5]
 [ext_resource path="res://Fonts/Ubuntu-Regular.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/Search.tscn" type="PackedScene" id=7]
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/FloatingTable.tscn" type="PackedScene" id=8]
 
 [sub_resource type="World" id=1]
 environment = ExtResource( 4 )
@@ -141,8 +142,13 @@ mouse_filter = 1
 size_flags_horizontal = 3
 
 [node name="SystemDetails" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 3 )]
+visible = false
 anchor_left = 0.674
-margin_left = -0.0800171
+margin_left = 0.0299683
+
+[node name="FloatingTable" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 8 )]
+anchor_left = 0.674
+margin_left = 0.0299683
 
 [node name="LabelNav" type="Label" parent="HBoxContainer/GalaxyContainer"]
 anchor_top = 1.0
@@ -171,11 +177,11 @@ margin_bottom = 96.0
 mouse_filter = 1
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
+[node name="btTravelHistory" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 100.0
 margin_right = 47.0
 margin_bottom = 121.0
-text = "Galaxy"
+text = "Jumps"
 
 [node name="Control" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
 margin_top = 125.0
@@ -234,5 +240,7 @@ size_flags_vertical = 3
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtEDSM" to="." method="_on_BtEDSM_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt2dOverlay" to="." method="_on_Bt2dOverlay_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt3dOverlay" to="." method="_on_Bt3dOverlay_pressed"]
+[connection signal="item_selected" from="HBoxContainer/GalaxyContainer/FloatingTable" to="." method="_on_FloatingTable_item_selected"]
 [connection signal="SearchItemSelected" from="HBoxContainer/GalaxyContainer/Search" to="." method="_on_Search_SearchItemSelected"]
+[connection signal="pressed" from="HBoxContainer/LeftButtonsContainer2/btTravelHistory" to="." method="_on_btTravelHistory_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
