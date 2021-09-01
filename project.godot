@@ -69,6 +69,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyPlane.gd"
 }, {
+"base": "MeshInstance",
+"class": "GalaxyPlotter",
+"language": "GDScript",
+"path": "res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyPlotter.gd"
+}, {
 "base": "Spatial",
 "class": "GalaxySector",
 "language": "GDScript",
@@ -112,6 +117,7 @@ _global_script_class_icons={
 "GalaxyDataManager": "",
 "GalaxyParticles": "",
 "GalaxyPlane": "",
+"GalaxyPlotter": "",
 "GalaxySector": "",
 "JournalEvent": "",
 "Logger": "",

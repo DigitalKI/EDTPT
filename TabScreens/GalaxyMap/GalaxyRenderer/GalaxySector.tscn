@@ -20,5 +20,6 @@ script = ExtResource( 1 )
 multimesh = SubResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
+visible = false
 mesh = SubResource( 3 )
 material/0 = null

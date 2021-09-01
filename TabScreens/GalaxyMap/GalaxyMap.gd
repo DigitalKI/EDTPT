@@ -22,6 +22,8 @@ func _ready():
 	details.visible = false
 	# Sorry EDSM, I'm going to bother you more than I should
 	data_reader.edsm_manager.connect("systems_received", self, "_on_edsm_manager_systems_received")
+	table.visible = false
+	details.visible = false
 	pass
 
 func _on_GalaxyMap_gui_input(event):
@@ -89,18 +91,19 @@ func _unhandled_input(event):
 
 func _on_BtMining_pressed():
 	view_mode = "Mining"
-	var _config = [
+	var _config = [{"addr": ["RingsAmount"]
+	, "size_scales":{"min": 0, "max": 15, "min_scale": 0.5, "max_scale": 4}
+	, "is_array": false},
+	{"addr": ["RingsAmount"]
+	, "color_scales":{"min": 1, "max": 15, "min_scale": Color(0.0,0.1,0.8), "max_scale": Color(0.0,0.6,0.6)}
+	, "is_array": false},
 	{"addr": ["Ringed"]
-	, "color_matrix": {"1": Color(0.0,0.5,0.5)
-					, "0": Color(0.0,0.0,1.0)}
+	, "color_matrix": {"0": Color(0.0,0.0,1.0)}
 	, "is_array": false}
 	,{"addr": ["prospected"]
-	, "color_matrix":{"True": Color(1.0,0.0,0.0)}
-	, "is_array": false}
-	,{"addr": ["RingsAmount"]
-	, "size_scales":{"min": 0, "max": 15, "min_scale": 0.5, "max_scale": 4}
+	, "color_matrix":{"True": Color(1.0,1.0,1.0)}
 	, "is_array": false}]
-	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_rings(), _config)
+	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_rings(), _config, Color(0.0,0.0,1.0))
 	update_navlabel()
 	pause_unpause_game()
 
@@ -141,7 +144,10 @@ func _on_btTravelHistory_pressed():
 		details.visible = false
 		table.title_text = "Travel History"
 		table.visible_columns = ["timestamp", "event", "StarSystem", "Population"]
-		table.table_array = data_reader.get_all_db_events_by_type(["FSDJump"])
+		table.table_array = data_reader.get_all_db_events_by_type(["FSDJump"], 0, 0)
+		galaxy.galaxy_plotter.draw_path(table.table_array, "StarPos")
+	else:
+		galaxy.galaxy_plotter.clear_path()
 
 func _on_Timer_timeout():
 	pause_unpause_game(true)
@@ -183,8 +189,8 @@ func set_selected_star(_star, _star_pos):
 			details.body += "Last Visit: %s\n" % data_reader.get_value(_star["timestamp"])
 			if _star.has("Visits"):
 				details.body += "Visits: %s\n" % data_reader.get_value(_star["Visits"])
-			if _star.has("Rings"):
-				details.body += "Rings: %s\n" % data_reader.get_value(_star["Rings"])
+			if _star.has("RingsAmount"):
+				details.body += "Rings: %s\n" % data_reader.get_value(_star["RingsAmount"])
 			details.body += "Population: %s \n" % data_reader.get_value(_star["Population"])
 			details.body += "Allegiance: %s \n" % data_reader.get_value(_star["SystemAllegiance"])
 			details.body += "Economy: %s \n" % (_star["SystemEconomy_Localised"] + ", " + _star["SystemSecondEconomy_Localised"])
@@ -225,11 +231,18 @@ func set_selected_star(_star, _star_pos):
 
 
 func _on_Search_SearchItemSelected(id):
-	var starpos := galaxy.stars_multimesh.multimesh.get_instance_transform(id).origin
-	set_selected_star(id, starpos)
+	var found_star : Dictionary = data_reader.galaxy_manager.star_systems[id]
+	var starpos := galaxy.galaxy_sector.get_star_position_by_id(id)
+	set_selected_star(found_star, starpos)
 	pause_unpause_game()
 
 func _on_FloatingTable_item_selected(tree_item):
+	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
+	galaxy.camera_move_to(starpos)
+	pause_unpause_game()
+
+
+func _on_FloatingTable_item_doubleclicked(tree_item):
 	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
 	set_selected_star(tree_item, starpos)
 	pause_unpause_game()

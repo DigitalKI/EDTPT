@@ -8,7 +8,7 @@ var db_creation_script := "res://Database/db_json_schema"
 var db_path := "user://Database/"
 var db_name := "edtpt"
 
-var not_usable_columns := ["Id", "ID"]
+var not_usable_columns := ["Id", "ID", "id"]
 var forbidden_columns := ["From", "To", "Group", "By", "Sort", "Asc"]
 var event_types : Array = []
 
@@ -33,7 +33,7 @@ func prepare_database(_verbose : bool = false):
 		dir.make_dir(db_path)
 	
 	db.verbose_mode = _verbose
-#	db.export_to_json("user://Database/edtpt_jsnbkp")
+	db.export_to_json("user://Database/edtpt_jsnbkp")
 	if db.select_rows("sqlite_master", "type = 'table'", ["*"]).empty():
 		result = db.import_from_json(db_creation_script)
 	return result
@@ -78,16 +78,17 @@ func db_set_event_type(_event_type):
 # Creates a table from the event type, 
 # automatically generating columns with its respective type.
 # Table is not created if it already exists in the database.
-func create_table_from_event(_event : Dictionary):
-	var table_name = _event["event"]
+func create_table_from_event(_event : Dictionary, _is_event : bool = true):
+	var table_name : String = _event["event"]
 	# Do not create if exists already
-	if !event_types.has(table_name):
+	if  db.select_rows("event_types", "event_type = '" + table_name + "'", ["*"]).empty():
 		db_set_event_type(table_name)
 		update_event_types()
 		var table_dict : Dictionary = {}
 		table_dict["Id"] = {"data_type":"int", "primary_key": true, "not_null": true, "auto_increment" : true}
-		table_dict["CMDRId"] = {"data_type":"int", "not_null": true}
-		table_dict["FileheaderId"] = {"data_type":"int", "not_null": true}
+		if _is_event:
+			table_dict["CMDRId"] = {"data_type":"int", "not_null": true}
+			table_dict["FileheaderId"] = {"data_type":"int", "not_null": true}
 		
 		for column in _event.keys():
 			if column != "event":

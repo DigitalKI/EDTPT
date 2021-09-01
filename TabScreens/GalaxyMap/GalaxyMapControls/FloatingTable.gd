@@ -10,6 +10,7 @@ export(Array) var table_array setget _set_table, _get_table
 export(Array, String) var visible_columns
 
 signal item_selected(tree_item)
+signal item_doubleclicked(tree_item)
 
 func _set_title(_value):
 	if is_inside_tree() && _value is String && title:
@@ -75,3 +76,7 @@ func add_events(_data : Array):
 func _on_Table_item_selected():
 	var selected_item = table.get_selected().get_meta("log_object")
 	emit_signal("item_selected", selected_item)
+
+func _on_Table_item_activated():
+	var selected_item = table.get_selected().get_meta("log_object")
+	emit_signal("item_doubleclicked", selected_item)

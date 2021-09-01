@@ -3,7 +3,7 @@ class_name GalaxyCenter
 
 var min_zoom = 10.0
 var max_zoom = 130000.0
-var max_tween_duration := 4.0
+var max_tween_duration := 3.0
 var min_tween_duration := 0.5
 var galaxy_clouds_fade_dist_close = 1100.0
 var galaxy_clouds_fade_dist = 20000.0
@@ -21,6 +21,7 @@ onready var camera_rotation : Spatial  = $PlaneGrid/CameraCenter/CameraRotation
 onready var galaxy_particles : GalaxyParticles = $GalaxyParticles
 onready var galaxy_plane_mesh : GalaxyPlane = $GalaxyPlane
 onready var galaxy_sector : GalaxySector = $GalaxySector
+onready var galaxy_plotter : GalaxyPlotter = $GalaxyPlotter
 onready var tween_pos : Tween = $TweenPos
 onready var tween_plane : Tween = $TweenPlane
 onready var tween_zoom : Tween = $TweenZoom
@@ -121,28 +122,14 @@ func GalaxyPlaneOnOff():
 func GalaxyParticlesPlaneOnOff():
 	$GalaxyParticles.visible = !$GalaxyParticles.visible
 
-func spawn_sector_stars(_stars : Array, _config : Array):
-	galaxy_sector.spawn_stars(_stars, _config)
-
-func spawn_stars(_stars : Array, _interpolation_key : String, _maxval : float, _star_color_low : Color = Color(1.0, 0.2, 0.2), _star_color_high : Color = Color(1.0, 1.0, 1.0)):
-	stars_multimesh.multimesh.instance_count = _stars.size()
-	stars_multimesh.multimesh.visible_instance_count = _stars.size()
-	for idx in _stars.size():
-		var sys_coord : Vector3 = DataConverter.get_position_vector(_stars[idx]["StarPos"])
-		var intensity : float = _stars[idx][_interpolation_key]/_maxval
-		if intensity > 1:
-			intensity = 1
-		var color_intensity = intensity #ease(intensity, 0.5)
-		var star_color : Color = _star_color_low.linear_interpolate(_star_color_high, color_intensity)
-		var star_size : Basis = Basis().scaled(Vector3(0.5,0.5,0.5).linear_interpolate(Vector3(2.5,2.5,2.5),intensity))
-		stars_multimesh.multimesh.set_instance_transform(idx, Transform(star_size, sys_coord))
-		stars_multimesh.multimesh.set_instance_color(idx, star_color)
+func spawn_sector_stars(_stars : Array, _config : Array, _default_color : Color = Color(0.2, 0.2, 0.2), _default_size : float = 1.0):
+	galaxy_sector.spawn_stars(_stars, _config, _default_color, _default_size)
 
 func spawn_edsm_stars(_stars : Array, _interpolation_key : String, _maxval : float, _star_color_low : Color = Color(1.0, 0.2, 0.2), _star_color_high : Color = Color(1.0, 1.0, 1.0)):
 	edsm_multimesh.multimesh.instance_count = _stars.size()
 	edsm_multimesh.multimesh.visible_instance_count = _stars.size()
 	for idx in _stars.size():
-		var sys_coord : Vector3 = DataConverter.get_position_vector(_stars[idx]["StarPos"])
+		var sys_coord : Vector3 = DataConverter.get_position_vector(_stars[idx]["coords"])
 			
 		var intensity : float = (_stars[idx][_interpolation_key]/_maxval) if _stars[idx][_interpolation_key] else 0
 		if intensity > 1:

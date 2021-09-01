@@ -83,4 +83,5 @@ hide_root = true
 select_mode = 1
 
 [connection signal="gui_input" from="MarginContainer/Panel/VBoxContainer/Title" to="." method="_on_Title_gui_input"]
+[connection signal="item_activated" from="MarginContainer/Panel/VBoxContainer/DetailsMargin/Table" to="." method="_on_Table_item_activated"]
 [connection signal="item_selected" from="MarginContainer/Panel/VBoxContainer/DetailsMargin/Table" to="." method="_on_Table_item_selected"]

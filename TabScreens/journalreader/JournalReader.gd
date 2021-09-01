@@ -61,6 +61,8 @@ func clear_events(_limit = 0):
 func get_start_timestamp():
 	var startfrom : DateTime = DateTime.new()
 	startfrom.date_add("hour", -timerange)
+	if timerange == 0:
+		startfrom.date_add("year", -50)
 	return startfrom._to_string(true)
 
 func add_all_events_by_type():
@@ -94,12 +96,13 @@ func add_events(_current_logobject : Array):
 	
 	if _current_logobject:
 		logger.log_event("Showing %s events in journal reader" % _current_logobject.size())
+		var start_time = get_start_timestamp()
 		for log_obj in _current_logobject:
 			if log_obj is Dictionary:
 				var evt : TreeItem
 				if log_obj.has("timestamp"):
 				# we skip this entry if it's before the oldest timestamp we're looking for
-					if log_obj["timestamp"] < get_start_timestamp():
+					if log_obj["timestamp"] < start_time:
 						continue
 					evt = log_details.create_item(tree_root)
 					evt.move_to_top() # here it moves it at the top IMPORTANT

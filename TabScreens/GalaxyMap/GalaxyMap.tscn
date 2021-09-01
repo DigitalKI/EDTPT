@@ -145,10 +145,16 @@ size_flags_horizontal = 3
 visible = false
 anchor_left = 0.674
 margin_left = 0.0299683
+title = "something something"
+body = "Bla bla bla
+frefreg
+rgbrftbt tyhythty"
 
 [node name="FloatingTable" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 8 )]
+visible = false
 anchor_left = 0.674
 margin_left = 0.0299683
+title_text = "something something"
 
 [node name="LabelNav" type="Label" parent="HBoxContainer/GalaxyContainer"]
 anchor_top = 1.0
@@ -240,6 +246,7 @@ size_flags_vertical = 3
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtEDSM" to="." method="_on_BtEDSM_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt2dOverlay" to="." method="_on_Bt2dOverlay_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt3dOverlay" to="." method="_on_Bt3dOverlay_pressed"]
+[connection signal="item_doubleclicked" from="HBoxContainer/GalaxyContainer/FloatingTable" to="." method="_on_FloatingTable_item_doubleclicked"]
 [connection signal="item_selected" from="HBoxContainer/GalaxyContainer/FloatingTable" to="." method="_on_FloatingTable_item_selected"]
 [connection signal="SearchItemSelected" from="HBoxContainer/GalaxyContainer/Search" to="." method="_on_Search_SearchItemSelected"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer2/btTravelHistory" to="." method="_on_btTravelHistory_pressed"]

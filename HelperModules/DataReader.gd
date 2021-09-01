@@ -35,7 +35,7 @@ func _ready():
 	var current_scene = get_tree().current_scene
 	
 	# First one is the HttpRequest node
-	edsm_manager.add_html_reader()
+	edsm_manager.add_http_reader()
 	current_scene.add_child(edsm_manager.http_request)
 	
 	# The second is the timer
@@ -253,7 +253,8 @@ func _get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name
 					# This part of the code may not be needed anymore as there is now a script that pre-generates
 					# all the necessary tables
 					if !dbm.event_types.has(current_event_type) && current_event_type != "Commander" && current_event_type != "Fileheader":
-						create_table_from_examples(current_event_type, _new_log_events)
+						var typed_events = get_all_new_events_by_type([current_event_type], _new_log_events)
+						create_table_from_examples(current_event_type, typed_events)
 					if fileheader_last_id <= 0:
 						logger.log_event("No fileheader id to use! Aborting")
 						continue
@@ -287,11 +288,10 @@ func _get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name
 						_all_insert_events[current_event_type].append(evt)
 	return _all_insert_events
 
-func create_table_from_examples(_event_type : String, _new_log_events : Dictionary):
-	var typed_events = get_all_new_events_by_type([_event_type], _new_log_events)
+func create_table_from_examples(_event_type : String, _typed_events : Array):
 	var example_event : Dictionary = {}
 	example_event["event"] = _event_type
-	for evtt in typed_events:
+	for evtt in _typed_events:
 		for evt_k in evtt.keys():
 			if !example_event.has(evt_k):
 				example_event[evt_k] = evtt[evt_k] if evtt[evt_k] else "string"
