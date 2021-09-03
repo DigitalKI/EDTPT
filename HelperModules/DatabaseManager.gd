@@ -33,7 +33,7 @@ func prepare_database(_verbose : bool = false):
 		dir.make_dir(db_path)
 	
 	db.verbose_mode = _verbose
-	db.export_to_json("user://Database/edtpt_jsnbkp")
+#	db.export_to_json("user://Database/edtpt_jsnbkp")
 	if db.select_rows("sqlite_master", "type = 'table'", ["*"]).empty():
 		result = db.import_from_json(db_creation_script)
 	return result
@@ -116,4 +116,51 @@ func create_table_from_event(_event : Dictionary, _is_event : bool = true):
 			logger.log_event("There was an error creating table %s" % table_name)
 	else:
 			logger.log_event("Table %s already exists!" % table_name)
+
+func update_or_insert_multiple(_table_name : String, _data : Array):
+	var query_string = "INSERT OR REPLACE INTO " + _table_name + " "
+	var fields : String = "("
+	var values : String = ""
+	var result = true
+	var got_fields = false
+	for _row in _data:
+		values += "("
+		for key in _row.keys():
+			if !got_fields:
+				fields += String(key) + ", "
+			if _row[key] is String:
+				values += ", '" + _row[key] + "'"
+			elif _row[key] == null:
+				values += ", null"
+			else:
+				values += String(_row[key])
+		values = values.trim_prefix(", ") + ")\n"
+		got_fields = true
+		query_string += ")"
+	query_string +=  fields.trim_suffix(", ") + ") VALUES " + values
+	result = db.query(query_string)
+	return result
+
+func convert_data_to_inserts(_evt, _is_event = true):
+	# we now assign the appropriate value to certain fields
+	# such as true/false, Dictionary, Array
+	for col_key in _evt.keys():
+		if _evt[col_key] is Array:
+			_evt[col_key] = JSON.print(_evt[col_key])
+		elif _evt[col_key] is Dictionary:
+			_evt[col_key] = JSON.print(_evt[col_key])
+		elif _evt[col_key] is String:
+			if _evt[col_key] == "false":
+				_evt[col_key] = 0
+			elif _evt[col_key] == "true":
+				_evt[col_key] = 1
 		
+		# Some columns have to be changed as they are reserved keywords or already used
+		# leave this code last, as it is iterating through the columns
+		if forbidden_columns.has(col_key) && _is_event:
+			_evt["'" + col_key + "'"] = _evt[col_key]
+			_evt.erase(col_key)
+		elif not_usable_columns.has(col_key) && _is_event:
+			_evt[col_key + "_" + col_key] = _evt[col_key]
+			_evt.erase(col_key)
+	return _evt

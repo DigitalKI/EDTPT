@@ -62,7 +62,7 @@ func get_file_events(_filename : String, _seekto : int = 0):
 						f_events.append(jjournal.result)
 					else:
 						data_reader.log_event("Problem with this file: %s" % _filename)
-						data_reader.log_event("Here: %s" % content)
+						data_reader.log_event("  Here: %s" % content)
 		if _filename.get_extension() == "json":
 			if content:
 				jjournal = JSON.parse(content)

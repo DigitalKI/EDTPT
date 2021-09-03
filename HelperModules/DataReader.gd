@@ -41,9 +41,7 @@ func _ready():
 	# The second is the timer
 	initialize_timer(current_scene)
 	
-	var curr_cmdrs = dbm.db.select_rows("Commander", "", ["*"])
-	if !curr_cmdrs.empty():
-		current_cmdr = curr_cmdrs[0]
+	_set_cmdr("")
 	
 	# Arrays usually are by ref, so we should be covered for updates 
 	evt_types = dbm.event_types
@@ -62,8 +60,8 @@ func _set_autoupdate(_value):
 	else:
 		timer.stop()
 
-func _set_cmdr(_value):
-	var cmdr_res = dbm.db.select_rows("Commander", "name = " + _value, ["*"])
+func _set_cmdr(_value : String):
+	var cmdr_res = dbm.db.select_rows("Commander", ("name = " + _value) if _value else "", ["*"])
 	if !cmdr_res.empty():
 		current_cmdr = cmdr_res[0]
 
@@ -101,6 +99,8 @@ func journal_updates(_threaded = false):
 	# As it manipulates the events dictionary, it's left last,
 	# so that the journal reader will still be intact
 	_write_all_events_to_db(new_logs["byfile"])
+	if !current_cmdr:
+		_set_cmdr("")
 	return returnval
 
 func reset_thread():
@@ -264,27 +264,7 @@ func _get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name
 						#CNDRId and FileheaderId are added and assigned
 						evt["CMDRId"] = cmdr_id
 						evt["FileheaderId"] = fileheader_last_id
-						# we now assign the appropriate value to certain fields
-						# such as true/false, Dictionary, Array
-						for col_key in evt.keys():
-							if evt[col_key] is Array:
-								evt[col_key] = JSON.print(evt[col_key])
-							elif evt[col_key] is Dictionary:
-								evt[col_key] = JSON.print(evt[col_key])
-							elif evt[col_key] is String:
-								if evt[col_key] == "false":
-									evt[col_key] = 0
-								elif evt[col_key] == "true":
-									evt[col_key] = 1
-							
-							# Some columns have to be changed as they are reserved keywords or already used
-							# leave this code last, as it is iterating through the columns
-							if dbm.forbidden_columns.has(col_key):
-								evt["'" + col_key + "'"] = evt[col_key]
-								evt.erase(col_key)
-							elif dbm.not_usable_columns.has(col_key):
-								evt[col_key + "_" + col_key] = evt[col_key]
-								evt.erase(col_key)
+						dbm.convert_data_to_inserts(evt)
 						_all_insert_events[current_event_type].append(evt)
 	return _all_insert_events
 

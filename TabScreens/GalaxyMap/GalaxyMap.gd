@@ -126,8 +126,14 @@ func _on_BtGalaxy_pressed():
 	update_navlabel()
 	pause_unpause_game()
 
+var sector_x = -1
+var sector_y = -1
+var sector_z = -1
 func _on_BtEDSM_pressed():
-	data_reader.edsm_manager.get_systems_in_cube(galaxy.camera_center.global_transform.origin, 200)
+#	data_reader.edsm_manager.get_systems_by_sector(Vector3(sector_x, sector_y, sector_z))
+	data_reader.edsm_manager.get_systems_in_db(["*"], data_reader.edsm_manager.get_systems_cube_array(Vector3(), 2), true)
+#	data_reader.edsm_manager.get_systems_in_cubes_radius(Vector3(), 1)
+#	data_reader.edsm_manager.get_systems_from_file()
 	pause_unpause_game()
 
 func _on_Bt2dOverlay_pressed():
