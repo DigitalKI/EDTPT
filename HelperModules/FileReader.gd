@@ -22,7 +22,7 @@ func get_files(_get_cache := false):
 				_logfiles.append(file_name)
 			file_name = dir.get_next()
 	else:
-		data_reader.log_event("An error occurred when trying to access the path.")
+		logger.log_event("An error occurred when trying to access the path.")
 	return _logfiles
 
 func get_file_size(_filename, _file : File = File.new()):
@@ -61,8 +61,8 @@ func get_file_events(_filename : String, _seekto : int = 0):
 							fid = jjournal.result["FID"]
 						f_events.append(jjournal.result)
 					else:
-						data_reader.log_event("Problem with this file: %s" % _filename)
-						data_reader.log_event("  Here: %s" % content)
+						logger.log_event("Problem with this file: %s" % _filename)
+						logger.log_event("  Here: %s" % content)
 		if _filename.get_extension() == "json":
 			if content:
 				jjournal = JSON.parse(content)
@@ -70,5 +70,5 @@ func get_file_events(_filename : String, _seekto : int = 0):
 					f_events.append(jjournal.result)
 		file.close()
 	else:
-		data_reader.log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
+		logger.log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
 	return {"name": cmdr, "FID" : fid, "filesize" : fliesize, "events": f_events}

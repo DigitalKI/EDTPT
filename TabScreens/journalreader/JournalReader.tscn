@@ -35,36 +35,29 @@ margin_bottom = 595.0
 margin_right = 1014.0
 margin_bottom = 40.0
 
-[node name="ClearDatabase" type="ToolButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_right = 94.0
-margin_bottom = 40.0
-hint_tooltip = "Clears the database and re-import all data"
-text = "Clear Database"
-
 [node name="DisplayByEventFile" type="CheckButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_left = 98.0
-margin_right = 244.0
+margin_right = 146.0
 margin_bottom = 40.0
 text = "Show by file"
 
 [node name="EventTypeFilter" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_left = 248.0
-margin_right = 334.0
+margin_left = 150.0
+margin_right = 236.0
 margin_bottom = 40.0
 text = "Filter By type"
 items = [ "Item 0", null, 1, false, false, 0, 0, null, "", false, "Item 1", null, 1, false, false, 1, 0, null, "", false, "Item 2", null, 1, false, false, 2, 0, null, "", false ]
 
 [node name="TimeRange" type="MenuButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_left = 338.0
-margin_right = 419.0
+margin_left = 240.0
+margin_right = 321.0
 margin_bottom = 40.0
 focus_mode = 2
 text = "Select range"
 items = [ "3 hours", null, 0, false, false, 3, 0, null, "", false, "6 hours", null, 0, false, false, 6, 0, null, "", false, "12 hours", null, 0, false, false, 12, 0, null, "", false, "24 hours", null, 0, false, false, 24, 0, null, "", false, "2 days", null, 0, false, false, 48, 0, null, "", false, "4 days", null, 0, false, false, 96, 0, null, "", false, "8 days", null, 0, false, false, 192, 0, null, "", false, "All", null, 0, false, false, 0, 0, null, "", false ]
 
 [node name="BtUpdate" type="CheckButton" parent="LogDetailContainer/VBoxContainer/ToolBarContainer"]
-margin_left = 423.0
-margin_right = 572.0
+margin_left = 325.0
+margin_right = 474.0
 margin_bottom = 40.0
 hint_tooltip = "Clears the database and re-import all data"
 pressed = true
@@ -102,7 +95,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="pressed" from="LogDetailContainer/VBoxContainer/ToolBarContainer/ClearDatabase" to="." method="_on_ClearDatabase_pressed"]
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/DisplayByEventFile" to="." method="_on_DisplayByEventFile_toggled"]
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/BtUpdate" to="." method="_on_BtUpdate_toggled"]
 [connection signal="item_selected" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]

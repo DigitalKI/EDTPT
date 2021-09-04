@@ -8,6 +8,14 @@ var max_range := 200.0
 var star_systems := []
 # The list of sectors to download
 var sectors_list : Array = []
+# Source of the urls: https://www.edsm.net/en/nightly-dumps
+const files_download_urls : Dictionary = {"All Inhabited": "https://www.edsm.net/dump/systemsPopulated.json.gz"
+										, "All With coordinates": "https://www.edsm.net/dump/systemsWithCoordinates.json.gz"
+										, "Systems, last 7 days": "https://www.edsm.net/dump/systemsWithCoordinates7days.json.gz"
+										, "Bodies, last 7  days": "https://www.edsm.net/dump/bodies7days.json.gz"
+										, "Powerplay": "https://www.edsm.net/dump/powerPlay.json.gz"
+										, "Stations": "https://www.edsm.net/dump/stations.json.gz"
+										, "Codex": "https://www.edsm.net/dump/codex.json.gz"}
 
 signal systems_received
 
@@ -15,14 +23,17 @@ signal systems_received
 func add_http_reader():
 	if !http_request:
 		http_request = HTTPRequest.new()
+		http_request.use_threads = true
 		http_request.connect("request_completed", self, "_http_request_completed")
 
 func _read_systems_from_file(_filename : String, _batch_size : int = 0, _seek_pos : int = 0):
 	var file = File.new()
+	var file_size : int = 0
 	var jjournal : JSONParseResult
 	var f_events = []
-	var file_status = file.open("user://" + _filename, File.READ)
+	var file_status = file.open("user://Database/" + _filename, File.READ)
 	if file_status == OK:
+		file_size = file.get_len() #for some reason returns 0, maybe related to Godot's #47254
 		file.seek(_seek_pos)
 		var content : String = ""
 		while !file.eof_reached():
@@ -43,13 +54,27 @@ func _read_systems_from_file(_filename : String, _batch_size : int = 0, _seek_po
 						logger.log_event("  Here: %s" % content)
 		file.close()
 	else:
-		data_reader.log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
+		logger.log_event("Cannot read log file %s, status: %s" % [_filename, file_status])
 	return {"events": f_events, "position": -1}
 
-func get_systems_from_file():
+func _7z_extract(_file_to_extract : String):
+	var sevenz_exec_path := "C:/Program Files/7-Zip/7z.exe"
+	var sevenz_exec_standalone := OS.get_user_data_dir() + "/Database/7z1900-extra/x64/7za.exe"
+	var extract_from := ("\"%s/Database/%s\"" % [OS.get_user_data_dir(), _file_to_extract]).replace("/", "\\")
+	var extract_to := ("-o\"%s/Database\"" % [OS.get_user_data_dir()]).replace("/", "\\")
+	var parameters := [extract_from, extract_to]
+	var output : Array = []
+	var error = OS.execute(sevenz_exec_path, ["x", extract_from, extract_to], true, output)
+	if error:
+		logger.log_event(String(error))
+	if output:
+		logger.log_event(String(output))
+	return error
+
+func get_systems_from_file(_filename : String = ""):
 	var current_position = 0
 	while current_position != -1:
-		var s_systems_result = _read_systems_from_file("Database/systemsWithCoordinates.json", 1000, current_position)
+		var s_systems_result = _read_systems_from_file(_filename, 100000, current_position)
 		current_position = s_systems_result["position"]
 		_write_systems_to_db(s_systems_result["events"], false)
 
@@ -59,7 +84,14 @@ func get_systems_in_cube(_coords : Vector3, _size_ly : float):
 		var params := "?x=%s&y=%s&z=%s&size=%s&showId=1&showCoordinates=1&showPermit=1&showInformation=1&showPrimaryStar=1" % [_coords.x, _coords.y, _coords.z, _size_ly]
 		var error = http_request.request(get_systems_cube + params)
 		if error != OK:
-			data_reader.log_event("An error occurred in the HTTP request.")
+			logger.log_event("An error occurred in the HTTP request.")
+
+func download_edsm_file(_filename : String, _file_url : String):
+	if http_request.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
+		http_request.download_file = "user://Database/" + _filename
+		var error = http_request.request(_file_url)
+		if error != OK:
+			logger.log_event("An error occurred in the HTTP request.")
 
 func get_systems_cube_array(_sector : Vector3, _radius : int = 1):
 	var _sectors_list : Array = []
@@ -125,7 +157,7 @@ func _prepare_insert_events(_edsm_retrieved_systems : Array, _check_id : bool = 
 			get_systems_in_db(["id"])
 			edsm_ids = extract_systems_id()
 		for evt in _edsm_retrieved_systems:
-				if !edsm_ids.has(int(evt["id"])):
+				if !edsm_ids.has(int(evt["id"])) && evt["id64"]:
 					evt["sector_x"] = floor(evt["coords"]["x"] / max_range)
 					evt["sector_y"] = floor(evt["coords"]["y"] / max_range)
 					evt["sector_z"] = floor(evt["coords"]["z"] / max_range)
@@ -142,11 +174,17 @@ func _write_systems_to_db(_edsm_systems : Array, _check_ids : bool = true):
 func _http_request_completed(result, response_code, headers, body):
 	var string_result : String = body.get_string_from_utf8()
 	var edsm_retrieved_systems : Array = []
-	if string_result.length() > 2:
-		edsm_retrieved_systems = parse_json(string_result)
-		_write_systems_to_db(edsm_retrieved_systems)
-	if sectors_list.size() > 0:
-		get_systems_by_sector(sectors_list.pop_back())
+	if http_request.download_file.empty():
+		if string_result.length() > 2:
+			edsm_retrieved_systems = parse_json(string_result)
+			_write_systems_to_db(edsm_retrieved_systems)
+		if sectors_list.size() > 0:
+			get_systems_by_sector(sectors_list.pop_back())
+		else:
+			emit_signal("systems_received")
 	else:
-		get_systems_in_db()
-		emit_signal("systems_received")
+		if !_7z_extract(http_request.download_file.get_file()):
+			var filename_extracted := http_request.download_file.get_file()
+			filename_extracted = filename_extracted.replace("." + filename_extracted.get_extension(), "")
+			get_systems_from_file(filename_extracted)
+	http_request.download_file = ""

@@ -28,7 +28,7 @@ func _on_LogEntries_item_selected(index):
 	var journal_name = log_entries.get_item_text(index)
 	# Let's reset the details text area
 	log_details.scroll_to_item(log_details.get_root())
-	var dataobject = data_reader.logobjects[journal_name]["dataobject"]
+	var dataobject = logger.logobjects[journal_name]["dataobject"]
 	clear_events()
 	add_events(dataobject)
 
@@ -154,10 +154,6 @@ func _on_DisplayByEventFile_toggled(button_pressed):
 	else:
 		log_entries.visible = false
 		add_all_events_by_type()
-
-func _on_ClearDatabase_pressed():
-	data_reader.clean_database()
-	data_reader._ready()
 
 func _on_BtUpdate_toggled(button_pressed):
 	data_reader.autoupdate = button_pressed

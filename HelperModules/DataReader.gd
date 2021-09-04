@@ -156,7 +156,7 @@ func _get_new_log_objects(_nullparam = null):
 			if !dbm.db.insert_rows("Commander", [
 				{"FID": curr_logobj["FID"], "name": curr_logobj["name"]}
 			]):
-				data_reader.log_event("There was a problem adding a new CMDR")
+				logger.log_event("There was a problem adding a new CMDR")
 		if curr_logobj["name"]:
 			# Selects the current commander,
 			# should be changed to saved parameters instead.

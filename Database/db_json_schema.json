@@ -812,7 +812,7 @@
 	},
 	{
 		"name": "edsm_systems",
-		"sql": "CREATE TABLE \"edsm_systems\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"distance\"\tnumeric,\n\t\"bodyCount\"\tnumeric,\n\t\"name\"\ttext,\n\t\"id64\"\tnumeric,\n\t\"duplicates\"\tTEXT,\n\t\"coords\"\ttext,\n\t\"coordsLocked\"\tINTEGER,\n\t\"requirePermit\"\tINTEGER,\n\t\"permitName\"\tTEXT,\n\t\"information\"\ttext,\n\t\"primaryStar\"\ttext,\n\t\"sector_x\"\tINTEGER,\n\t\"sector_y\"\tINTEGER,\n\t\"sector_z\"\tINTEGER,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"sql": "CREATE TABLE \"edsm_systems\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"id64\"\tnumeric NOT NULL UNIQUE,\n\t\"distance\"\tnumeric,\n\t\"bodyCount\"\tnumeric,\n\t\"name\"\ttext,\n\t\"duplicates\"\tTEXT,\n\t\"coords\"\ttext,\n\t\"allegiance\"\tTEXT,\n\t\"government\"\tTEXT,\n\t\"state\"\tTEXT,\n\t\"economy\"\tTEXT,\n\t\"security\"\tTEXT,\n\t\"population\"\tINTEGER,\n\t\"controllingFaction\"\tTEXT,\n\t\"factions\"\tTEXT,\n\t\"stations\"\tTEXT,\n\t\"bodies\"\tTEXT,\n\t\"date\"\tTEXT,\n\t\"coordsLocked\"\tINTEGER,\n\t\"requirePermit\"\tINTEGER,\n\t\"permitName\"\tTEXT,\n\t\"information\"\ttext,\n\t\"primaryStar\"\ttext,\n\t\"sector_x\"\tINTEGER,\n\t\"sector_y\"\tINTEGER,\n\t\"sector_z\"\tINTEGER,\n\tPRIMARY KEY(\"Id\")\n)",
 		"type": "table",
 		"row_array": []
 	},

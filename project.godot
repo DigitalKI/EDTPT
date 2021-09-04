@@ -142,6 +142,10 @@ data_reader="*res://HelperModules/DataReader.gd"
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
 
+[editor]
+
+convert_text_resources_to_binary_on_export=true
+
 [editor_plugins]
 
 enabled=PoolStringArray( "res://addons/godot-sqlite/plugin.cfg" )
@@ -151,6 +155,7 @@ enabled=PoolStringArray( "res://addons/godot-sqlite/plugin.cfg" )
 font=false
 display=false
 transparen=false
+convert_text_resources_to_binary_on_export=false
 
 [memory]
 

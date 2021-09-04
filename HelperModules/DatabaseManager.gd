@@ -36,6 +36,7 @@ func prepare_database(_verbose : bool = false):
 #	db.export_to_json("user://Database/edtpt_jsnbkp")
 	if db.select_rows("sqlite_master", "type = 'table'", ["*"]).empty():
 		result = db.import_from_json(db_creation_script)
+		create_index_on_table("edsm_systems", ["id64","sector_x", "sector_y", "sector_z"])
 	return result
 
 func clean_database():
@@ -140,6 +141,11 @@ func update_or_insert_multiple(_table_name : String, _data : Array):
 	query_string +=  fields.trim_suffix(", ") + ") VALUES " + values
 	result = db.query(query_string)
 	return result
+
+func create_index_on_table(_table_name : String, _fields : Array, _is_unique : bool = false):
+	var index_query : String = "CREATE %s INDEX %s_idx" % [("UNIQUE" if _is_unique else ""), _table_name]
+	index_query += " ON edsm_systems (%s)" % PoolStringArray(_fields).join(", ")
+	return db.query(index_query)
 
 func convert_data_to_inserts(_evt, _is_event = true):
 	# we now assign the appropriate value to certain fields
