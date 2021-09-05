@@ -89,6 +89,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://HelperModules/GeneralHelpers/Logger.gd"
 }, {
+"base": "Object",
+"class": "SettingsManager",
+"language": "GDScript",
+"path": "res://HelperModules/SettingsManager.gd"
+}, {
 "base": "Button",
 "class": "ShipButton",
 "language": "GDScript",
@@ -121,6 +126,7 @@ _global_script_class_icons={
 "GalaxySector": "",
 "JournalEvent": "",
 "Logger": "",
+"SettingsManager": "",
 "ShipButton": "",
 "ShipsDataManager": "",
 "edsmDataManager": ""

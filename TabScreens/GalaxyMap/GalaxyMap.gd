@@ -24,7 +24,11 @@ func _ready():
 	data_reader.edsm_manager.connect("systems_received", self, "_on_edsm_manager_systems_received")
 	table.visible = false
 	details.visible = false
-	pass
+
+	if data_reader.settings_manager.get_setting("GalaxyPlaneOnOff") != null:
+		galaxy.GalaxyPlaneOnOff(data_reader.settings_manager.get_setting("GalaxyPlaneOnOff"))
+	if data_reader.settings_manager.get_setting("GalaxyParticlesPlaneOnOff") != null:
+		galaxy.GalaxyParticlesPlaneOnOff(data_reader.settings_manager.get_setting("GalaxyParticlesPlaneOnOff"))
 
 func _on_GalaxyMap_gui_input(event):
 	if event is InputEventMouseButton:
@@ -136,11 +140,11 @@ func _on_BtEDSM_pressed():
 	pause_unpause_game()
 
 func _on_Bt2dOverlay_pressed():
-	galaxy.GalaxyPlaneOnOff()
+	data_reader.settings_manager.save_setting("GalaxyPlaneOnOff", galaxy.GalaxyPlaneOnOff())
 	pause_unpause_game()
 
 func _on_Bt3dOverlay_pressed():
-	galaxy.GalaxyParticlesPlaneOnOff()
+	data_reader.settings_manager.save_setting("GalaxyParticlesPlaneOnOff", galaxy.GalaxyParticlesPlaneOnOff())
 	pause_unpause_game()
 
 func _on_btTravelHistory_pressed():

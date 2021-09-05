@@ -16,6 +16,7 @@ var cached_events : Array = []
 
 var timer : Timer
 var autoupdate := false setget _set_autoupdate
+var settings_manager : SettingsManager = SettingsManager.new()
 var file_reader : FileReader = FileReader.new()
 var dbm : DatabaseManager = DatabaseManager.new()
 onready var edsm_manager : edsmDataManager = edsmDataManager.new()

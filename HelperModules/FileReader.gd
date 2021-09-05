@@ -15,7 +15,6 @@ func get_files(_get_cache := false):
 		while file_name != "":
 			if dir.current_is_dir():
 				pass
-#				logger.log_event("Found directory: " + file_name)
 			elif _get_cache && file_name.get_extension() == "cache":
 				_logfiles.append(file_name)
 			elif file_name.begins_with("Journal."):
@@ -28,10 +27,14 @@ func get_files(_get_cache := false):
 func get_file_size(_filename, _file : File = File.new()):
 	var fliesize := 0
 	var file_status = OK
+	var have_to_close := false
 	if !_file.is_open():
 		file_status = _file.open(logs_path + _filename, File.READ)
+		have_to_close = true
 	if file_status == OK:
 		fliesize = _file.get_len()
+	if have_to_close:
+		_file.close()
 	return fliesize
 
 func get_file_events(_filename : String, _seekto : int = 0):

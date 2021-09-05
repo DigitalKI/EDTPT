@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Fonts/Ubuntu-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://TabScreens/Settings/Settings.gd" type="Script" id=2]
+[ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=3]
+[ext_resource path="res://TabScreens/Settings/FilePathTextbox.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -10,6 +12,7 @@ font_data = ExtResource( 1 )
 [node name="Settings" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+theme = ExtResource( 3 )
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -45,54 +48,53 @@ align = 1
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 margin_top = 32.0
 margin_right = 994.0
-margin_bottom = 104.0
+margin_bottom = 107.0
 custom_constants/vseparation = 4
 columns = 2
 
 [node name="LblReset" type="RichTextLabel" parent="MarginContainer/VBoxContainer/GridContainer"]
 margin_right = 765.0
-margin_bottom = 20.0
+margin_bottom = 21.0
 size_flags_horizontal = 3
 text = "Reset database (No warning! No turning back, although you can re-import)"
 
 [node name="BtResetDB" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
 margin_left = 769.0
 margin_right = 994.0
-margin_bottom = 20.0
+margin_bottom = 21.0
+custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "Reset"
 
 [node name="LblImportEDSMInhabited" type="RichTextLabel" parent="MarginContainer/VBoxContainer/GridContainer"]
-margin_top = 24.0
+margin_top = 25.0
 margin_right = 765.0
-margin_bottom = 44.0
+margin_bottom = 46.0
 size_flags_horizontal = 3
+bbcode_enabled = true
+bbcode_text = "Downloads and imports data from [shake rate=7 level=10][color=#F2DBC9][url=\"https://www.edsm.net/en/nightly-dumps\"]EDSM[/url][/color][/shake] into EDTPT (Select your option in the dropdown button)"
 text = "Downloads and imports data from EDSM into EDTPT (Select your option in the dropdown button)"
 
 [node name="BtEDSMDownloads" type="MenuButton" parent="MarginContainer/VBoxContainer/GridContainer"]
 margin_left = 769.0
-margin_top = 24.0
+margin_top = 25.0
 margin_right = 994.0
-margin_bottom = 44.0
+margin_bottom = 46.0
 text = "Import"
 flat = false
 expand_icon = true
 
 [node name="Lbl7zPath" type="RichTextLabel" parent="MarginContainer/VBoxContainer/GridContainer"]
-margin_top = 48.0
+margin_top = 50.0
 margin_right = 765.0
-margin_bottom = 72.0
+margin_bottom = 75.0
 size_flags_horizontal = 3
 bbcode_enabled = true
 bbcode_text = "We need 7z to extract the downloaded files, please [url=\"https://www.7-zip.org/download.html\"]install it[/url] and set the path here if it's not the default one"
 text = "We need 7z to extract the downloaded files, please install it and set the path here if it's not the default one"
 
-[node name="Tb7ZPath" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer"]
-margin_left = 769.0
-margin_top = 48.0
-margin_right = 994.0
-margin_bottom = 72.0
-rect_min_size = Vector2( 225, 0 )
-text = "C:/Program Files/7-Zip/7z.exe"
+[node name="Tb7ZPath" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource( 4 )]
+file_dialog_parent_node = NodePath("../../../..")
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GridContainer/BtResetDB" to="." method="_on_BtResetDB_pressed"]
+[connection signal="meta_clicked" from="MarginContainer/VBoxContainer/GridContainer/LblImportEDSMInhabited" to="." method="_on_LblImportEDSMInhabited_meta_clicked"]
 [connection signal="meta_clicked" from="MarginContainer/VBoxContainer/GridContainer/Lbl7zPath" to="." method="_on_Lbl7zPath_meta_clicked"]

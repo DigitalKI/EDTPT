@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TabScreens/Settings/FilePathTextbox.gd" type="Script" id=1]
+
+[node name="FilePathTextbox" type="LineEdit"]
+margin_left = 769.0
+margin_top = 50.0
+margin_right = 994.0
+margin_bottom = 75.0
+rect_min_size = Vector2( 225, 0 )
+text = "C:/Program Files/7-Zip/7z.exe"
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 0.9
+margin_left = -26.0
+margin_top = 2.0
+margin_right = -2.0
+margin_bottom = -0.5
+text = "..."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]

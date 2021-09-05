@@ -116,11 +116,19 @@ func zoom(_zoom_speed):
 		galaxy_particles.GalaxyParticlesFade(camera.translation.z)
 		galaxy_plane_mesh.GalaxyPlaneFade(camera.translation.z)
 
-func GalaxyPlaneOnOff():
-	$GalaxyPlane.visible = !$GalaxyPlane.visible
+func GalaxyPlaneOnOff(_force_state : int = -1):
+	if _force_state != -1:
+		$GalaxyPlane.visible = bool(_force_state)
+	else:
+		$GalaxyPlane.visible = !$GalaxyPlane.visible
+	return $GalaxyPlane.visible
 
-func GalaxyParticlesPlaneOnOff():
-	$GalaxyParticles.visible = !$GalaxyParticles.visible
+func GalaxyParticlesPlaneOnOff(_force_state : int = -1):
+	if _force_state != -1:
+		$GalaxyParticles.visible = bool(_force_state)
+	else:
+		$GalaxyParticles.visible = !$GalaxyParticles.visible
+	return $GalaxyParticles.visible
 
 func spawn_sector_stars(_stars : Array, _config : Array, _default_color : Color = Color(0.2, 0.2, 0.2), _default_size : float = 1.0):
 	galaxy_sector.spawn_stars(_stars, _config, _default_color, _default_size)
