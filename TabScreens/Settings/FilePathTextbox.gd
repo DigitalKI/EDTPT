@@ -2,6 +2,7 @@ extends LineEdit
 
 var file_dialog : FileDialog = FileDialog.new()
 export(NodePath) var file_dialog_parent_node
+signal file_selected
 
 func _on_Button_pressed():
 	get_node(file_dialog_parent_node).add_child(file_dialog)
@@ -26,3 +27,4 @@ func _on_Button_pressed():
 
 func _on_file_selected(_file):
 	text = _file
+	emit_signal("file_selected")

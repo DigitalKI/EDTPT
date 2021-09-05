@@ -30,6 +30,13 @@ func _ready():
 	if data_reader.settings_manager.get_setting("GalaxyParticlesPlaneOnOff") != null:
 		galaxy.GalaxyParticlesPlaneOnOff(data_reader.settings_manager.get_setting("GalaxyParticlesPlaneOnOff"))
 
+func _exit_tree():
+	save_pos_and_zoom()
+
+func _on_GalaxyMap_visibility_changed():
+	if !is_visible_in_tree() :
+		save_pos_and_zoom()
+
 func _on_GalaxyMap_gui_input(event):
 	if event is InputEventMouseButton:
 		pause_unpause_game()
@@ -159,6 +166,7 @@ func _on_btTravelHistory_pressed():
 		galaxy.galaxy_plotter.clear_path()
 
 func _on_Timer_timeout():
+	save_pos_and_zoom()
 	pause_unpause_game(true)
 	$Timer.stop()
 
@@ -173,7 +181,16 @@ func pause_unpause_game(_pause : bool = false):
 		$GalaxyMapView/Viewport.render_target_update_mode = Viewport.UPDATE_WHEN_VISIBLE
 		$Timer.start(5)
 
+func save_pos_and_zoom():
+	data_reader.settings_manager.save_setting("camera_pos", galaxy.camera_center.translation)
+	data_reader.settings_manager.save_setting("camera_zoom", galaxy.camera.translation.z)
+
 func initialize_galaxy_map():
+	var camzoom := -1.0
+	if data_reader.settings_manager.get_setting("camera_zoom") != null:
+		camzoom = data_reader.settings_manager.get_setting("camera_zoom")
+	if data_reader.settings_manager.get_setting("camera_pos") != null:
+		camera_move(data_reader.settings_manager.get_setting("camera_pos"), camzoom)
 	galaxy.start_timer()
 	_on_BtGalaxy_pressed()
 
@@ -182,13 +199,19 @@ func update_navlabel():
 	var zoom = galaxy.camera.translation.z
 	navlabel.text = "%s view - Pos: %s/%s/%s-%s" % [view_mode, pos.x, pos.y, pos.z, zoom]
 
+func camera_move(_position : Vector3, _zoom : float = -1):
+	galaxy.camera_move_to(_position, _zoom)
+	data_reader.settings_manager.save_setting("camera_pos", _position)
+	data_reader.settings_manager.save_setting("camera_zoom", _zoom)
+	pause_unpause_game()
+
 func get_clicked_star():
 	var mouse_pos = self.get_local_mouse_position()
 	var clicked_star = galaxy.get_clicked_star(mouse_pos)
 	if clicked_star["idx"] >= 0:
 		var found_star : Dictionary = data_reader.galaxy_manager.star_systems[clicked_star["idx"]]
 		set_selected_star(found_star, clicked_star["pos"])
-		pause_unpause_game()
+		camera_move(clicked_star["pos"])
 
 func set_selected_star(_star, _star_pos):
 		details.title = ""
@@ -236,22 +259,21 @@ func set_selected_star(_star, _star_pos):
 							details.body += "%s (%s): %.2f%%\n" % [mat["Name"], mat["count"], (mat["total"] / mat["count"])]
 		details.visible = true
 		table.visible = false
-		galaxy.camera_move_to(_star_pos)
 
 
 func _on_Search_SearchItemSelected(id):
 	var found_star : Dictionary = data_reader.galaxy_manager.star_systems[id]
 	var starpos := galaxy.galaxy_sector.get_star_position_by_id(id)
 	set_selected_star(found_star, starpos)
-	pause_unpause_game()
+	camera_move(starpos)
 
 func _on_FloatingTable_item_selected(tree_item):
 	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
-	galaxy.camera_move_to(starpos)
-	pause_unpause_game()
+	camera_move(starpos)
 
 
 func _on_FloatingTable_item_doubleclicked(tree_item):
 	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
 	set_selected_star(tree_item, starpos)
-	pause_unpause_game()
+	camera_move(starpos)
+

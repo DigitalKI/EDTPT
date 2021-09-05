@@ -98,3 +98,5 @@ file_dialog_parent_node = NodePath("../../../..")
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GridContainer/BtResetDB" to="." method="_on_BtResetDB_pressed"]
 [connection signal="meta_clicked" from="MarginContainer/VBoxContainer/GridContainer/LblImportEDSMInhabited" to="." method="_on_LblImportEDSMInhabited_meta_clicked"]
 [connection signal="meta_clicked" from="MarginContainer/VBoxContainer/GridContainer/Lbl7zPath" to="." method="_on_Lbl7zPath_meta_clicked"]
+[connection signal="file_selected" from="MarginContainer/VBoxContainer/GridContainer/Tb7ZPath" to="." method="_on_Tb7ZPath_file_selected"]
+[connection signal="text_entered" from="MarginContainer/VBoxContainer/GridContainer/Tb7ZPath" to="." method="_on_Tb7ZPath_text_entered"]

@@ -40,16 +40,17 @@ func start_timer():
 
 # Smoothly moves the camera to a set position,
 # interpolates position, zoom, and albedo of particles and galaxy 2d map
-func camera_move_to(_final_pos : Vector3):
+func camera_move_to(_final_pos : Vector3, _final_zoom : float = -1.0):
 	var distance = camera_center.translation.distance_to(_final_pos)
 	var plane_final_pos := Vector3(camera_plane.translation.x, _final_pos.y, camera_plane.translation.z)
 	var camera_final_pos := Vector3(_final_pos.x, camera_center.translation.y, _final_pos.z)
-	var camera_final_zoom : float = 150.0
+	var camera_default_zoom : float = 150.0
 	
 	# Zooms in only if farther than the initial value in in camera_final_zoom
-	if camera.translation.z < camera_final_zoom:
-		camera_final_zoom = camera.translation.z
-	
+	if camera.translation.z < camera_default_zoom:
+		camera_default_zoom = camera.translation.z
+	if _final_zoom > 0:
+		camera_default_zoom = _final_zoom
 	# Tweaking the values below should make the movement feel a bit closer to ED
 	var duration : float = distance * 0.002
 	if duration > max_tween_duration:
@@ -67,16 +68,16 @@ func camera_move_to(_final_pos : Vector3):
 	tween_pos.start()
 	
 	tween_zoom.interpolate_property(camera, "translation",
-	camera.translation, Vector3(camera.translation.x, camera.translation.y, camera_final_zoom), duration,
+	camera.translation, Vector3(camera.translation.x, camera.translation.y, camera_default_zoom), duration,
 	Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween_zoom.start()
 	
 	tween_fade.interpolate_method(galaxy_particles, "GalaxyParticlesFade",
-	camera.translation.z, camera_final_zoom, duration,
+	camera.translation.z, camera_default_zoom, duration,
 	Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	
 	tween_fade.interpolate_method(galaxy_plane_mesh, "GalaxyPlaneFade",
-	camera.translation.z, camera_final_zoom, duration,
+	camera.translation.z, camera_default_zoom, duration,
 	Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween_fade.start()
 

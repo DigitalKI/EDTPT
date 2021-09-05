@@ -1,7 +1,5 @@
 extends Panel
 
-var settings_dict : Dictionary = {}
-
 onready var button_edsm_downloads : MenuButton = $MarginContainer/VBoxContainer/GridContainer/BtEDSMDownloads
 onready var edsm_downloads_popup : PopupMenu = button_edsm_downloads.get_popup()
 onready var sevenz_path : LineEdit = $MarginContainer/VBoxContainer/GridContainer/Tb7ZPath
@@ -33,11 +31,11 @@ func _on_LblImportEDSMInhabited_meta_clicked(meta):
 	OS.shell_open(meta)
 
 func _on_Tb7ZPath_text_entered(new_text):
-	settings_dict["Tb7ZPath"] = new_text
 	data_reader.settings_manager.save_setting("Tb7ZPath", new_text)
+
+func _on_Tb7ZPath_file_selected():
+	data_reader.settings_manager.save_setting("Tb7ZPath", sevenz_path.text)
 
 func apply_settings():
 	if data_reader.settings_manager.get_setting("Tb7ZPath") != null:
 		sevenz_path.text = data_reader.settings_manager.get_setting("Tb7ZPath")
-
-

@@ -142,19 +142,16 @@ mouse_filter = 1
 size_flags_horizontal = 3
 
 [node name="SystemDetails" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 3 )]
-visible = false
-anchor_left = 0.674
-margin_left = 0.0299683
-title = "something something"
-body = "Bla bla bla
-frefreg
-rgbrftbt tyhythty"
+anchor_top = 0.002
+anchor_right = 0.0
+margin_left = 0.00338387
+margin_top = 0.0599182
+margin_right = 295.003
+margin_bottom = 1.25989
 
 [node name="FloatingTable" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 8 )]
-visible = false
-anchor_left = 0.674
-margin_left = 0.0299683
-title_text = "something something"
+anchor_left = 1.0
+margin_left = -295.0
 
 [node name="LabelNav" type="Label" parent="HBoxContainer/GalaxyContainer"]
 anchor_top = 1.0
@@ -170,6 +167,10 @@ __meta__ = {
 }
 
 [node name="Search" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 7 )]
+anchor_left = 0.333
+anchor_right = 0.666
+margin_left = -1.36499
+margin_right = -1.82501
 
 [node name="LeftButtonsContainer2" type="VBoxContainer" parent="HBoxContainer"]
 margin_left = 977.0
@@ -241,6 +242,7 @@ size_flags_vertical = 3
 [node name="Timer" type="Timer" parent="."]
 
 [connection signal="gui_input" from="." to="." method="_on_GalaxyMap_gui_input"]
+[connection signal="visibility_changed" from="." to="." method="_on_GalaxyMap_visibility_changed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtGalaxy" to="." method="_on_BtGalaxy_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtMining" to="." method="_on_BtMining_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtEDSM" to="." method="_on_BtEDSM_pressed"]
