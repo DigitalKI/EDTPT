@@ -38,8 +38,16 @@ func _on_BtGalaxy_pressed():
 	$VBoxContainer/MainContainer/TabContainer.current_tab = 2
 	$VBoxContainer/MainContainer/TabContainer/TabsGalaxy/GalaxyMap.initialize_galaxy_map()
 
-func _on_BbtSettings_pressed():
+func _on_BtQB_pressed():
 	$VBoxContainer/MainContainer/TabContainer.current_tab = 3
+	$VBoxContainer/MainContainer/TabContainer/TabsQB/QueryBuilder.initialize_builder()
+
+func _on_BtMatInv_pressed():
+	$VBoxContainer/MainContainer/TabContainer.current_tab = 4
+#	$VBoxContainer/MainContainer/TabContainer/TabsMatsInv/MaterialsAndInventory
+
+func _on_BbtSettings_pressed():
+	$VBoxContainer/MainContainer/TabContainer.current_tab = 5
 	$VBoxContainer/MainContainer/TabContainer/TabsGalaxy/GalaxyMap.initialize_galaxy_map()
 
 func _on_BtCMDR_item_selected(index):
@@ -50,6 +58,8 @@ func _on_DataReader_new_cached_events(_evts):
 	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtLogs.disabled = false
 	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtShips.disabled = false
 	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtGalaxy.disabled = false
+	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtQB.disabled = false
+	$VBoxContainer/MainContainer/Panel/VBoxContainer/BtMatInv.disabled = false
 	fill_cmdrs_listbox()
 
 

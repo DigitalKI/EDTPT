@@ -1,0 +1,179 @@
+{
+    "Raw": {
+        "Category1": [
+            "Carbon",
+            "Vanadium",
+            "Niobium",
+            "Yttrium"
+        ],
+        "Category2": [
+            "Phosphorus",
+            "Chromium",
+            "Molybdenum",
+            "Technetium"
+        ],
+        "Category3": [
+            "Sulphur",
+            "Manganese",
+            "Cadmium",
+            "Ruthenium"
+        ],
+        "Category4": [
+            "Iron",
+            "Zinc",
+            "Tin",
+            "Selenium"
+        ],
+        "Category5": [
+            "Nickel",
+            "Germanium",
+            "Tungsten",
+            "Tellurium"
+        ],
+        "Category6": [
+            "Rhenium",
+            "Arsenic",
+            "Mercury",
+            "Polonium"
+        ],
+        "Category7": [
+            "Lead",
+            "Zirconium",
+            "Boron",
+            "Antimony"
+        ]
+    },
+    "Encoded": {
+        "Emission Data": [
+            "scrambledemissiondata",
+            "archivedemissiondata",
+            "emissiondata",
+            "decodedemissiondata",
+            "compactemissionsdata"
+        ],
+        "Wake Scans": [
+            "disruptedwakeechoes",
+            "fsdtelemetry",
+            "wakesolutions",
+            "hyperspacetrajectories",
+            "dataminedwake"
+        ],
+        "Shield Data": [
+            "shieldcyclerecordings",
+            "shieldsoakanalysis",
+            "shielddensityreports",
+            "shieldpatternanalysis",
+            "shieldfrequencydata"
+        ],
+        "Encryption Files": [
+            "encryptedfiles",
+            "encryptioncodes",
+            "symmetrickeys",
+            "encryptionarchives",
+            "adaptiveencryptors"
+        ],
+        "Data Archives": [
+            "bulkscandata",
+            "scanarchives",
+            "scandatabanks",
+            "encodedscandata",
+            "classifiedscandata"
+        ],
+        "Encoded Firmware": [
+            "legacyfirmware",
+            "consumerfirmware",
+            "industrialfirmware",
+            "securityfirmware",
+            "embeddedfirmware"
+        ],
+        "Guardian": [
+            "ancienttechnologicaldata",
+            "ancientbiologicaldata",
+            "ancienthistoricaldata",
+            "ancientculturaldata",
+            "ancientlanguagedata"
+        ]
+    },
+    "Manufactured": {
+        "Chemical": [
+            "chemicalstorageunits",
+            "chemicalprocessors",
+            "chemicaldistillery",
+            "chemicalmanipulators",
+            "pharmaceuticalisolators"
+        ],
+        "Thermic": [
+            "temperedalloys",
+            "heatresistantceramics",
+            "precipitatedalloys",
+            "thermicalloys",
+            "militarygradealloys"
+        ],
+        "Heat": [
+            "heatconductionwiring",
+            "heatdispersionplate",
+            "heatexchangers",
+            "heatvanes",
+            "protoheatradiators"
+        ],
+        "Conductive": [
+            "basicconductors",
+            "conductivecomponents",
+            "conductiveceramics",
+            "conductivepolymers",
+            "biotechconductors"
+        ],
+        "Mechanical Components": [
+            "mechanicalscrap",
+            "mechanicalequipment",
+            "mechanicalcomponents",
+            "configurablecomponents",
+            "improvisedcomponents"
+        ],
+        "Capacitors": [
+            "gridresistors",
+            "hybridcapacitors",
+            "electrochemicalarrays",
+            "Polymer Capacitors",
+            "militarysupercapacitors"
+        ],
+        "Shielding": [
+            "wornshieldemitters",
+            "shieldemitters",
+            "shieldingsensors",
+            "compoundshielding",
+            "imperialshielding"
+        ],
+        "Composite": [
+            "compactcomposites",
+            "filamentcomposites",
+            "highdensitycomposites",
+            "fedproprietarycomposites",
+            "fedcorecomposites"
+        ],
+        "Crystals": [
+            "crystalshards",
+            "uncutfocuscrystals",
+            "focuscrystals",
+            "refinedfocuscrystals",
+            "exquisitefocuscrystals"
+        ],
+        "Alloys": [
+            "salvagedalloys",
+            "galvanisingalloys",
+            "phasealloys",
+            "protolightalloys",
+            "protoradiolicalloys"
+        ],
+        "Guardian": [
+            "guardian_powerconduit",
+            "guardian_powercell",
+            "guardian_sentinel_wreckagecomponents",
+            "guardian_techcomponent",
+            "guardian_sentinel_weaponparts"
+        ],
+        "Thargoid": [
+            "unknownenergysource"
+        ]
+    }
+}

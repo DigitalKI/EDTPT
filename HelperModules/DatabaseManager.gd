@@ -1,4 +1,4 @@
-extends Node
+extends Object
 class_name DatabaseManager
 
 const SQLite = preload("res://addons/godot-sqlite/bin/gdsqlite.gdns")
@@ -64,11 +64,16 @@ func update_event_types():
 		event_types.append(evt["event_type"])
 	event_types.sort()
 
-func get_all_event_tables():
+func get_all_event_tables(_filter : String = ""):
+	var sql_all_tables : Array = db.select_rows("sqlite_master", "type = 'table' AND tbl_name != 'sqlite_sequence' " + _filter + " ORDER BY tbl_name ASC", ["tbl_name"])
 	var table_evt_types := []
-	for evt_tbl in db.select_rows("sqlite_master", "type = 'table'", ["*"]):
-		table_evt_types.append(evt_tbl["name"])
+	for evt_tbl in sql_all_tables:
+		table_evt_types.append(evt_tbl["tbl_name"])
 	return table_evt_types
+
+func get_table_fields(_table_name : String):
+	data_reader.dbm.db.query("PRAGMA table_info(%s);" % _table_name)
+	return data_reader.dbm.db.query_result.duplicate(true)
 
 func db_set_event_type(_event_type):
 	# Create the event type

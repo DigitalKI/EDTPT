@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TabScreens/MaterialsAndInventory/MaterialsAndInventory.gd" type="Script" id=1]
+
+[node name="MaterialsAndInventory" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 4
+custom_constants/margin_top = 4
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 4
+
+[node name="MaterialsTree" type="Tree" parent="MarginContainer"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 1020.0
+margin_bottom = 596.0
+columns = 5
+hide_root = true
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="visibility_changed" from="." to="." method="_on_InventoryAndMaterials_visibility_changed"]
+[connection signal="item_activated" from="MarginContainer/MaterialsTree" to="." method="_on_MaterialsTree_item_activated"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

@@ -58,14 +58,13 @@ func _read_systems_from_file(_filename : String, _batch_size : int = 0, _seek_po
 	return {"events": f_events, "position": -1}
 
 func _7z_extract(_file_to_extract : String):
-	var settings = data_reader.settings_manager.get_settings()
-	var sevenz_exec_path : String = settings["Tb7ZPath"] if settings.has("Tb7ZPath") else "C:/Program Files/7-Zip/7z.exe"
+	var settings = data_reader.settings_manager.get_setting("Tb7ZPath")
+	var sevenz_exec_path : String = settings if settings != null else "C:/Program Files/7-Zip/7z.exe"
 	var sevenz_exec_standalone := OS.get_user_data_dir() + "/Database/7z1900-extra/x64/7za.exe"
 	var extract_from := ("\"%s/Database/%s\"" % [OS.get_user_data_dir(), _file_to_extract]).replace("/", "\\")
 	var extract_to := ("-o\"%s/Database\"" % [OS.get_user_data_dir()]).replace("/", "\\")
-	var parameters := [extract_from, extract_to]
 	var output : Array = []
-	var error = OS.execute(sevenz_exec_path, ["x", extract_from, extract_to], true, output)
+	var error = OS.execute(sevenz_exec_path, ["x", extract_from, extract_to, "-aoa"], true, output)
 	if error:
 		logger.log_event(String(error))
 	if output:

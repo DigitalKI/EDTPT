@@ -88,3 +88,14 @@ LEFT JOIN Scan S
 ON F.SystemAddress = S.SystemAddress
 GROUP BY F.SystemAddress
 HAVING MAX(F.timestamp)
+
+
+# Sources of info and data
+
+Data used by the Coriolis front-end and back-end apps:
+
+https://github.com/EDCD/coriolis-data
+
+Elite dangerous data network:
+
+https://github.com/EDCD/EDDN/wiki

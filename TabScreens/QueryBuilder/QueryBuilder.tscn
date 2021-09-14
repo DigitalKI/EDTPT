@@ -1,0 +1,100 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TabScreens/QueryBuilder/QueryBuilder.gd" type="Script" id=1]
+
+[node name="QueryBuilder" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TabContainer" type="TabContainer" parent="HBoxContainer"]
+margin_right = 510.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+tab_align = 0
+
+[node name="EventTypes" type="Tabs" parent="HBoxContainer/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="EventTypes" type="ItemList" parent="HBoxContainer/TabContainer/EventTypes"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
+max_columns = 4
+same_column_width = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EventFields" type="Tabs" parent="HBoxContainer/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="EventFields" type="Tree" parent="HBoxContainer/TabContainer/EventFields"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+columns = 2
+hide_root = true
+select_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelResult" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 514.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+
+[node name="SelectedEvents" type="ItemList" parent="HBoxContainer/PanelResult"]
+margin_right = 510.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 0, 50 )
+size_flags_horizontal = 3
+max_columns = 3
+same_column_width = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtRemoveAll" type="Button" parent="HBoxContainer/PanelResult"]
+margin_top = 54.0
+margin_right = 510.0
+margin_bottom = 74.0
+text = "Remove all event types"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ResultingQuery" type="TextEdit" parent="HBoxContainer/PanelResult"]
+margin_top = 78.0
+margin_right = 510.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 0, 250 )
+size_flags_vertical = 3
+
+[connection signal="item_activated" from="HBoxContainer/TabContainer/EventTypes/EventTypes" to="." method="_on_EventTypes_item_activated"]
+[connection signal="item_activated" from="HBoxContainer/TabContainer/EventFields/EventFields" to="." method="_on_EventFields_item_activated"]
+[connection signal="pressed" from="HBoxContainer/PanelResult/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]

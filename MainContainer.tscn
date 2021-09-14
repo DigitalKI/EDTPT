@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://TabScreens/journalreader/JournalReader.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TabScreens/Settings/Settings.tscn" type="PackedScene" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=4]
 [ext_resource path="res://MainContainerRoot.gd" type="Script" id=5]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.tscn" type="PackedScene" id=6]
+[ext_resource path="res://TabScreens/MaterialsAndInventory/MaterialsAndInventory.tscn" type="PackedScene" id=7]
+[ext_resource path="res://TabScreens/QueryBuilder/QueryBuilder.tscn" type="PackedScene" id=8]
 
 [node name="Root" type="Control"]
 anchor_right = 1.0
@@ -80,6 +82,20 @@ margin_bottom = 96.0
 disabled = true
 text = "Galaxy Map"
 
+[node name="BtQB" type="Button" parent="VBoxContainer/MainContainer/Panel/VBoxContainer"]
+margin_top = 100.0
+margin_right = 100.0
+margin_bottom = 121.0
+disabled = true
+text = "Query Builder"
+
+[node name="BtMatInv" type="Button" parent="VBoxContainer/MainContainer/Panel/VBoxContainer"]
+margin_top = 125.0
+margin_right = 100.0
+margin_bottom = 146.0
+disabled = true
+text = "Mats/Inv"
+
 [node name="BbtSettings" type="Button" parent="VBoxContainer/MainContainer/Panel"]
 margin_top = 555.0
 margin_right = 100.0
@@ -134,6 +150,28 @@ margin_bottom = -4.0
 
 [node name="GalaxyMap" parent="VBoxContainer/MainContainer/TabContainer/TabsGalaxy" instance=ExtResource( 6 )]
 
+[node name="TabsQB" type="Tabs" parent="VBoxContainer/MainContainer/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 8.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="QueryBuilder" parent="VBoxContainer/MainContainer/TabContainer/TabsQB" instance=ExtResource( 8 )]
+
+[node name="TabsMatsInv" type="Tabs" parent="VBoxContainer/MainContainer/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 8.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="MaterialsAndInventory" parent="VBoxContainer/MainContainer/TabContainer/TabsMatsInv" instance=ExtResource( 7 )]
+
 [node name="TabsSettings" type="Tabs" parent="VBoxContainer/MainContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
@@ -178,6 +216,8 @@ __meta__ = {
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtLogs" to="." method="_on_BtLogs_pressed"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtShips" to="." method="_on_BtShips_pressed"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtGalaxy" to="." method="_on_BtGalaxy_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtQB" to="." method="_on_BtQB_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainContainer/Panel/VBoxContainer/BtMatInv" to="." method="_on_BtMatInv_pressed"]
 [connection signal="pressed" from="VBoxContainer/MainContainer/Panel/BbtSettings" to="." method="_on_BbtSettings_pressed"]
 [connection signal="button_down" from="VBoxContainer/Notifications" to="." method="_on_Notifications_button_down"]
 [connection signal="pressed" from="VBoxContainer/Notifications" to="." method="_on_Notifications_pressed"]
