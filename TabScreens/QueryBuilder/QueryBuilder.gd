@@ -3,8 +3,8 @@ extends Control
 onready var event_tabs : TabContainer = $HBoxContainer/TabContainer
 onready var event_types_table : ItemList = $HBoxContainer/TabContainer/EventTypes/EventTypes
 onready var events_fields : Tree = $HBoxContainer/TabContainer/EventFields/EventFields
+onready var query_view: TextEdit = $HBoxContainer/TabContainer/QueryView/ResultingQuery
 onready var selected_events : ItemList = $HBoxContainer/PanelResult/SelectedEvents
-onready var query_view: TextEdit = $HBoxContainer/PanelResult/ResultingQuery
 
 var tree_root : TreeItem
 var color_coords_bg : Color = Color("#ff7802")

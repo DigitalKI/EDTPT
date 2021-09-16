@@ -8,6 +8,14 @@ func _init():
 	var file_status = file.open(mat_data_path, File.READ)
 	if file_status == OK:
 		material_categories = parse_json(file.get_as_text())
+	file.close()
+
+func get_type_from_materialname(_matname : String):
+	for type in material_categories.keys():
+		for cat in material_categories[type].keys():
+			if material_categories[type][cat].has(_matname.to_lower()):
+				return cat
+	return ""
 
 # Get last logged materials list
 func get_updated_materials():

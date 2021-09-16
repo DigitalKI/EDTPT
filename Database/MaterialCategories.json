@@ -1,92 +1,92 @@
 {
-    "Raw": {
-        "Category1": [
-            "Carbon",
-            "Vanadium",
-            "Niobium",
-            "Yttrium"
+    "raw": {
+        "category1": [
+            "carbon",
+            "vanadium",
+            "niobium",
+            "yttrium"
         ],
-        "Category2": [
-            "Phosphorus",
-            "Chromium",
-            "Molybdenum",
-            "Technetium"
+        "category2": [
+            "phosphorus",
+            "chromium",
+            "molybdenum",
+            "technetium"
         ],
-        "Category3": [
-            "Sulphur",
-            "Manganese",
-            "Cadmium",
-            "Ruthenium"
+        "category3": [
+            "sulphur",
+            "manganese",
+            "cadmium",
+            "ruthenium"
         ],
-        "Category4": [
-            "Iron",
-            "Zinc",
-            "Tin",
-            "Selenium"
+        "category4": [
+            "iron",
+            "zinc",
+            "tin",
+            "selenium"
         ],
-        "Category5": [
-            "Nickel",
-            "Germanium",
-            "Tungsten",
-            "Tellurium"
+        "category5": [
+            "nickel",
+            "germanium",
+            "tungsten",
+            "tellurium"
         ],
-        "Category6": [
-            "Rhenium",
-            "Arsenic",
-            "Mercury",
-            "Polonium"
+        "category6": [
+            "rhenium",
+            "arsenic",
+            "mercury",
+            "polonium"
         ],
-        "Category7": [
-            "Lead",
-            "Zirconium",
-            "Boron",
-            "Antimony"
+        "category7": [
+            "lead",
+            "zirconium",
+            "boron",
+            "antimony"
         ]
     },
-    "Encoded": {
-        "Emission Data": [
+    "encoded": {
+        "emission data": [
             "scrambledemissiondata",
             "archivedemissiondata",
             "emissiondata",
             "decodedemissiondata",
             "compactemissionsdata"
         ],
-        "Wake Scans": [
+        "wake scans": [
             "disruptedwakeechoes",
             "fsdtelemetry",
             "wakesolutions",
             "hyperspacetrajectories",
             "dataminedwake"
         ],
-        "Shield Data": [
+        "shield data": [
             "shieldcyclerecordings",
             "shieldsoakanalysis",
             "shielddensityreports",
             "shieldpatternanalysis",
             "shieldfrequencydata"
         ],
-        "Encryption Files": [
+        "encryption files": [
             "encryptedfiles",
             "encryptioncodes",
             "symmetrickeys",
             "encryptionarchives",
             "adaptiveencryptors"
         ],
-        "Data Archives": [
+        "data archives": [
             "bulkscandata",
             "scanarchives",
             "scandatabanks",
             "encodedscandata",
             "classifiedscandata"
         ],
-        "Encoded Firmware": [
+        "encoded firmware": [
             "legacyfirmware",
             "consumerfirmware",
             "industrialfirmware",
             "securityfirmware",
             "embeddedfirmware"
         ],
-        "Guardian": [
+        "guardian": [
             "ancienttechnologicaldata",
             "ancientbiologicaldata",
             "ancienthistoricaldata",
@@ -94,85 +94,85 @@
             "ancientlanguagedata"
         ]
     },
-    "Manufactured": {
-        "Chemical": [
+    "manufactured": {
+        "chemical": [
             "chemicalstorageunits",
             "chemicalprocessors",
             "chemicaldistillery",
             "chemicalmanipulators",
             "pharmaceuticalisolators"
         ],
-        "Thermic": [
+        "thermic": [
             "temperedalloys",
             "heatresistantceramics",
             "precipitatedalloys",
             "thermicalloys",
             "militarygradealloys"
         ],
-        "Heat": [
+        "heat": [
             "heatconductionwiring",
             "heatdispersionplate",
             "heatexchangers",
             "heatvanes",
             "protoheatradiators"
         ],
-        "Conductive": [
+        "conductive": [
             "basicconductors",
             "conductivecomponents",
             "conductiveceramics",
             "conductivepolymers",
             "biotechconductors"
         ],
-        "Mechanical Components": [
+        "mechanical components": [
             "mechanicalscrap",
             "mechanicalequipment",
             "mechanicalcomponents",
             "configurablecomponents",
             "improvisedcomponents"
         ],
-        "Capacitors": [
+        "capacitors": [
             "gridresistors",
             "hybridcapacitors",
             "electrochemicalarrays",
-            "Polymer Capacitors",
+            "polymercapacitors",
             "militarysupercapacitors"
         ],
-        "Shielding": [
+        "shielding": [
             "wornshieldemitters",
             "shieldemitters",
             "shieldingsensors",
             "compoundshielding",
             "imperialshielding"
         ],
-        "Composite": [
+        "composite": [
             "compactcomposites",
             "filamentcomposites",
             "highdensitycomposites",
             "fedproprietarycomposites",
             "fedcorecomposites"
         ],
-        "Crystals": [
+        "crystals": [
             "crystalshards",
             "uncutfocuscrystals",
             "focuscrystals",
             "refinedfocuscrystals",
             "exquisitefocuscrystals"
         ],
-        "Alloys": [
+        "alloys": [
             "salvagedalloys",
             "galvanisingalloys",
             "phasealloys",
             "protolightalloys",
             "protoradiolicalloys"
         ],
-        "Guardian": [
+        "guardian": [
             "guardian_powerconduit",
             "guardian_powercell",
             "guardian_sentinel_wreckagecomponents",
             "guardian_techcomponent",
             "guardian_sentinel_weaponparts"
         ],
-        "Thargoid": [
+        "thargoid": [
             "unknownenergysource"
         ]
     }

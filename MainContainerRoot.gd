@@ -8,6 +8,7 @@ func _ready():
 	$VBoxContainer/Notifications.text = logger.log_event_last
 	$NotificationsHistory/NotificationsText.text = logger.log_events
 	$VBoxContainer/MainContainer/TabContainer/TabLogs/JournalReader.initialize_journal_reader()
+	OS.window_borderless = false
 
 func _set_notification(_value):
 	$VBoxContainer/Notifications.text = logger.log_event_last

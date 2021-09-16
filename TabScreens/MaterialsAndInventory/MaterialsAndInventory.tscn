@@ -9,6 +9,10 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+material_min_color = Color( 0, 0, 0, 1 )
+material_max_color = Color( 0.27451, 0.490196, 1, 1 )
+category_bg_color = Color( 1, 0.552941, 0.0352941, 1 )
+type_bg_color = Color( 0.45098, 0.2, 0, 1 )
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
@@ -28,6 +32,15 @@ hide_root = true
 
 [node name="Timer" type="Timer" parent="."]
 
+[node name="BtnUpdate" type="Button" parent="."]
+margin_right = 58.0
+margin_bottom = 20.0
+text = "Update"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [connection signal="visibility_changed" from="." to="." method="_on_InventoryAndMaterials_visibility_changed"]
 [connection signal="item_activated" from="MarginContainer/MaterialsTree" to="." method="_on_MaterialsTree_item_activated"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="pressed" from="BtnUpdate" to="." method="_on_BtnUpdate_pressed"]
