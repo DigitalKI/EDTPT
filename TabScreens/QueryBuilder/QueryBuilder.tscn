@@ -1,10 +1,12 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://TabScreens/QueryBuilder/QueryBuilder.gd" type="Script" id=1]
+[ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=2]
 
 [node name="QueryBuilder" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+theme = ExtResource( 2 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -24,6 +26,7 @@ size_flags_horizontal = 3
 tab_align = 0
 
 [node name="EventTypes" type="Tabs" parent="HBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -43,11 +46,10 @@ __meta__ = {
 }
 
 [node name="EventFields" type="Tabs" parent="HBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 32.0
+margin_top = 33.0
 margin_right = -4.0
 margin_bottom = -4.0
 
@@ -76,6 +78,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 rect_min_size = Vector2( 0, 250 )
 size_flags_vertical = 3
+wrap_enabled = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -100,14 +103,14 @@ __meta__ = {
 [node name="BtRemoveAll" type="Button" parent="HBoxContainer/PanelResult"]
 margin_top = 54.0
 margin_right = 510.0
-margin_bottom = 74.0
+margin_bottom = 75.0
 text = "Remove all event types"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="ResultsTable" type="Tree" parent="HBoxContainer/PanelResult"]
-margin_top = 78.0
+margin_top = 79.0
 margin_right = 510.0
 margin_bottom = 600.0
 size_flags_vertical = 3
