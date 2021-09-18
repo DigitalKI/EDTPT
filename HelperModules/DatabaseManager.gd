@@ -81,6 +81,12 @@ func db_set_event_type(_event_type):
 		if !db.insert_rows("event_types", [{"event_type": _event_type}]):
 			logger.log_event("There was a problem adding a new event type")
 
+func db_execute_select(_select : String) -> Array:
+	if _select.trim_prefix(" ").to_lower().begins_with("select"):
+		if db.query(_select):
+			return db.query_result.duplicate(true)
+	return []
+
 # Creates a table from the event type, 
 # automatically generating columns with its respective type.
 # Table is not created if it already exists in the database.

@@ -26,11 +26,10 @@ size_flags_horizontal = 3
 tab_align = 0
 
 [node name="EventTypes" type="Tabs" parent="HBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 32.0
+margin_top = 33.0
 margin_right = -4.0
 margin_bottom = -4.0
 
@@ -46,6 +45,7 @@ __meta__ = {
 }
 
 [node name="EventFields" type="Tabs" parent="HBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -69,7 +69,7 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 32.0
+margin_top = 33.0
 margin_right = -4.0
 margin_bottom = -4.0
 
@@ -114,6 +114,7 @@ margin_top = 79.0
 margin_right = 510.0
 margin_bottom = 600.0
 size_flags_vertical = 3
+hide_root = true
 
 [connection signal="item_activated" from="HBoxContainer/TabContainer/EventTypes/EventTypes" to="." method="_on_EventTypes_item_activated"]
 [connection signal="item_activated" from="HBoxContainer/TabContainer/EventFields/EventFields" to="." method="_on_EventFields_item_activated"]

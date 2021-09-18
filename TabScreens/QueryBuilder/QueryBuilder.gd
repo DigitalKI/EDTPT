@@ -5,6 +5,7 @@ onready var event_types_table : ItemList = $HBoxContainer/TabContainer/EventType
 onready var events_fields : Tree = $HBoxContainer/TabContainer/EventFields/EventFields
 onready var query_view: TextEdit = $HBoxContainer/TabContainer/QueryView/ResultingQuery
 onready var selected_events : ItemList = $HBoxContainer/PanelResult/SelectedEvents
+onready var results_table : Tree = $HBoxContainer/PanelResult/ResultsTable
 
 var tree_root : TreeItem
 export(Color) var coords_bg : Color = Color("#ff7802")
@@ -16,10 +17,13 @@ export(Color) var selected_field_fg : Color = Color("#3a3a3a")
 var field_bg : Color = Color("#d5d5d5")
 var field_fg : Color = Color("#3a3a3a")
 
+var event_tables_coords : Array
+var event_tables_system_addr : Array
 var query_structure : Dictionary = {}
 
 func _ready():
-	pass
+	event_tables_coords = data_reader.dbm.get_all_event_tables(" AND (sql like '%StarPos%' OR sql LIKE '%coords%')")
+	event_tables_system_addr = data_reader.dbm.get_all_event_tables(" AND SQL LIKE '%SystemAddress%'")
 
 func _on_EventTypes_item_activated(index):
 	if selected_events.get_item_count() < 10:
@@ -45,9 +49,13 @@ func _on_EventFields_item_activated():
 		selected_item.set_custom_bg_color(0, selected_field_fg)
 		selected_item.set_custom_color(0, selected_field_bg)
 	query_view.text = query_structure_to_select()
+	get_result_table(query_view.text)
 
 func build_query_structure(_selected_field : TreeItem):
 	var result = ""
+	for evt_typ_idx in selected_events.get_item_count():
+		if !query_structure.has(selected_events.get_item_text(evt_typ_idx)):
+			query_structure[selected_events.get_item_text(evt_typ_idx)] = []
 	if _selected_field.get_text(0).length() > 0:
 		var event_type_item : TreeItem = _selected_field.get_parent()
 		if event_type_item.get_text(0):
@@ -63,13 +71,16 @@ func build_query_structure(_selected_field : TreeItem):
 
 func query_structure_to_select():
 	var resulting_query : String = "SELECT"
-	var tables_query := ""
+	var tables_query := " FROM "
 	var fields_query := ""
+	var prev_tbl := ""
 	for tbl in query_structure.keys():
+		var has_sys_addr : bool = event_tables_coords.has(tbl) || event_tables_system_addr.has(tbl)
 		for fld in query_structure[tbl]:
-			fields_query += ", %s" % fld
-		tables_query += ", %s" % tbl
-	resulting_query += fields_query.trim_prefix(",") + " FROM " + tables_query.trim_prefix(",")
+			fields_query += ", %s.%s" % [tbl, fld]
+		tables_query += " INNER JOIN {tbl} ON {prev_tbl}.SystemAddress = {tbl}.SystemAddress".format({"prev_tbl": prev_tbl, "tbl": tbl}) if has_sys_addr && prev_tbl.length() > 0 else tbl
+		prev_tbl = tbl
+	resulting_query += fields_query.trim_prefix(",") + tables_query
 	return resulting_query
 
 func initialize_builder():
@@ -80,8 +91,6 @@ func list_all_tables():
 	event_types_table.clear()
 	selected_events.clear()
 	var event_tables = data_reader.dbm.get_all_event_tables()
-	var event_tables_coords : Array = data_reader.dbm.get_all_event_tables(" AND (sql like '%StarPos%' OR sql LIKE '%coords%')")
-	var event_tables_system_addr : Array = data_reader.dbm.get_all_event_tables(" AND SQL LIKE '%SystemAddress%'")
 	for sys_tbl in event_tables_coords:
 		event_types_table.add_item(sys_tbl)
 		event_types_table.set_item_custom_bg_color(event_types_table.get_item_count() - 1, coords_bg)
@@ -122,3 +131,19 @@ func show_events_fields(_event_name : String):
 		type_item.set_text(1, fld["type"])
 		type_item.set_custom_bg_color(0, selected_field_fg)
 		type_item.set_custom_color(0, selected_field_bg)
+
+func get_result_table(_events_query : String):
+	var events := data_reader.dbm.db_execute_select(_events_query)
+	results_table.clear()
+	results_table.set_column_titles_visible(true)
+	if !events.empty():
+		results_table.columns = events[0].size()
+		for col_idx in  events[0].size():
+			results_table.set_column_title(col_idx, events[0].keys()[col_idx])
+	var results_table_root : TreeItem = results_table.create_item()
+	for evt in events:
+		var type_item : TreeItem = results_table.create_item(results_table_root)
+		var col_idx = 0
+		for col in evt.keys():
+			type_item.set_text(col_idx, "" if !evt[col] else evt[col])
+			col_idx += 1
