@@ -2,10 +2,10 @@ extends Control
 
 onready var event_tabs : TabContainer = $HBoxContainer/TabContainer
 onready var event_types_table : ItemList = $HBoxContainer/TabContainer/EventTypes/EventTypes
-onready var events_fields : Tree = $HBoxContainer/TabContainer/EventFields/EventFields
+onready var events_fields : Tree = $HBoxContainer/TabContainer/EventFields/PanelResult/EventFields
+onready var events_fields_popup : PopupMenu = $HBoxContainer/TabContainer/EventFields/PanelResult/EventFields/PopupRemoveTable
 onready var query_view: TextEdit = $HBoxContainer/TabContainer/QueryView/ResultingQuery
-onready var selected_events : ItemList = $HBoxContainer/PanelResult/SelectedEvents
-onready var results_table : Tree = $HBoxContainer/PanelResult/ResultsTable
+onready var results_table : Tree = $HBoxContainer/ResultsTable
 
 var tree_root : TreeItem
 export(Color) var coords_bg : Color = Color("#ff7802")
@@ -26,17 +26,17 @@ func _ready():
 	event_tables_system_addr = data_reader.dbm.get_all_event_tables(" AND SQL LIKE '%SystemAddress%'")
 
 func _on_EventTypes_item_activated(index):
-	if selected_events.get_item_count() < 10:
+	if query_structure.size() < 5:
 		var selected_event_type := event_types_table.get_item_text(index)
 		var selected_event_color := event_types_table.get_item_custom_bg_color(index)
-		selected_events.add_item(selected_event_type)
-		selected_events.set_item_custom_bg_color(selected_events.get_item_count() - 1, selected_event_color)
 		show_events_fields(selected_event_type)
 		event_tabs.tabs_visible = 1
 
 func _on_BtRemoveAll_pressed():
-	selected_events.clear()
 	query_structure.clear()
+	events_fields.clear()
+	results_table.clear()
+	query_view.text = ""
 
 func _on_EventFields_item_activated():
 	var selected_item : TreeItem = events_fields.get_selected()
@@ -49,13 +49,24 @@ func _on_EventFields_item_activated():
 		selected_item.set_custom_bg_color(0, selected_field_fg)
 		selected_item.set_custom_color(0, selected_field_bg)
 	query_view.text = query_structure_to_select()
-	get_result_table(query_view.text)
+	get_result_table(query_view.text + " LIMIT 1000")
+
+func _on_EventFields_item_rmb_selected(position):
+	var selected_item : TreeItem = events_fields.get_selected()
+	if selected_item.get_children():
+		events_fields_popup.rect_position = position + events_fields_popup.rect_size
+		events_fields_popup.popup()
+
+func _on_PopupRemoveTable_id_pressed(id):
+	if id == 0:
+		remove_event_fields(events_fields.get_selected().get_text(0))
+	get_result_table(query_view.text + " LIMIT 1000")
 
 func build_query_structure(_selected_field : TreeItem):
 	var result = ""
-	for evt_typ_idx in selected_events.get_item_count():
-		if !query_structure.has(selected_events.get_item_text(evt_typ_idx)):
-			query_structure[selected_events.get_item_text(evt_typ_idx)] = []
+	for evt_typ in get_event_types():
+		if !query_structure.has(evt_typ):
+			query_structure[evt_typ] = []
 	if _selected_field.get_text(0).length() > 0:
 		var event_type_item : TreeItem = _selected_field.get_parent()
 		if event_type_item.get_text(0):
@@ -89,7 +100,6 @@ func initialize_builder():
 
 func list_all_tables():
 	event_types_table.clear()
-	selected_events.clear()
 	var event_tables = data_reader.dbm.get_all_event_tables()
 	for sys_tbl in event_tables_coords:
 		event_types_table.add_item(sys_tbl)
@@ -132,6 +142,26 @@ func show_events_fields(_event_name : String):
 		type_item.set_custom_bg_color(0, selected_field_fg)
 		type_item.set_custom_color(0, selected_field_bg)
 
+func get_event_types() -> Array:
+	var event_types : Array = []
+	var root_evt_item = events_fields.get_root()
+	var cur : TreeItem = root_evt_item.get_children()
+	while cur:
+		if cur.get_children():
+			event_types.append(cur.get_text(0))
+		cur = cur.get_next()
+	return event_types
+
+func remove_event_fields(_event_name : String):
+	query_structure.erase(_event_name)
+	query_view.text = query_structure_to_select()
+	var root_evt_item = events_fields.get_root()
+	var cur : TreeItem = root_evt_item.get_children()
+	while cur:
+		if cur.get_text(0) == _event_name:
+			root_evt_item.remove_child(cur)
+		cur = cur.get_next()
+
 func get_result_table(_events_query : String):
 	var events := data_reader.dbm.db_execute_select(_events_query)
 	results_table.clear()
@@ -145,5 +175,6 @@ func get_result_table(_events_query : String):
 		var type_item : TreeItem = results_table.create_item(results_table_root)
 		var col_idx = 0
 		for col in evt.keys():
-			type_item.set_text(col_idx, "" if !evt[col] else evt[col])
+			type_item.set_text(col_idx, "" if !evt[col] else String(evt[col]))
 			col_idx += 1
+

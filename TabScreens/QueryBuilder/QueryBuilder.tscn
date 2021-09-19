@@ -26,6 +26,7 @@ size_flags_horizontal = 3
 tab_align = 0
 
 [node name="EventTypes" type="Tabs" parent="HBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -45,7 +46,6 @@ __meta__ = {
 }
 
 [node name="EventFields" type="Tabs" parent="HBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -53,16 +53,40 @@ margin_top = 33.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="EventFields" type="Tree" parent="HBoxContainer/TabContainer/EventFields"]
+[node name="PanelResult" type="VBoxContainer" parent="HBoxContainer/TabContainer/EventFields"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtRemoveAll" type="Button" parent="HBoxContainer/TabContainer/EventFields/PanelResult"]
+margin_right = 502.0
+margin_bottom = 21.0
+text = "Remove all event types"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EventFields" type="Tree" parent="HBoxContainer/TabContainer/EventFields/PanelResult"]
+margin_top = 25.0
+margin_right = 502.0
+margin_bottom = 563.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 columns = 2
+allow_rmb_select = true
 hide_root = true
 select_mode = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="PopupRemoveTable" type="PopupMenu" parent="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields"]
+margin_right = 20.0
+margin_bottom = 20.0
+items = [ "Remove table", null, 0, false, false, 0, 0, null, "", false ]
 
 [node name="QueryView" type="Tabs" parent="HBoxContainer/TabContainer"]
 visible = false
@@ -83,39 +107,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PanelResult" type="VBoxContainer" parent="HBoxContainer"]
+[node name="ResultsTable" type="Tree" parent="HBoxContainer"]
 margin_left = 514.0
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
-
-[node name="SelectedEvents" type="ItemList" parent="HBoxContainer/PanelResult"]
-margin_right = 510.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 0, 50 )
-size_flags_horizontal = 3
-max_columns = 3
-same_column_width = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BtRemoveAll" type="Button" parent="HBoxContainer/PanelResult"]
-margin_top = 54.0
-margin_right = 510.0
-margin_bottom = 75.0
-text = "Remove all event types"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ResultsTable" type="Tree" parent="HBoxContainer/PanelResult"]
-margin_top = 79.0
-margin_right = 510.0
-margin_bottom = 600.0
 size_flags_vertical = 3
 hide_root = true
 
 [connection signal="item_activated" from="HBoxContainer/TabContainer/EventTypes/EventTypes" to="." method="_on_EventTypes_item_activated"]
-[connection signal="item_activated" from="HBoxContainer/TabContainer/EventFields/EventFields" to="." method="_on_EventFields_item_activated"]
-[connection signal="pressed" from="HBoxContainer/PanelResult/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/EventFields/PanelResult/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]
+[connection signal="item_activated" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_activated"]
+[connection signal="item_rmb_selected" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_rmb_selected"]
+[connection signal="id_pressed" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields/PopupRemoveTable" to="." method="_on_PopupRemoveTable_id_pressed"]
