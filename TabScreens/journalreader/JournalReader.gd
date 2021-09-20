@@ -70,7 +70,7 @@ func add_all_events_by_type():
 	clear_events()
 	add_events(journal_events)
 
-func get_all_selected_event_types():
+func get_all_selected_event_types() -> Array:
 	var selected_types := []
 	for idx in log_filter_popup.get_item_count():
 		if log_filter_popup.is_item_checked(idx):
@@ -79,7 +79,8 @@ func get_all_selected_event_types():
 
 # Adds an event to the list using the event object
 # evey new event is put at the beginning of the tree
-func add_events(_current_logobject : Array):
+func add_events(_current_logobject : Array, _filter : bool = false):
+	var current_event_types := get_all_selected_event_types()
 	var tree_root : TreeItem = log_details.get_root()
 	if !tree_root:
 		log_details.set_column_titles_visible(true)
@@ -102,7 +103,8 @@ func add_events(_current_logobject : Array):
 				var evt : TreeItem
 				if log_obj.has("timestamp"):
 				# we skip this entry if it's before the oldest timestamp we're looking for
-					if log_obj["timestamp"] < start_time:
+				# We also skip by selected event type (by default all events are selected
+					if log_obj["timestamp"] < start_time || !current_event_types.has(log_obj["event"]):
 						continue
 					evt = log_details.create_item(tree_root)
 					evt.move_to_top() # here it moves it at the top IMPORTANT
