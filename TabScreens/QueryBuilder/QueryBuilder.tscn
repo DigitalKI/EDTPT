@@ -46,6 +46,7 @@ __meta__ = {
 }
 
 [node name="EventFields" type="Tabs" parent="HBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -89,7 +90,6 @@ margin_bottom = 20.0
 items = [ "Remove table", null, 0, false, false, 0, 0, null, "", false ]
 
 [node name="QueryView" type="Tabs" parent="HBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -100,9 +100,20 @@ margin_bottom = -4.0
 [node name="ResultingQuery" type="TextEdit" parent="HBoxContainer/TabContainer/QueryView"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_bottom = -27.0
 rect_min_size = Vector2( 0, 250 )
 size_flags_vertical = 3
 wrap_enabled = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtApplySql" type="Button" parent="HBoxContainer/TabContainer/QueryView"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -21.0
+text = "Apply changes"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -120,3 +131,4 @@ hide_root = true
 [connection signal="item_activated" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_activated"]
 [connection signal="item_rmb_selected" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_rmb_selected"]
 [connection signal="id_pressed" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields/PopupRemoveTable" to="." method="_on_PopupRemoveTable_id_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/QueryView/BtApplySql" to="." method="_on_BtApplySql_pressed"]

@@ -29,8 +29,9 @@ func _on_EventTypes_item_activated(index):
 	if query_structure.size() < 5:
 		var selected_event_type := event_types_table.get_item_text(index)
 		var selected_event_color := event_types_table.get_item_custom_bg_color(index)
-		show_events_fields(selected_event_type)
-		event_tabs.tabs_visible = 1
+		if !get_event_types().has(selected_event_type):
+			add_events_fields(selected_event_type)
+			event_tabs.tabs_visible = 1
 
 func _on_BtRemoveAll_pressed():
 	query_structure.clear()
@@ -61,6 +62,9 @@ func _on_PopupRemoveTable_id_pressed(id):
 	if id == 0:
 		remove_event_fields(events_fields.get_selected().get_text(0))
 	get_result_table(query_view.text + " LIMIT 1000")
+
+func _on_BtApplySql_pressed():
+	pass # Replace with function body.
 
 func build_query_structure(_selected_field : TreeItem):
 	var result = ""
@@ -127,7 +131,7 @@ func initialize_event_fields():
 	field_bg = tree_root.get_custom_bg_color(0)
 	field_fg = tree_root.get_custom_color(0)
 
-func show_events_fields(_event_name : String):
+func add_events_fields(_event_name : String):
 	var table_item : TreeItem = events_fields.create_item(tree_root)
 	table_item.set_text(0, _event_name)
 	table_item.set_custom_color(0, Color(0,0,0))
