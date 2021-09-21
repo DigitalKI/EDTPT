@@ -23,6 +23,8 @@ func get_updated_materials():
 	var raw_mats : Array = []
 	var manufactured_mats : Array = []
 	var encoded_mats : Array = []
+	var mats_collected : Array = []
+	var missions_rewards : Array = []
 	if data_reader.dbm.db.query("SELECT * "
 								+ " FROM Materials"
 								+ " ORDER by timestamp desc"
@@ -32,4 +34,49 @@ func get_updated_materials():
 			raw_mats = parse_json(mats_data[0]["Raw"])
 			manufactured_mats = parse_json(mats_data[0]["Manufactured"])
 			encoded_mats = parse_json(mats_data[0]["Encoded"])
+			var mats_timestamp = mats_data[0]["timestamp"]
+			if data_reader.dbm.db.query("SELECT * "
+										+ " FROM MaterialCollected"
+										+ " WHERE timestamp >= %s" % mats_timestamp
+										+ " ORDER by timestamp"):
+				mats_collected = data_reader.dbm.db.query_result.duplicate()
+			if data_reader.dbm.db.query("SELECT timestamp, MaterialsReward "
+										+ " FROM MissionCompleted"
+										+ " WHERE timestamp >= '%s'" % mats_timestamp
+										+ " AND MaterialsReward is not null"
+										+ " ORDER by timestamp"):
+				missions_rewards = data_reader.dbm.db.query_result.duplicate()
+			for mat in raw_mats:
+				if mats_collected:
+					for cmat in mats_collected:
+						if mat["Name"].to_lower() == cmat["Name"].to_lower():
+							mat["Count"] += cmat["Count"]
+				if missions_rewards:
+					for reward in missions_rewards:
+						var miss_reward : Array = parse_json(reward["MaterialsReward"])
+						for rwd in miss_reward:
+							if mat["Name"].to_lower() == rwd["Name"].to_lower():
+								mat["Count"] += rwd["Count"]
+			for mat in manufactured_mats:
+				if mats_collected:
+					for cmat in mats_collected:
+						if mat["Name"].to_lower() == cmat["Name"].to_lower():
+							mat["Count"] += cmat["Count"]
+				if missions_rewards:
+					for reward in missions_rewards:
+						var miss_reward : Array = parse_json(reward["MaterialsReward"])
+						for rwd in miss_reward:
+							if mat["Name"].to_lower() == rwd["Name"].to_lower():
+								mat["Count"] += rwd["Count"]
+			for mat in encoded_mats:
+				if mats_collected:
+					for cmat in mats_collected:
+						if mat["Name"].to_lower() == cmat["Name"].to_lower():
+							mat["Count"] += cmat["Count"]
+				if missions_rewards:
+					for reward in missions_rewards:
+						var miss_reward : Array = parse_json(reward["MaterialsReward"])
+						for rwd in miss_reward:
+							if mat["Name"].to_lower() == rwd["Name"].to_lower():
+								mat["Count"] += rwd["Count"]
 	return {"Raw": raw_mats, "Manufactured": manufactured_mats, "Encoded": encoded_mats}

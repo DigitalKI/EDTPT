@@ -21,6 +21,10 @@ func _on_DataReader_new_cached_events(_events: Array):
 	for evt in _events:
 		if "MaterialCollected" == evt["event"]:
 			update_mats_tree(evt["Category"], evt["Name"], evt["Count"], true)
+		elif "MissionCompleted" == evt["event"]:
+			if evt.has("MaterialsReward") && evt["MaterialsReward"]:
+				for mat in evt["MaterialsReward"]:
+					update_mats_tree(mat["Category"], mat["Name"], mat["Count"], true)
 		elif "Materials" == evt["event"]:
 			for mat in evt["Raw"]:
 				update_mats_tree("Raw", mat["Name"], mat["Count"])
@@ -78,13 +82,8 @@ func add_mats(_type : String, _data : Dictionary, _mat_types : Array, _root_node
 #	var mats_bar : TreeItem = materials_table.create_item(_root_node)
 	for mat_type in _mat_types:
 		var mat_amount : int = _get_material_amount(mat_type, _data[_type.capitalize()])
-		var percentage : float = mat_amount / (300.0 - 50.0 * col_idx)
-		var amount_color := material_min_color.linear_interpolate(material_max_color, percentage)
-		mats_item.set_text(col_idx, _get_material_localized(mat_type, _data[_type.capitalize()]).capitalize())
-		mats_item.set_metadata(col_idx, mat_type)
-		mats_item.set_custom_bg_color(col_idx, amount_color)
-		mats_item.set_text_align(col_idx, TreeItem.ALIGN_RIGHT)
-		mats_item.set_suffix(col_idx, String(mat_amount))
+		var matname_local : String = _get_material_localized(mat_type, _data[_type.capitalize()])
+		set_mat_item(mats_item, col_idx, mat_type, matname_local, mat_amount)
 #		mats_bar.set_cell_mode(col_idx, TreeItem.CELL_MODE_RANGE)
 #		mats_bar.set_custom_color(col_idx, material_min_color)
 #		mats_bar.set_custom_bg_color(col_idx, material_max_color)
@@ -92,23 +91,39 @@ func add_mats(_type : String, _data : Dictionary, _mat_types : Array, _root_node
 #		mats_bar.set_range(col_idx, mat_amount)
 		col_idx += 1
 
-func update_mats_tree(_type, _matname, _amount : int, _add : bool = false):
+func update_mats_tree(_type, _matname : String, _amount : int, _add : bool = false):
 	var current_cat_item : TreeItem = _get_matching_child(tree_root, _type, 0)
 	var current_type_name : String = data_reader.matinv_manager.get_type_from_materialname(_matname)
 	var current_type_item : TreeItem = _get_matching_child(current_cat_item, current_type_name, 0)
 	for _col in materials_table.columns:
 		if current_type_item:
-			if current_type_item.get_children().get_metadata(_col) == _matname:
-				var current_amount : int = int(current_type_item.get_children().get_suffix(_col))
-				current_type_item.get_children().set_suffix(_col,String(current_amount + _amount) if _add else String(_amount))
+			var child_item : TreeItem = current_type_item.get_children()
+			var child_metadata = child_item.get_metadata(_col)
+			if child_metadata is String && child_metadata.to_lower() == _matname.to_lower():
+				var child_text = child_item.get_text(_col)
+				var current_amount : int = int(child_item.get_suffix(_col))
+				var new_amount : int = (current_amount + _amount) if _add else _amount
+				child_item.set_suffix(_col, String(current_amount + _amount) if _add else String(_amount))
+				set_mat_item(child_item, _col, _matname, child_text, new_amount)
+
+func set_mat_item(_mat_item : TreeItem, _col_idx : int, _mat_type : String, _matname : String, _amount : int):
+	var max_amount : int = (300.0 - 50.0 * _col_idx)
+	var percentage : float = float(_amount) / float(max_amount)
+	var amount_color := material_min_color.linear_interpolate(material_max_color, percentage)
+	_mat_item.set_text(_col_idx, _matname.capitalize())
+	_mat_item.set_metadata(_col_idx, _mat_type)
+	_mat_item.set_custom_bg_color(_col_idx, amount_color)
+	_mat_item.set_suffix(_col_idx, String(_amount))
+	_mat_item.set_tooltip(_col_idx, "%s - %s/%s" % [_mat_type, _amount, max_amount])
 
 func _get_matching_child(_parent_item : TreeItem, _text_to_search : String, _column : int = 0):
 	if _parent_item:
 		var max_count := 500
 		var matching_item : TreeItem = _parent_item.get_children()
+		var text_to_search_cleaned := _text_to_search.trim_prefix("$MICRORESOURCE_CATEGORY_").replace(";", "").to_lower()
 		while matching_item != null && max_count > 0:
-#			print("%s -> %s == %s" %  [_parent_item.get_text(0), matching_item.get_text(_column), _text_to_search])
-			if matching_item.get_metadata(_column) == _text_to_search.to_lower():
+			print("%s -> %s == %s" %  [_parent_item.get_text(0), matching_item.get_text(_column), _text_to_search])
+			if matching_item.get_metadata(_column) == text_to_search_cleaned:
 				return matching_item
 			matching_item = matching_item.get_next()
 			max_count -= 1
