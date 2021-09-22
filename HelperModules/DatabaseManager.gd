@@ -72,8 +72,9 @@ func get_all_event_tables(_filter : String = ""):
 	return table_evt_types
 
 func get_table_fields(_table_name : String):
-	data_reader.dbm.db.query("PRAGMA table_info(%s);" % _table_name)
-	return data_reader.dbm.db.query_result.duplicate(true)
+	if data_reader.dbm.db.query("PRAGMA table_info(%s);" % _table_name):
+		return data_reader.dbm.db.query_result.duplicate(true)
+	return []
 
 func db_set_event_type(_event_type):
 	# Create the event type
