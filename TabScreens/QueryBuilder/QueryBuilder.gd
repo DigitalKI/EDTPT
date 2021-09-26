@@ -1,8 +1,8 @@
 extends Control
 
 onready var event_tabs : TabContainer = $HBoxContainer/TabContainer
-onready var saved_views : ItemList = $HBoxContainer/TabContainer/SavedViews/SavedViewsList
-onready var view_title : LineEdit = $HBoxContainer/TabContainer/EventFields/PanelResult/TbViewTitle
+onready var saved_views : ItemList = $HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList
+onready var view_title : LineEdit = $HBoxContainer/TabContainer/SavedViews/VBoxViews/TbViewTitle
 onready var event_types_table : ItemList = $HBoxContainer/TabContainer/EventTypes/EventTypes
 onready var events_fields : Tree = $HBoxContainer/TabContainer/EventFields/PanelResult/EventFields
 onready var events_fields_popup : PopupMenu = $HBoxContainer/TabContainer/EventFields/PanelResult/EventFields/PopupRemoveTable
@@ -19,19 +19,30 @@ export(Color) var selected_field_fg : Color = Color("#3a3a3a")
 var field_bg : Color = Color("#d5d5d5")
 var field_fg : Color = Color("#3a3a3a")
 
-var event_tables_coords : Array
-var event_tables_system_addr : Array
+var views_data : Dictionary = {}
+var current_query_structure_name : String = ""
 var query_structure : Dictionary = {}
 
 func _ready():
-	event_tables_coords = data_reader.dbm.get_all_event_tables(" AND (sql like '%StarPos%' OR sql LIKE '%coords%')")
-	event_tables_system_addr = data_reader.dbm.get_all_event_tables(" AND SQL LIKE '%SystemAddress%'")
+	pass
+
+func _on_TbViewTitle_text_entered(new_text):
+		saved_views.add_item(new_text)
+		saved_views.select(saved_views.get_item_count() - 1)
+		current_query_structure_name = new_text
+		views_data[new_text] = {}
+		query_structure = views_data[new_text]
+		view_title.text = ""
+
+func _on_SavedViewsList_item_selected(index):
+	current_query_structure_name = saved_views.get_item_text(index)
+	query_structure = views_data[current_query_structure_name]
+	query_structure_to_ui(query_structure)
+	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure)
+	get_result_table(query_view.text + " LIMIT 1000")
 
 func _on_SavedViewsList_item_activated(index):
-	if index == 0:
-		saved_views.add_item("no title")
-		saved_views.select(saved_views.get_item_count() - 1)
-		event_tabs.current_tab = 2
+	pass
 
 func _on_EventTypes_item_activated(index):
 	if query_structure.size() < 5:
@@ -51,7 +62,7 @@ func _on_EventFields_item_activated():
 	var selected_item : TreeItem = events_fields.get_selected()
 	if selected_item.get_children():
 		selected_item.collapsed = !selected_item.collapsed
-	elif build_query_structure(selected_item) == "added":
+	elif update_query_structure(selected_item) == "added":
 		selected_item.set_custom_bg_color(0, selected_field_bg)
 		selected_item.set_custom_color(0, selected_field_fg)
 		selected_item.set_custom_bg_color(1, selected_field_bg)
@@ -62,7 +73,7 @@ func _on_EventFields_item_activated():
 		selected_item.set_custom_bg_color(1, selected_field_fg)
 		selected_item.set_custom_color(1, selected_field_bg)
 		selected_item.set_text(1, "")
-	query_view.text = query_structure_to_select()
+	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure)
 	get_result_table(query_view.text + " LIMIT 1000")
 
 func _on_EventFields_item_selected():
@@ -72,8 +83,8 @@ func _on_EventFields_gui_input(event):
 	if event is InputEventKey:
 		if event.scancode == KEY_ENTER:
 			events_fields.get_selected().set_editable(1, false)
-			build_query_structure(events_fields.get_selected())
-			query_view.text = query_structure_to_select()
+			update_query_structure(events_fields.get_selected())
+			query_view.text = data_reader.query_builder.query_structure_to_select(query_structure)
 			get_result_table(query_view.text + " LIMIT 1000")
 
 func _on_EventFields_item_rmb_selected(position):
@@ -101,7 +112,19 @@ func _on_PopupRemoveTable_id_pressed(id):
 func _on_BtApplySql_pressed():
 	pass # Replace with function body.
 
-func build_query_structure(_selected_field : TreeItem):
+func query_structure_to_ui(_structure : Dictionary):
+	for tablename in _structure.keys():
+		var selected_event_color := get_event_type_color_by_text(tablename)
+		add_events_fields(tablename, selected_event_color)
+		for fieldname in _structure[tablename].keys():
+			var event_field := get_event_field_item_by_text(fieldname)
+			if event_field:
+				event_field.set_custom_bg_color(0, selected_field_bg)
+				event_field.set_custom_color(0, selected_field_fg)
+				event_field.set_custom_bg_color(1, selected_field_bg)
+				event_field.set_custom_color(1, selected_field_fg)
+
+func update_query_structure(_selected_field : TreeItem):
 	var result = ""
 	for evt_typ in get_event_types():
 		if !query_structure.has(evt_typ):
@@ -119,43 +142,34 @@ func build_query_structure(_selected_field : TreeItem):
 				if _selected_field.get_text(1):
 					query_structure[event_type_item.get_text(0)][_selected_field.get_text(0)] = _selected_field.get_text(1)
 				result = "added"
+	data_reader.settings_manager.save_setting("query_views", views_data)
 	return result
 
-func query_structure_to_select():
-	var resulting_query : String = "SELECT"
-	var tables_query := "\n FROM "
-	var fields_query := ""
-	var filters_query := "\n WHERE 1=1 "
-	var prev_tbl := ""
-	for tbl in query_structure.keys():
-		var has_sys_addr : bool = event_tables_coords.has(tbl) || event_tables_system_addr.has(tbl)
-		for fld in query_structure[tbl].keys():
-			fields_query += ", %s.%s" % [tbl, fld]
-			if query_structure[tbl][fld]:
-				filters_query += " AND %s %s" % [fld, query_structure[tbl][fld]]
-		tables_query += " INNER JOIN {tbl} ON {prev_tbl}.SystemAddress = {tbl}.SystemAddress".format({"prev_tbl": prev_tbl, "tbl": tbl}) if has_sys_addr && prev_tbl.length() > 0 else tbl
-		prev_tbl = tbl
-	resulting_query += fields_query.trim_prefix(",") + tables_query + filters_query
-	return resulting_query
-
 func initialize_builder():
+	saved_views.clear()
 	list_all_tables()
 	initialize_event_fields()
+	list_saved_views()
+
+func list_saved_views():
+	views_data = data_reader.settings_manager.get_setting("query_views")
+	for view in views_data.keys():
+		saved_views.add_item(view)
 
 func list_all_tables():
 	event_types_table.clear()
 	var event_tables = data_reader.dbm.get_all_event_tables()
-	for sys_tbl in event_tables_coords:
+	for sys_tbl in data_reader.query_builder.event_tables_coords:
 		event_types_table.add_item(sys_tbl)
 		event_types_table.set_item_custom_bg_color(event_types_table.get_item_count() - 1, coords_bg)
 		event_types_table.set_item_custom_fg_color(event_types_table.get_item_count() - 1, coords_fg)
-	for addr_tbl in event_tables_system_addr:
-		if !event_tables_coords.has(addr_tbl):
+	for addr_tbl in data_reader.query_builder.event_tables_system_addr:
+		if !data_reader.query_builder.event_tables_coords.has(addr_tbl):
 			event_types_table.add_item(addr_tbl)
 			event_types_table.set_item_custom_bg_color(event_types_table.get_item_count() - 1, system_bg)
 			event_types_table.set_item_custom_fg_color(event_types_table.get_item_count() - 1, system_fg)
 	for tbl in event_tables:
-		if !event_tables_coords.has(tbl) && !event_tables_system_addr.has(tbl):
+		if !data_reader.query_builder.event_tables_coords.has(tbl) && !data_reader.query_builder.event_tables_system_addr.has(tbl):
 			event_types_table.add_item(tbl)
 
 func initialize_event_fields():
@@ -199,9 +213,29 @@ func get_event_types() -> Array:
 			cur = cur.get_next()
 	return event_types
 
+func get_event_type_color_by_text(_text) -> Color:
+	for idx in event_types_table.get_item_count():
+		if event_types_table.get_item_text(idx) == _text:
+			return event_types_table.get_item_custom_bg_color(idx)
+	return Color()
+
+func get_event_field_item_by_text(_text) -> TreeItem:
+	var root_evt_item = events_fields.get_root()
+	if root_evt_item:
+		var cur : TreeItem = root_evt_item.get_children()
+		while cur:
+			var cur_text := cur.get_text(0)
+			if cur_text == _text:
+				return cur
+			elif cur.get_children():
+				cur = cur.get_children()
+			else:
+				cur = cur.get_next()
+	return null
+
 func remove_event_fields(_event_name : String):
 	query_structure.erase(_event_name)
-	query_view.text = query_structure_to_select()
+	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure)
 	var root_evt_item = events_fields.get_root()
 	var cur : TreeItem = root_evt_item.get_children()
 	while cur:

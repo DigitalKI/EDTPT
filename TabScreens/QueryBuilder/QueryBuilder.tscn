@@ -38,15 +38,29 @@ margin_top = 33.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="SavedViewsList" type="ItemList" parent="HBoxContainer/TabContainer/SavedViews"]
+[node name="VBoxViews" type="VBoxContainer" parent="HBoxContainer/TabContainer/SavedViews"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SavedViewsList" type="ItemList" parent="HBoxContainer/TabContainer/SavedViews/VBoxViews"]
+margin_right = 502.0
+margin_bottom = 534.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
 items = [ "Add new", null, false ]
 same_column_width = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="TbViewTitle" type="LineEdit" parent="HBoxContainer/TabContainer/SavedViews/VBoxViews"]
+margin_top = 538.0
+margin_right = 502.0
+margin_bottom = 563.0
+placeholder_text = "Add new view"
 
 [node name="EventTypes" type="Tabs" parent="HBoxContainer/TabContainer"]
 visible = false
@@ -85,13 +99,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TbViewTitle" type="LineEdit" parent="HBoxContainer/TabContainer/EventFields/PanelResult"]
-margin_right = 502.0
-margin_bottom = 25.0
-placeholder_text = "Add a title"
-
 [node name="EventFields" type="Tree" parent="HBoxContainer/TabContainer/EventFields/PanelResult"]
-margin_top = 29.0
 margin_right = 502.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
@@ -157,10 +165,11 @@ margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/item_margin = 50
 hide_root = true
 
-[connection signal="item_activated" from="HBoxContainer/TabContainer/SavedViews/SavedViewsList" to="." method="_on_SavedViewsList_item_activated"]
+[connection signal="item_activated" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList" to="." method="_on_SavedViewsList_item_activated"]
+[connection signal="item_selected" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList" to="." method="_on_SavedViewsList_item_selected"]
+[connection signal="text_entered" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/TbViewTitle" to="." method="_on_TbViewTitle_text_entered"]
 [connection signal="item_activated" from="HBoxContainer/TabContainer/EventTypes/EventTypes" to="." method="_on_EventTypes_item_activated"]
 [connection signal="gui_input" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_gui_input"]
 [connection signal="item_activated" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_activated"]
