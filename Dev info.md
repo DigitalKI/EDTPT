@@ -99,3 +99,6 @@ https://github.com/EDCD/coriolis-data
 Elite dangerous data network:
 
 https://github.com/EDCD/EDDN/wiki
+
+Inara API:
+https://inara.cz/inara-api/

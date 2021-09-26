@@ -16,22 +16,31 @@ func _ready():
 	data_reader.connect("new_cached_events", self, "_on_DataReader_new_cached_events")
 	materials_table.set_column_titles_visible(true)
 	create_mats_tree()
-	
+
 func _on_DataReader_new_cached_events(_events: Array):
+	var latest_mat_event : Dictionary = {"timestamp" : ""}
+	var other_mat_events : Array = []
 	for evt in _events:
-		if "MaterialCollected" == evt["event"]:
-			update_mats_tree(evt["Category"], evt["Name"], evt["Count"], true)
-		elif "MissionCompleted" == evt["event"]:
-			if evt.has("MaterialsReward") && evt["MaterialsReward"]:
-				for mat in evt["MaterialsReward"]:
-					update_mats_tree(mat["Category"], mat["Name"], mat["Count"], true)
-		elif "Materials" == evt["event"]:
-			for mat in evt["Raw"]:
-				update_mats_tree("Raw", mat["Name"], mat["Count"])
-			for mat in evt["Manufactured"]:
-				update_mats_tree("Manufactured", mat["Name"], mat["Count"])
-			for mat in evt["Encoded"]:
-				update_mats_tree("Encoded", mat["Name"], mat["Count"])
+		if evt["event"] == "Materials":
+			if evt["timestamp"] > latest_mat_event["timestamp"]:
+				latest_mat_event = evt
+		if ["MaterialCollected", "MissionCompleted"].has(evt["event"]):
+			other_mat_events.append(evt)
+	if latest_mat_event.has("event"):
+		for mat in latest_mat_event["Raw"]:
+			update_mats_tree("Raw", mat["Name"], mat["Count"])
+		for mat in latest_mat_event["Manufactured"]:
+			update_mats_tree("Manufactured", mat["Name"], mat["Count"])
+		for mat in latest_mat_event["Encoded"]:
+			update_mats_tree("Encoded", mat["Name"], mat["Count"])
+	for evt in other_mat_events:
+		if evt["timestamp"] > latest_mat_event["timestamp"]:
+			if "MaterialCollected" == evt["event"]:
+				update_mats_tree(evt["Category"], evt["Name"], evt["Count"], true)
+			elif "MissionCompleted" == evt["event"]:
+				if evt.has("MaterialsReward") && evt["MaterialsReward"]:
+					for mat in evt["MaterialsReward"]:
+						update_mats_tree(mat["Category"], mat["Name"], mat["Count"], true)
 
 func _on_InventoryAndMaterials_visibility_changed():
 	if is_visible_in_tree():
