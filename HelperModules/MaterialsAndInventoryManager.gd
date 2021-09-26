@@ -25,6 +25,7 @@ func get_updated_materials():
 	var encoded_mats : Array = []
 	var mats_collected : Array = []
 	var missions_rewards : Array = []
+	var materials_traded : Array = []
 	if data_reader.dbm.db.query("SELECT * "
 								+ " FROM Materials"
 								+ " ORDER by timestamp desc"
@@ -46,6 +47,11 @@ func get_updated_materials():
 										+ " AND MaterialsReward is not null"
 										+ " ORDER by timestamp"):
 				missions_rewards = data_reader.dbm.db.query_result.duplicate()
+			if data_reader.dbm.db.query("SELECT timestamp, Paid, Received "
+										+ " FROM MaterialTrade"
+										+ " WHERE timestamp >= '%s'" % mats_timestamp
+										+ " ORDER by timestamp"):
+				materials_traded = data_reader.dbm.db.query_result.duplicate()
 			for mat in raw_mats:
 				if mats_collected:
 					for cmat in mats_collected:
@@ -57,6 +63,16 @@ func get_updated_materials():
 						for rwd in miss_reward:
 							if mat["Name"].to_lower() == rwd["Name"].to_lower():
 								mat["Count"] += rwd["Count"]
+				if materials_traded:
+					for trade in materials_traded:
+						var paid : Dictionary = parse_json(trade["Paid"])
+						var received : Dictionary = parse_json(trade["Received"])
+						if paid:
+							if mat["Name"].to_lower() == paid["Material"].to_lower():
+								mat["Count"] -= paid["Quantity"]
+						if received:
+							if mat["Name"].to_lower() == received["Material"].to_lower():
+								mat["Count"] += received["Quantity"]
 			for mat in manufactured_mats:
 				if mats_collected:
 					for cmat in mats_collected:
@@ -68,6 +84,16 @@ func get_updated_materials():
 						for rwd in miss_reward:
 							if mat["Name"].to_lower() == rwd["Name"].to_lower():
 								mat["Count"] += rwd["Count"]
+				if materials_traded:
+					for trade in materials_traded:
+						var paid : Dictionary = parse_json(trade["Paid"])
+						var received : Dictionary = parse_json(trade["Received"])
+						if paid:
+							if mat["Name"].to_lower() == paid["Material"].to_lower():
+								mat["Count"] -= paid["Quantity"]
+						if received:
+							if mat["Name"].to_lower() == received["Material"].to_lower():
+								mat["Count"] += received["Quantity"]
 			for mat in encoded_mats:
 				if mats_collected:
 					for cmat in mats_collected:
@@ -79,4 +105,14 @@ func get_updated_materials():
 						for rwd in miss_reward:
 							if mat["Name"].to_lower() == rwd["Name"].to_lower():
 								mat["Count"] += rwd["Count"]
+				if materials_traded:
+					for trade in materials_traded:
+						var paid : Dictionary = parse_json(trade["Paid"])
+						var received : Dictionary = parse_json(trade["Received"])
+						if paid:
+							if mat["Name"].to_lower() == paid["Material"].to_lower():
+								mat["Count"] -= paid["Quantity"]
+						if received:
+							if mat["Name"].to_lower() == received["Material"].to_lower():
+								mat["Count"] += received["Quantity"]
 	return {"Raw": raw_mats, "Manufactured": manufactured_mats, "Encoded": encoded_mats}

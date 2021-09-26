@@ -23,6 +23,7 @@ onready var edsm_manager : edsmDataManager = edsmDataManager.new()
 onready var ships_manager : ShipsDataManager = ShipsDataManager.new()
 onready var galaxy_manager : GalaxyDataManager = GalaxyDataManager.new()
 onready var matinv_manager : MaterialsAndInventoryManager = MaterialsAndInventoryManager.new()
+onready var query_builder : QueryBuilderHelper = QueryBuilderHelper.new()
 
 signal new_cached_events(new_events)
 

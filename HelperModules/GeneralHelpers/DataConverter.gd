@@ -1,7 +1,7 @@
 extends Object
 class_name DataConverter
 
-static func get_position_vector(_data):
+static func get_position_vector(_data) -> Vector3:
 	var position := Vector3()
 	var _converted_data = null
 	if _data is String:
@@ -9,6 +9,8 @@ static func get_position_vector(_data):
 		if  json_data.error == OK:
 			_converted_data = json_data.result
 	elif _data is Dictionary:
+		_converted_data = _data
+	elif _data is Array:
 		_converted_data = _data
 		
 	if _converted_data is Dictionary && _converted_data.size() == 3:
