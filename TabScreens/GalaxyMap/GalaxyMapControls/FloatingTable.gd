@@ -43,32 +43,32 @@ func add_events(_data : Array):
 	var tree_root : TreeItem = table.create_item()
 	table.set_column_titles_visible(true)
 	if _data:
-		var col_idx = 2
+		var col_idx = 0
+		if _data[0].has("timestamp"):
+			col_idx = 1
+			table.set_column_title(0, "Date")
+			table.set_column_expand(0, false)
+			table.set_column_min_width(0, 140.0)
 		for _col in _data[0].keys():
-			if visible_columns.has(_col) && !["timestamp", "event"].has(_col):
+			if visible_columns.has(_col) || visible_columns.empty():
 				table.set_column_title(col_idx, _col)
 				table.set_column_expand(col_idx, true)
 				table.set_column_min_width(col_idx, 110.0)
 				col_idx += 1
 		table.columns = col_idx
-		table.set_column_title(0, "Date")
-		table.set_column_expand(0, false)
-		table.set_column_min_width(0, 140.0)
-		table.set_column_title(1, "Event")
-		table.set_column_expand(1, false)
-		table.set_column_min_width(1, 150.0)
 	
 	for log_obj in _data:
 		if log_obj is Dictionary:
 			var evt : TreeItem = table.create_item(tree_root)
 			evt.set_meta("log_object", log_obj)
 #			evt.move_to_top() # enabling this will invert order
-			var col_idx = 2
-			evt.set_text(0, DateTime.format_timestamp(log_obj["timestamp"]))
-			evt.set_tooltip(0, log_obj["timestamp"])
-			evt.set_text(1, DateTime.format_timestamp(log_obj["event"]))
+			var col_idx = 0
+			if log_obj.has("timestamp"):
+				evt.set_text(0, DateTime.format_timestamp(log_obj["timestamp"]))
+				evt.set_tooltip(0, log_obj["timestamp"])
+				col_idx = 1
 			for _col in log_obj.keys():
-				if !["timestamp", "event"].has(_col) && visible_columns.has(_col):
+				if _col != "timestamp" && (visible_columns.has(_col)) || visible_columns.empty():
 					evt.set_text(col_idx, String(log_obj[_col] if log_obj[_col] else "NULL"))
 					col_idx += 1
 			table.columns = col_idx
@@ -80,3 +80,10 @@ func _on_Table_item_selected():
 func _on_Table_item_activated():
 	var selected_item = table.get_selected().get_meta("log_object")
 	emit_signal("item_doubleclicked", selected_item)
+
+
+func _on_BtExpand_pressed():
+	if size_flags_horizontal == SIZE_EXPAND:
+		size_flags_horizontal -= SIZE_EXPAND
+	else:
+		size_flags_horizontal += SIZE_EXPAND

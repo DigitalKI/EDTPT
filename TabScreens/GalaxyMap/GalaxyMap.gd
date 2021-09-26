@@ -6,10 +6,12 @@ var mouse_right_pressed : = false
 var rl_pressed := false
 var fb_pressed := false
 var view_mode := "Galaxy"
+var current_view_settings : Array = []
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
-onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/SystemDetails
-onready var table : FloatingTable = $HBoxContainer/GalaxyContainer/FloatingTable
+onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/UpperGalaxyContainer/SystemDetails
+onready var table : FloatingTable = $HBoxContainer/GalaxyContainer/UpperGalaxyContainer/FloatingTable
 onready var navlabel : Label = $HBoxContainer/GalaxyContainer/LabelNav
+onready var right_buttons_container : ButtonsContainer = $HBoxContainer/RightButtonsContainer
 var zoom_speed = 0.15
 var rotation_speed = 0.02
 var movement_speed = 0.03
@@ -22,8 +24,10 @@ func _ready():
 	details.visible = false
 	# Sorry EDSM, I'm going to bother you more than I should
 	data_reader.edsm_manager.connect("systems_received", self, "_on_edsm_manager_systems_received")
+	data_reader.connect("new_cached_events", self, "_on_DataReader_new_cached_events")
 	table.visible = false
 	details.visible = false
+	right_buttons_container.query_views = data_reader.settings_manager.get_setting("query_views")
 
 	if data_reader.settings_manager.get_setting("GalaxyPlaneOnOff") != null:
 		galaxy.GalaxyPlaneOnOff(data_reader.settings_manager.get_setting("GalaxyPlaneOnOff"))
@@ -102,7 +106,7 @@ func _unhandled_input(event):
 
 func _on_BtMining_pressed():
 	view_mode = "Mining"
-	var _config = [{"addr": ["RingsAmount"]
+	current_view_settings = [{"addr": ["RingsAmount"]
 	, "size_scales":{"min": 0, "max": 15, "min_scale": 0.5, "max_scale": 4}
 	, "is_array": false},
 	{"addr": ["RingsAmount"]
@@ -114,13 +118,13 @@ func _on_BtMining_pressed():
 	,{"addr": ["prospected"]
 	, "color_matrix":{"True": Color(1.0,1.0,1.0)}
 	, "is_array": false}]
-	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_rings(), _config, Color(0.0,0.0,1.0))
+	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_rings(), current_view_settings, Color(0.0,0.0,1.0))
 	update_navlabel()
 	pause_unpause_game()
 
 func _on_BtGalaxy_pressed():
 	view_mode = "Galaxy"
-	var _config = [
+	current_view_settings = [
 	{"addr": ["SystemEconomy"]
 	, "color_matrix": {"$economy_Refinery;": Color(1.0,0.0,0.0)
 					, "$economy_HighTech;": Color(0.0,0.0,1.0)
@@ -132,10 +136,20 @@ func _on_BtGalaxy_pressed():
 	,{"addr": ["Visits"]
 	, "size_scales":{"min": 1, "max": 150, "min_scale": 0.5, "max_scale": 6}
 	, "is_array": false}]
-	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_visits(), _config)
+	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_visits(), current_view_settings)
 #	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
 	update_navlabel()
 	pause_unpause_game()
+
+func _on_BtCurrentPosition_pressed():
+	pass # Replace with function body.
+
+func _on_DataReader_new_cached_events(_events: Array):
+	for evt in _events:
+		if "FSDJump" == evt["event"]:
+			var new_pos : Vector3 = DataConverter.get_position_vector(evt["StarPos"])
+			galaxy.add_single_star(evt, current_view_settings)
+			camera_move(new_pos, galaxy.camera.translation.z)
 
 var sector_x = -1
 var sector_y = -1
@@ -153,17 +167,6 @@ func _on_Bt2dOverlay_pressed():
 func _on_Bt3dOverlay_pressed():
 	data_reader.settings_manager.save_setting("GalaxyParticlesPlaneOnOff", galaxy.GalaxyParticlesPlaneOnOff())
 	pause_unpause_game()
-
-func _on_btTravelHistory_pressed():
-	table.visible = !table.visible
-	if table.visible:
-		details.visible = false
-		table.title_text = "Travel History"
-		table.visible_columns = ["timestamp", "event", "StarSystem", "Population"]
-		table.table_array = data_reader.get_all_db_events_by_type(["FSDJump"], 0, 0)
-		galaxy.galaxy_plotter.draw_path(table.table_array, "StarPos")
-	else:
-		galaxy.galaxy_plotter.clear_path()
 
 func _on_Timer_timeout():
 	save_pos_and_zoom()
@@ -218,16 +221,12 @@ func set_selected_star(_star, _star_pos):
 		details.body = ""
 		if _star.has("StarSystem"):
 			details.title += _star["StarSystem"]
-			details.body += "Last Visit: %s\n" % data_reader.get_value(_star["timestamp"])
-			if _star.has("Visits"):
-				details.body += "Visits: %s\n" % data_reader.get_value(_star["Visits"])
-			if _star.has("RingsAmount"):
-				details.body += "Rings: %s\n" % data_reader.get_value(_star["RingsAmount"])
-			details.body += "Population: %s \n" % data_reader.get_value(_star["Population"])
-			details.body += "Allegiance: %s \n" % data_reader.get_value(_star["SystemAllegiance"])
-			details.body += "Economy: %s \n" % (_star["SystemEconomy_Localised"] + ", " + _star["SystemSecondEconomy_Localised"])
-			details.body += "Government: %s\n" % data_reader.get_value(_star["SystemGovernment_Localised"])
-			details.body += "Security: %s\n" % data_reader.get_value(_star["SystemSecurity_Localised"])
+			for key in _star.keys():
+				if !(data_reader.get_value(_star[key]).begins_with("$") && _star[key].ends_with(";")):
+					if key != "System":
+						details.body += "%s: %s\n" % [key.replace("_Localised", "").replace("System", "").capitalize(), data_reader.get_value(_star[key])]
+					else:
+						details.body += "%s: %s\n" % [key.replace("_Localised", ""), data_reader.get_value(_star[key])]
 		
 		var prospected_asteroids_events = []
 		if _star.has("SystemAddress"):
@@ -276,4 +275,24 @@ func _on_FloatingTable_item_doubleclicked(tree_item):
 	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
 	set_selected_star(tree_item, starpos)
 	camera_move(starpos)
+
+func _on_RightButtonsContainer_view_button_pressed(_text):
+	var current_views : Dictionary = data_reader.settings_manager.get_setting("query_views")
+	if current_views.has(_text):
+		var view_select = data_reader.query_builder.query_structure_to_select(current_views[_text])
+		var events := data_reader.dbm.db_execute_select(view_select)
+		show_table_view(events, _text)
+
+func show_table_view(_data : Array, _title : String):
+	table.visible = !table.visible
+	if table.visible:
+		details.visible = false
+		table.title_text = _title
+		table.visible_columns = []
+		table.table_array = _data
+		if !_data.empty():
+			if _data[0].has("timestamp"):
+				galaxy.galaxy_plotter.draw_path(table.table_array, "StarPos")
+	else:
+		galaxy.galaxy_plotter.clear_path()
 

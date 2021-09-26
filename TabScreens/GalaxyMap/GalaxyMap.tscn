@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMap.gd" type="Script" id=1]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyRenderer/GalaxyCenter.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://Fonts/Ubuntu-Regular.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/Search.tscn" type="PackedScene" id=7]
 [ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/FloatingTable.tscn" type="PackedScene" id=8]
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/ButtonsContainer.tscn" type="PackedScene" id=9]
 
 [sub_resource type="World" id=1]
 environment = ExtResource( 4 )
@@ -53,39 +54,52 @@ __meta__ = {
 }
 
 [node name="LeftButtonsContainer" type="VBoxContainer" parent="HBoxContainer"]
-margin_right = 64.0
+margin_right = 80.0
 margin_bottom = 600.0
 alignment = 1
 
 [node name="Control0" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_right = 64.0
-margin_bottom = 75.0
+margin_right = 80.0
+margin_bottom = 60.0
 mouse_filter = 1
 size_flags_vertical = 3
 
 [node name="BtGalaxy" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 79.0
-margin_right = 64.0
-margin_bottom = 100.0
+margin_top = 64.0
+margin_right = 80.0
+margin_bottom = 85.0
 text = "Galaxy"
 
+[node name="Control1" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
+margin_top = 89.0
+margin_right = 80.0
+margin_bottom = 150.0
+mouse_filter = 1
+size_flags_vertical = 3
+
+[node name="BtCurrentPosition" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
+margin_top = 154.0
+margin_right = 80.0
+margin_bottom = 175.0
+text = "Current Pos."
+
 [node name="Control" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 104.0
-margin_right = 64.0
-margin_bottom = 180.0
+margin_top = 179.0
+margin_right = 80.0
+margin_bottom = 240.0
 mouse_filter = 1
 size_flags_vertical = 3
 
 [node name="BtMining" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 184.0
-margin_right = 64.0
-margin_bottom = 205.0
+margin_top = 244.0
+margin_right = 80.0
+margin_bottom = 265.0
 text = "Mining"
 
 [node name="Control2" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 209.0
-margin_right = 64.0
-margin_bottom = 285.0
+margin_top = 269.0
+margin_right = 80.0
+margin_bottom = 330.0
 mouse_filter = 1
 size_flags_vertical = 3
 __meta__ = {
@@ -93,15 +107,15 @@ __meta__ = {
 }
 
 [node name="BtEDSM" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 289.0
-margin_right = 64.0
-margin_bottom = 310.0
+margin_top = 334.0
+margin_right = 80.0
+margin_bottom = 355.0
 text = "EDSM"
 
 [node name="Control3" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 314.0
-margin_right = 64.0
-margin_bottom = 390.0
+margin_top = 359.0
+margin_right = 80.0
+margin_bottom = 420.0
 mouse_filter = 1
 size_flags_vertical = 3
 __meta__ = {
@@ -109,147 +123,93 @@ __meta__ = {
 }
 
 [node name="Bt2dOverlay" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 394.0
-margin_right = 64.0
-margin_bottom = 415.0
+margin_top = 424.0
+margin_right = 80.0
+margin_bottom = 445.0
 text = "2D grid"
 
 [node name="Control4" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 419.0
-margin_right = 64.0
-margin_bottom = 495.0
+margin_top = 449.0
+margin_right = 80.0
+margin_bottom = 510.0
 mouse_filter = 1
 size_flags_vertical = 3
 
 [node name="Bt3dOverlay" type="Button" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 499.0
-margin_right = 64.0
-margin_bottom = 520.0
+margin_top = 514.0
+margin_right = 80.0
+margin_bottom = 535.0
 text = "3d Galaxy"
 
 [node name="Control5" type="Control" parent="HBoxContainer/LeftButtonsContainer"]
-margin_top = 524.0
-margin_right = 64.0
+margin_top = 539.0
+margin_right = 80.0
 margin_bottom = 600.0
 mouse_filter = 1
 size_flags_vertical = 3
 
-[node name="GalaxyContainer" type="Control" parent="HBoxContainer"]
-margin_left = 68.0
-margin_right = 973.0
+[node name="GalaxyContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 84.0
+margin_right = 1020.0
 margin_bottom = 600.0
-mouse_filter = 1
 size_flags_horizontal = 3
 
-[node name="SystemDetails" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 3 )]
-anchor_top = 0.002
-anchor_right = 0.0
-margin_left = 0.00338387
-margin_top = 0.0599182
-margin_right = 295.003
-margin_bottom = 1.25989
+[node name="UpperGalaxyContainer" type="Control" parent="HBoxContainer/GalaxyContainer"]
+margin_right = 936.0
+margin_bottom = 581.0
+mouse_filter = 1
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="FloatingTable" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 8 )]
+[node name="Search" parent="HBoxContainer/GalaxyContainer/UpperGalaxyContainer" instance=ExtResource( 7 )]
+anchor_left = 0.333
+anchor_right = 0.666
+margin_left = -1.36499
+margin_right = -1.82501
+
+[node name="SystemDetails" parent="HBoxContainer/GalaxyContainer/UpperGalaxyContainer" instance=ExtResource( 3 )]
+anchor_right = 0.0
+margin_right = 295.0
+margin_bottom = 1.19995
+title = "something something"
+body = "Bla bla bla
+frefreg
+rgbrftbt tyhythty"
+
+[node name="FloatingTable" parent="HBoxContainer/GalaxyContainer/UpperGalaxyContainer" instance=ExtResource( 8 )]
 anchor_left = 1.0
 margin_left = -295.0
+grow_horizontal = 0
+size_flags_horizontal = 3
+title_text = "something something"
 
 [node name="LabelNav" type="Label" parent="HBoxContainer/GalaxyContainer"]
-anchor_top = 1.0
-anchor_right = 0.676
-anchor_bottom = 1.0
-margin_top = -21.0
-margin_right = 0.0799561
-margin_bottom = -2.0
+margin_top = 585.0
+margin_right = 936.0
+margin_bottom = 600.0
 custom_fonts/font = SubResource( 2 )
 text = "Some text here"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Search" parent="HBoxContainer/GalaxyContainer" instance=ExtResource( 7 )]
-anchor_left = 0.333
-anchor_right = 0.666
-margin_left = -1.36499
-margin_right = -1.82501
-
-[node name="LeftButtonsContainer2" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 977.0
-margin_right = 1024.0
-margin_bottom = 600.0
-alignment = 1
-
-[node name="Control0" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_right = 47.0
-margin_bottom = 96.0
-mouse_filter = 1
-size_flags_vertical = 3
-
-[node name="btTravelHistory" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_top = 100.0
-margin_right = 47.0
-margin_bottom = 121.0
-text = "Jumps"
-
-[node name="Control" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_top = 125.0
-margin_right = 47.0
-margin_bottom = 222.0
-mouse_filter = 1
-size_flags_vertical = 3
-
-[node name="Button2" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_top = 226.0
-margin_right = 47.0
-margin_bottom = 247.0
-
-[node name="Control2" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_top = 251.0
-margin_right = 47.0
-margin_bottom = 348.0
-mouse_filter = 1
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Button3" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_top = 352.0
-margin_right = 47.0
-margin_bottom = 373.0
-
-[node name="Control3" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_top = 377.0
-margin_right = 47.0
-margin_bottom = 474.0
-mouse_filter = 1
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Button4" type="Button" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_top = 478.0
-margin_right = 47.0
-margin_bottom = 499.0
-
-[node name="Control4" type="Control" parent="HBoxContainer/LeftButtonsContainer2"]
-margin_top = 503.0
-margin_right = 47.0
-margin_bottom = 600.0
-mouse_filter = 1
-size_flags_vertical = 3
+[node name="RightButtonsContainer" parent="HBoxContainer" instance=ExtResource( 9 )]
+margin_left = 1024.0
 
 [node name="Timer" type="Timer" parent="."]
 
 [connection signal="gui_input" from="." to="." method="_on_GalaxyMap_gui_input"]
 [connection signal="visibility_changed" from="." to="." method="_on_GalaxyMap_visibility_changed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtGalaxy" to="." method="_on_BtGalaxy_pressed"]
+[connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtCurrentPosition" to="." method="_on_BtCurrentPosition_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtMining" to="." method="_on_BtMining_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtEDSM" to="." method="_on_BtEDSM_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt2dOverlay" to="." method="_on_Bt2dOverlay_pressed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/Bt3dOverlay" to="." method="_on_Bt3dOverlay_pressed"]
-[connection signal="item_doubleclicked" from="HBoxContainer/GalaxyContainer/FloatingTable" to="." method="_on_FloatingTable_item_doubleclicked"]
-[connection signal="item_selected" from="HBoxContainer/GalaxyContainer/FloatingTable" to="." method="_on_FloatingTable_item_selected"]
-[connection signal="SearchItemSelected" from="HBoxContainer/GalaxyContainer/Search" to="." method="_on_Search_SearchItemSelected"]
-[connection signal="pressed" from="HBoxContainer/LeftButtonsContainer2/btTravelHistory" to="." method="_on_btTravelHistory_pressed"]
+[connection signal="SearchItemSelected" from="HBoxContainer/GalaxyContainer/UpperGalaxyContainer/Search" to="." method="_on_Search_SearchItemSelected"]
+[connection signal="item_doubleclicked" from="HBoxContainer/GalaxyContainer/UpperGalaxyContainer/FloatingTable" to="." method="_on_FloatingTable_item_doubleclicked"]
+[connection signal="item_selected" from="HBoxContainer/GalaxyContainer/UpperGalaxyContainer/FloatingTable" to="." method="_on_FloatingTable_item_selected"]
+[connection signal="view_button_pressed" from="HBoxContainer/RightButtonsContainer" to="." method="_on_RightButtonsContainer_view_button_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

@@ -134,6 +134,9 @@ func GalaxyParticlesPlaneOnOff(_force_state : int = -1):
 func spawn_sector_stars(_stars : Array, _config : Array, _default_color : Color = Color(0.2, 0.2, 0.2), _default_size : float = 1.0):
 	galaxy_sector.spawn_stars(_stars, _config, _default_color, _default_size)
 
+func add_single_star(_star : Dictionary, _config : Array, _default_color : Color = Color(0.2, 0.2, 0.2), _default_size : float = 1.0):
+	galaxy_sector.add_star(_star, _config, _default_color, _default_size)
+
 func spawn_edsm_stars(_stars : Array, _interpolation_key : String, _maxval : float, _star_color_low : Color = Color(1.0, 0.2, 0.2), _star_color_high : Color = Color(1.0, 1.0, 1.0)):
 	edsm_multimesh.multimesh.instance_count = 0
 	edsm_multimesh.multimesh.instance_count = _stars.size()

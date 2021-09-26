@@ -77,11 +77,21 @@ margin_top = 12.0
 margin_right = 996.0
 margin_bottom = 528.0
 size_flags_vertical = 3
-columns = 3
+columns = 99
 hide_folding = true
 hide_root = true
 select_mode = 1
 
+[node name="BtExpand" type="Button" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 12.9053
+margin_top = -32.5081
+margin_right = 36.9053
+margin_bottom = -12.5081
+text = "<"
+
 [connection signal="gui_input" from="MarginContainer/Panel/VBoxContainer/Title" to="." method="_on_Title_gui_input"]
 [connection signal="item_activated" from="MarginContainer/Panel/VBoxContainer/DetailsMargin/Table" to="." method="_on_Table_item_activated"]
 [connection signal="item_selected" from="MarginContainer/Panel/VBoxContainer/DetailsMargin/Table" to="." method="_on_Table_item_selected"]
+[connection signal="pressed" from="BtExpand" to="." method="_on_BtExpand_pressed"]

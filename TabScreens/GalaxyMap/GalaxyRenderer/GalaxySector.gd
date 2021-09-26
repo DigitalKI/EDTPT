@@ -62,6 +62,11 @@ func spawn_stars(_stars : Array, _config : Array, _default_color = Color(0.5, 0.
 		_config_star(_stars[idx], idx, _config, _default_color, _default_size)
 #		print("adding system %s with scale %s" % [_stars[idx]["StarSystem"], scale.length()])
 
+func add_star(_star : Dictionary, _config : Array, _default_color = Color(0.5, 0.5, 0.5), _default_size = 1.0):
+	$StarsAclose.multimesh.instance_count += 1
+	$StarsAclose.multimesh.visible_instance_count += 1
+	_config_star(_star, $StarsAclose.multimesh.instance_count - 1, _config, _default_color, _default_size)
+
 func _config_star(_star : Dictionary, _star_idx : int, _config : Array, _default_color : Color, _default_size : float):
 	var final_color : Color = _default_color
 	var star_size : Basis = Basis().scaled(Vector3(_default_size, _default_size, _default_size))
@@ -121,5 +126,11 @@ func get_position_vector(_position_data):
 func get_value_from_dict_address(_address : Array, _dict : Dictionary):
 	var value = _dict
 	for add in _address:
-		value = value[add]
+		if value is Dictionary:
+			if value.has(add):
+				value = value[add]
+			else:
+				value = 0
+		else:
+			value = 0
 	return value
