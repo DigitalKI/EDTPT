@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/ButtonsContainer.gd" type="Script" id=1]
+
+[node name="ButtonsContainer" type="VBoxContainer"]
+margin_left = 977.0
+margin_right = 1024.0
+margin_bottom = 600.0
+alignment = 1
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Spacer" type="Control" parent="."]
+margin_top = 314.0
+margin_right = 100.0
+margin_bottom = 314.0
