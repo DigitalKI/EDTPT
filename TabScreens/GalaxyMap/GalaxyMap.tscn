@@ -173,17 +173,19 @@ margin_right = -1.82501
 anchor_right = 0.0
 margin_right = 295.0
 margin_bottom = 1.19995
+size_flags_vertical = 3
 title = "something something"
 body = "Bla bla bla
 frefreg
 rgbrftbt tyhythty"
 
 [node name="FloatingTable" parent="HBoxContainer/GalaxyContainer/UpperGalaxyContainer" instance=ExtResource( 8 )]
-anchor_left = 1.0
-margin_left = -295.0
+margin_left = -300.0
+margin_right = -0.164001
 grow_horizontal = 0
+rect_min_size = Vector2( 300, 0 )
 size_flags_horizontal = 3
-title_text = "something something"
+size_flags_vertical = 3
 
 [node name="LabelNav" type="Label" parent="HBoxContainer/GalaxyContainer"]
 margin_top = 585.0

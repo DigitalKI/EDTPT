@@ -4,10 +4,12 @@ class_name FloatingTable
 
 onready var title : Label = $MarginContainer/Panel/VBoxContainer/Title
 onready var table : Tree = $MarginContainer/Panel/VBoxContainer/DetailsMargin/Table
+onready var expand_btn : Button = $BtExpand
 
 export(String) var title_text setget _set_title, _get_title
 export(Array) var table_array setget _set_table, _get_table
 export(Array, String) var visible_columns
+var expanded : bool = false
 
 signal item_selected(tree_item)
 signal item_doubleclicked(tree_item)
@@ -66,10 +68,12 @@ func add_events(_data : Array):
 			if log_obj.has("timestamp"):
 				evt.set_text(0, DateTime.format_timestamp(log_obj["timestamp"]))
 				evt.set_tooltip(0, log_obj["timestamp"])
+				evt.set_custom_bg_color(0, Color("#00FFFFFF"))
 				col_idx = 1
 			for _col in log_obj.keys():
 				if _col != "timestamp" && (visible_columns.has(_col)) || visible_columns.empty():
 					evt.set_text(col_idx, String(log_obj[_col] if log_obj[_col] else "NULL"))
+					evt.set_custom_bg_color(col_idx, Color("#00FFFFFF"))
 					col_idx += 1
 			table.columns = col_idx
 
@@ -81,9 +85,16 @@ func _on_Table_item_activated():
 	var selected_item = table.get_selected().get_meta("log_object")
 	emit_signal("item_doubleclicked", selected_item)
 
-
 func _on_BtExpand_pressed():
-	if size_flags_horizontal == SIZE_EXPAND:
-		size_flags_horizontal -= SIZE_EXPAND
+	var parent_size : Vector2 = get_parent().rect_size
+	if expanded:
+		anchor_left = 1
+		rect_min_size.x = 0
+		margin_left = -300
+		rect_size.x = 300
+		expand_btn.text = "<"
 	else:
-		size_flags_horizontal += SIZE_EXPAND
+		anchor_left = 0
+		margin_left = 0
+		expand_btn.text = ">"
+	expanded = !expanded
