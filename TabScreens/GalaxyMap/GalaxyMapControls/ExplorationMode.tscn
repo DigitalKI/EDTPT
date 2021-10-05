@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TabScreens/GalaxyMap/GalaxyMapControls/ExplorationMode.gd" type="Script" id=1]
+
+[node name="Exploration" type="Button"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ExpContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="ExpContainer"]
+margin_right = 1024.0
+margin_bottom = 298.0
+size_flags_horizontal = 3
+size_flags_vertical = 7
+align = 1
+valign = 1
+
+[node name="LabelOnOff" type="Label" parent="ExpContainer"]
+margin_top = 302.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_vertical = 7
+text = "Off"
+align = 1
+valign = 1
+
+[connection signal="toggled" from="." to="." method="_on_Exploration_toggled"]

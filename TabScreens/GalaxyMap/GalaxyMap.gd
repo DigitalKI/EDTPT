@@ -104,6 +104,11 @@ func _unhandled_input(event):
 			table.visible = false
 		update_navlabel()
 
+func _on_Exploration_toggled(button_pressed):
+	# this could be used to show just the latest jumps, or all of them.
+	# doubleclicked a system could provide last events on the same system
+	pass # Replace with function body.
+
 func _on_BtMining_pressed():
 	view_mode = "Mining"
 	current_view_settings = [{"addr": ["RingsAmount"]
@@ -140,9 +145,6 @@ func _on_BtGalaxy_pressed():
 #	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
 	update_navlabel()
 	pause_unpause_game()
-
-func _on_BtCurrentPosition_pressed():
-	pass # Replace with function body.
 
 func _on_DataReader_new_cached_events(_events: Array):
 	for evt in _events:
@@ -295,4 +297,3 @@ func show_table_view(_data : Array, _title : String):
 				galaxy.galaxy_plotter.draw_path(table.table_array, "StarPos")
 	else:
 		galaxy.galaxy_plotter.clear_path()
-

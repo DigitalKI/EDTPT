@@ -2,7 +2,10 @@ extends Control
 
 onready var event_tabs : TabContainer = $HBoxContainer/TabContainer
 onready var saved_views : ItemList = $HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList
-onready var view_title : LineEdit = $HBoxContainer/TabContainer/SavedViews/VBoxViews/TbViewTitle
+onready var edit_button : Button = $HBoxContainer/TabContainer/SavedViews/VBoxViews/HBoxContainer/BtEdit
+onready var delete_button : Button = $HBoxContainer/TabContainer/SavedViews/VBoxViews/HBoxContainer/BtDelete
+onready var delete_confirmation : ConfirmationDialog = $HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList/DeleteConfirmationDialog
+onready var view_title : LineEdit = $HBoxContainer/TabContainer/SavedViews/VBoxViews/HBoxContainer/TbViewTitle
 onready var event_types_table : ItemList = $HBoxContainer/TabContainer/EventTypes/EventTypes
 onready var events_fields : Tree = $HBoxContainer/TabContainer/EventFields/PanelResult/EventFields
 onready var events_fields_popup : PopupMenu = $HBoxContainer/TabContainer/EventFields/PanelResult/EventFields/PopupRemoveTable
@@ -22,30 +25,60 @@ var field_fg : Color = Color("#3a3a3a")
 var views_data : Dictionary = {}
 var current_query_structure_name : String = ""
 var query_structure : Dictionary = {}
+var edit_mode : String = ""
 
 func _ready():
 	pass
 
 func _on_TbViewTitle_text_entered(new_text):
+	if edit_mode.empty():
 		saved_views.add_item(new_text)
 		saved_views.select(saved_views.get_item_count() - 1)
 		current_query_structure_name = new_text
-		views_data[new_text] = {}
+		views_data[new_text] = {"structure": {}}
 		query_structure = views_data[new_text]
 		view_title.text = ""
+	else:
+		views_data.erase(edit_mode)
+		views_data[new_text] = query_structure
+		for itm in saved_views.get_selected_items():
+			saved_views.set_item_text(itm, new_text)
+		current_query_structure_name = new_text
+		edit_mode = ""
+		view_title.text = ""
+		data_reader.settings_manager.save_setting("query_views", views_data)
+	edit_button.disabled = false
+	delete_button.disabled = false
+
+func _on_BtDelete_pressed():
+	delete_confirmation.show()
+
+func _on_BtEdit_pressed():
+	for itm in saved_views.get_selected_items():
+		view_title.text = saved_views.get_item_text(itm)
+	edit_mode = view_title.text
+	edit_button.disabled = true
+	delete_button.disabled = true
+
+func _on_ConfirmationDialog_confirmed():
+	query_structure.clear()
+	views_data.erase(current_query_structure_name)
+	data_reader.settings_manager.save_setting("query_views", views_data)
+	for itm in saved_views.get_selected_items():
+		saved_views.remove_item(itm)
 
 func _on_SavedViewsList_item_selected(index):
 	current_query_structure_name = saved_views.get_item_text(index)
 	query_structure = views_data[current_query_structure_name]
-	query_structure_to_ui(query_structure)
-	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure)
+	query_structure_to_ui(query_structure["structure"])
+	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
 	get_result_table(query_view.text + " LIMIT 1000")
 
 func _on_SavedViewsList_item_activated(index):
 	pass
 
 func _on_EventTypes_item_activated(index):
-	if query_structure.size() < 5:
+	if query_structure["structure"].size() < 5:
 		var selected_event_type := event_types_table.get_item_text(index)
 		var selected_event_color := event_types_table.get_item_custom_bg_color(index)
 		if !get_event_types().has(selected_event_type):
@@ -53,7 +86,7 @@ func _on_EventTypes_item_activated(index):
 			event_tabs.tabs_visible = 1
 
 func _on_BtRemoveAll_pressed():
-	query_structure.clear()
+	query_structure["structure"].clear()
 	events_fields.clear()
 	results_table.clear()
 	query_view.text = ""
@@ -73,7 +106,7 @@ func _on_EventFields_item_activated():
 		selected_item.set_custom_bg_color(1, selected_field_fg)
 		selected_item.set_custom_color(1, selected_field_bg)
 		selected_item.set_text(1, "")
-	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure)
+	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
 	get_result_table(query_view.text + " LIMIT 1000")
 
 func _on_EventFields_item_selected():
@@ -110,7 +143,7 @@ func _on_PopupRemoveTable_id_pressed(id):
 	get_result_table(query_view.text + " LIMIT 1000")
 
 func _on_BtApplySql_pressed():
-	pass # Replace with function body.
+	query_structure["query"] = query_view.text
 
 func query_structure_to_ui(_structure : Dictionary):
 	for tablename in _structure.keys():
@@ -127,20 +160,20 @@ func query_structure_to_ui(_structure : Dictionary):
 func update_query_structure(_selected_field : TreeItem):
 	var result = ""
 	for evt_typ in get_event_types():
-		if !query_structure.has(evt_typ):
-			query_structure[evt_typ] = {}
+		if !query_structure["structure"].has(evt_typ):
+			query_structure["structure"][evt_typ] = {}
 	if _selected_field.get_text(0).length() > 0:
 		var event_type_item : TreeItem = _selected_field.get_parent()
 		if event_type_item.get_text(0):
-			if !query_structure.has(event_type_item.get_text(0)):
-				query_structure[event_type_item.get_text(0)] = {}
-			if query_structure[event_type_item.get_text(0)].has(_selected_field.get_text(0)):
-				query_structure[event_type_item.get_text(0)].erase(_selected_field.get_text(0))
+			if !query_structure["structure"].has(event_type_item.get_text(0)):
+				query_structure["structure"][event_type_item.get_text(0)] = {}
+			if query_structure["structure"][event_type_item.get_text(0)].has(_selected_field.get_text(0)):
+				query_structure["structure"][event_type_item.get_text(0)].erase(_selected_field.get_text(0))
 				result = "removed"
 			else:
-				query_structure[event_type_item.get_text(0)][_selected_field.get_text(0)] = ""
+				query_structure["structure"][event_type_item.get_text(0)][_selected_field.get_text(0)] = ""
 				if _selected_field.get_text(1):
-					query_structure[event_type_item.get_text(0)][_selected_field.get_text(0)] = _selected_field.get_text(1)
+					query_structure["structure"][event_type_item.get_text(0)][_selected_field.get_text(0)] = _selected_field.get_text(1)
 				result = "added"
 	data_reader.settings_manager.save_setting("query_views", views_data)
 	return result
@@ -152,9 +185,11 @@ func initialize_builder():
 	list_saved_views()
 
 func list_saved_views():
-	views_data = data_reader.settings_manager.get_setting("query_views")
-	for view in views_data.keys():
-		saved_views.add_item(view)
+	var loaded_views = data_reader.settings_manager.get_setting("query_views")
+	if loaded_views is Dictionary:
+		views_data = loaded_views
+		for view in views_data.keys():
+			saved_views.add_item(view)
 
 func list_all_tables():
 	event_types_table.clear()
@@ -234,8 +269,8 @@ func get_event_field_item_by_text(_text) -> TreeItem:
 	return null
 
 func remove_event_fields(_event_name : String):
-	query_structure.erase(_event_name)
-	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure)
+	query_structure["structure"].erase(_event_name)
+	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
 	var root_evt_item = events_fields.get_root()
 	var cur : TreeItem = root_evt_item.get_children()
 	while cur:
