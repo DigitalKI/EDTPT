@@ -35,7 +35,7 @@ func _on_TbViewTitle_text_entered(new_text):
 		saved_views.add_item(new_text)
 		saved_views.select(saved_views.get_item_count() - 1)
 		current_query_structure_name = new_text
-		views_data[new_text] = {"structure": {}}
+		views_data[new_text] = {"structure": {}, "display": []}
 		query_structure = views_data[new_text]
 		view_title.text = ""
 	else:
@@ -71,7 +71,12 @@ func _on_SavedViewsList_item_selected(index):
 	current_query_structure_name = saved_views.get_item_text(index)
 	query_structure = views_data[current_query_structure_name]
 	query_structure_to_ui(query_structure["structure"])
-	query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
+	if !query_structure.has("query"):
+		query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
+	elif query_structure["query"].empty():
+		query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
+	else:
+		query_view.text = query_structure["query"]
 	get_result_table(query_view.text + " LIMIT 1000")
 
 func _on_SavedViewsList_item_activated(index):
@@ -127,12 +132,17 @@ func _on_EventFields_item_rmb_selected(position):
 	if selected_item.get_children():
 		events_fields_popup.set_item_disabled(0, false)
 		events_fields_popup.set_item_disabled(2, true)
+		events_fields_popup.set_item_disabled(3, true)
 	else:
 		events_fields_popup.set_item_disabled(0, true)
 		events_fields_popup.set_item_disabled(2, false)
+		events_fields_popup.set_item_disabled(3, false)
 	events_fields_popup.popup()
 
 func _on_PopupRemoveTable_id_pressed(id):
+	#id 0 corresponds to remove table
+	#id 2 corresponds to add filter
+	#id 3 corresponds to add visual rule
 	if id == 0:
 		remove_event_fields(events_fields.get_selected().get_text(0))
 	elif id == 2:
@@ -140,10 +150,14 @@ func _on_PopupRemoveTable_id_pressed(id):
 		editing_item.set_editable(1, true)
 		if events_fields.edit_selected():
 			print(editing_item.get_text(0))
+	elif id == 3:
+		pass
 	get_result_table(query_view.text + " LIMIT 1000")
 
 func _on_BtApplySql_pressed():
 	query_structure["query"] = query_view.text
+	data_reader.settings_manager.save_setting("query_views", views_data)
+	get_result_table(query_view.text + " LIMIT 1000")
 
 func query_structure_to_ui(_structure : Dictionary):
 	for tablename in _structure.keys():

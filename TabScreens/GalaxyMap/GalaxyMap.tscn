@@ -179,6 +179,10 @@ anchor_right = 0.0
 margin_right = 295.0
 margin_bottom = 1.19995
 size_flags_vertical = 3
+title = "something something"
+body = "Bla bla bla
+frefreg
+rgbrftbt tyhythty"
 
 [node name="FloatingTable" parent="HBoxContainer/GalaxyContainer/UpperGalaxyContainer" instance=ExtResource( 8 )]
 margin_left = -300.0
@@ -187,6 +191,7 @@ grow_horizontal = 0
 rect_min_size = Vector2( 300, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
+title_text = "something something"
 
 [node name="LabelNav" type="Label" parent="HBoxContainer/GalaxyContainer"]
 margin_top = 585.0
@@ -204,6 +209,7 @@ margin_left = 1024.0
 [node name="Timer" type="Timer" parent="."]
 
 [connection signal="gui_input" from="." to="." method="_on_GalaxyMap_gui_input"]
+[connection signal="resized" from="." to="." method="_on_GalaxyMap_resized"]
 [connection signal="visibility_changed" from="." to="." method="_on_GalaxyMap_visibility_changed"]
 [connection signal="pressed" from="HBoxContainer/LeftButtonsContainer/BtGalaxy" to="." method="_on_BtGalaxy_pressed"]
 [connection signal="toggled" from="HBoxContainer/LeftButtonsContainer/Exploration" to="." method="_on_Exploration_toggled"]

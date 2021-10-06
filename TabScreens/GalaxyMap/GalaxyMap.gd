@@ -38,6 +38,7 @@ func _exit_tree():
 	save_pos_and_zoom()
 
 func _on_GalaxyMap_visibility_changed():
+	right_buttons_container.query_views = data_reader.settings_manager.get_setting("query_views")
 	if !is_visible_in_tree() :
 		save_pos_and_zoom()
 
@@ -261,7 +262,6 @@ func set_selected_star(_star, _star_pos):
 		details.visible = true
 		table.visible = false
 
-
 func _on_Search_SearchItemSelected(id):
 	var found_star : Dictionary = data_reader.galaxy_manager.star_systems[id]
 	var starpos := galaxy.galaxy_sector.get_star_position_by_id(id)
@@ -272,16 +272,19 @@ func _on_FloatingTable_item_selected(tree_item):
 	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
 	camera_move(starpos)
 
-
 func _on_FloatingTable_item_doubleclicked(tree_item):
 	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
 	set_selected_star(tree_item, starpos)
 	camera_move(starpos)
 
 func _on_RightButtonsContainer_view_button_pressed(_text):
-	var current_views : Dictionary = data_reader.settings_manager.get_setting("query_views")
-	if current_views.has(_text):
-		var view_select = data_reader.query_builder.query_structure_to_select(current_views[_text])
+	var query_views : Dictionary = data_reader.settings_manager.get_setting("query_views")
+	if query_views.has(_text):
+		var view_select = ""
+		if query_views[_text].has("query"):
+			view_select = query_views[_text]["query"]
+		if view_select.empty():
+			view_select = data_reader.query_builder.query_structure_to_select(query_views[_text]["structure"])
 		var events := data_reader.dbm.db_execute_select(view_select)
 		show_table_view(events, _text)
 
@@ -297,3 +300,7 @@ func show_table_view(_data : Array, _title : String):
 				galaxy.galaxy_plotter.draw_path(table.table_array, "StarPos")
 	else:
 		galaxy.galaxy_plotter.clear_path()
+
+
+func _on_GalaxyMap_resized():
+	pause_unpause_game()

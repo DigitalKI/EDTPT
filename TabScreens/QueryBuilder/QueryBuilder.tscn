@@ -32,6 +32,7 @@ size_flags_horizontal = 3
 tab_align = 0
 
 [node name="SavedViews" type="Tabs" parent="HBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -134,7 +135,7 @@ __meta__ = {
 }
 
 [node name="EventFields" type="Tree" parent="HBoxContainer/TabContainer/EventFields/PanelResult"]
-margin_right = 502.0
+margin_right = 498.0
 margin_bottom = 538.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -149,16 +150,63 @@ __meta__ = {
 [node name="PopupRemoveTable" type="PopupMenu" parent="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields"]
 margin_right = 20.0
 margin_bottom = 20.0
-items = [ "Remove table", null, 0, false, false, 0, 0, null, "", false, "", null, 0, false, false, 1, 0, null, "", true, "Add Filter", null, 0, false, false, 2, 0, null, "", false ]
+items = [ "Remove table", null, 0, false, false, 0, 0, null, "", false, "", null, 0, false, false, 1, 0, null, "", true, "Add Filter", null, 0, false, false, 2, 0, null, "", false, "Add Visual Rule", null, 0, false, false, 3, 0, null, "", false ]
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BtRemoveAll" type="Button" parent="HBoxContainer/TabContainer/EventFields/PanelResult"]
 margin_top = 542.0
-margin_right = 502.0
+margin_right = 498.0
 margin_bottom = 563.0
 text = "Remove all event types"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VisualRules" type="Tabs" parent="HBoxContainer/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 33.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="PanelVisualRules" type="VBoxContainer" parent="HBoxContainer/TabContainer/VisualRules"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RuleFields" type="Tree" parent="HBoxContainer/TabContainer/VisualRules/PanelVisualRules"]
+margin_right = 498.0
+margin_bottom = 538.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/selected_focus = SubResource( 1 )
+columns = 2
+allow_rmb_select = true
+hide_root = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PopupVisualRuleField" type="PopupMenu" parent="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields"]
+visible = true
+margin_right = 93.0
+margin_bottom = 35.0
+items = [ "Remove field", null, 0, false, false, 0, 0, null, "", false ]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtRemoveAll" type="Button" parent="HBoxContainer/TabContainer/VisualRules/PanelVisualRules"]
+margin_top = 542.0
+margin_right = 498.0
+margin_bottom = 563.0
+text = "Remove all visual rules"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -215,4 +263,9 @@ hide_root = true
 [connection signal="item_selected" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_selected"]
 [connection signal="id_pressed" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields/PopupRemoveTable" to="." method="_on_PopupRemoveTable_id_pressed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/EventFields/PanelResult/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]
+[connection signal="gui_input" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields" to="." method="_on_EventFields_gui_input"]
+[connection signal="item_activated" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields" to="." method="_on_EventFields_item_activated"]
+[connection signal="item_rmb_selected" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields" to="." method="_on_EventFields_item_rmb_selected"]
+[connection signal="item_selected" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields" to="." method="_on_EventFields_item_selected"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/QueryView/BtApplySql" to="." method="_on_BtApplySql_pressed"]

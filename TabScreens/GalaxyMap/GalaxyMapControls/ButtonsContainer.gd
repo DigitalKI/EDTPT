@@ -7,6 +7,9 @@ signal view_button_pressed(_text)
 func _set_buttons_array(_query_views):
 	if _query_views:
 		query_views = _query_views
+		for ctl in get_children():
+			if ctl is Button:
+				remove_child(ctl)
 		for view in query_views.keys():
 			var new_btn := Button.new()
 			var new_btn_spacer := Control.new()
