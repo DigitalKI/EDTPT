@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://TabScreens/QueryBuilder/Components/EventFields.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
+
+[node name="EventFieldsTab" type="Tabs"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 33.0
+margin_right = -4.0
+margin_bottom = -4.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelResult" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EventFields" type="Tree" parent="PanelResult"]
+margin_right = 1016.0
+margin_bottom = 539.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/selected_focus = SubResource( 1 )
+columns = 2
+allow_rmb_select = true
+hide_root = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PopupRemoveTable" type="PopupMenu" parent="PanelResult/EventFields"]
+margin_right = 20.0
+margin_bottom = 20.0
+items = [ "Remove table", null, 0, false, false, 0, 0, null, "", false, "", null, 0, false, false, 1, 0, null, "", true, "Add Filter", null, 0, false, false, 2, 0, null, "", false, "Add Visual Rule", null, 0, false, false, 3, 0, null, "", false ]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtRemoveAll" type="Button" parent="PanelResult"]
+margin_top = 543.0
+margin_right = 1016.0
+margin_bottom = 563.0
+text = "Remove all event types"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="gui_input" from="PanelResult/EventFields" to="." method="_on_EventFields_gui_input"]
+[connection signal="item_activated" from="PanelResult/EventFields" to="." method="_on_EventFields_item_activated"]
+[connection signal="item_rmb_selected" from="PanelResult/EventFields" to="." method="_on_EventFields_item_rmb_selected"]
+[connection signal="item_selected" from="PanelResult/EventFields" to="." method="_on_EventFields_item_selected"]
+[connection signal="id_pressed" from="PanelResult/EventFields/PopupRemoveTable" to="." method="_on_PopupRemoveTable_id_pressed"]
+[connection signal="pressed" from="PanelResult/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]

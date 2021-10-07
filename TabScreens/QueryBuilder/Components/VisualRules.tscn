@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://TabScreens/QueryBuilder/Components/VisualRules.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
+
+[node name="VisualRules" type="Tabs"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 33.0
+margin_right = -4.0
+margin_bottom = -4.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelVisualRules" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RuleFields" type="Tree" parent="PanelVisualRules"]
+margin_right = 1016.0
+margin_bottom = 539.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/selected_focus = SubResource( 1 )
+columns = 2
+allow_rmb_select = true
+hide_root = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PopupVisualRuleField" type="PopupMenu" parent="PanelVisualRules/RuleFields"]
+visible = true
+margin_right = 101.0
+margin_bottom = 34.0
+items = [ "Remove rule", null, 0, false, false, 0, 0, null, "", false ]
+
+[node name="BtRemoveAll" type="Button" parent="PanelVisualRules"]
+margin_top = 543.0
+margin_right = 1016.0
+margin_bottom = 563.0
+text = "Remove all visual rules"
+__meta__ = {
+"_edit_use_anchors_": false
+}

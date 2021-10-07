@@ -44,6 +44,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://TabScreens/GalaxyMap/GalaxyMapControls/DetailsWindow.gd"
 }, {
+"base": "Tabs",
+"class": "EventFields",
+"language": "GDScript",
+"path": "res://TabScreens/QueryBuilder/Components/EventFields.gd"
+}, {
+"base": "Tabs",
+"class": "EventTypesTable",
+"language": "GDScript",
+"path": "res://TabScreens/QueryBuilder/Components/EventTypes.gd"
+}, {
 "base": "Node",
 "class": "FileReader",
 "language": "GDScript",
@@ -99,6 +109,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://HelperModules/MaterialsAndInventoryManager.gd"
 }, {
+"base": "PopupPanel",
+"class": "PopupResultsDetail",
+"language": "GDScript",
+"path": "res://TabScreens/QueryBuilder/Components/PopupResultsDetail.gd"
+}, {
 "base": "Node",
 "class": "QueryBuilderHelper",
 "language": "GDScript",
@@ -119,6 +134,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://HelperModules/ShipsDataManager.gd"
 }, {
+"base": "Tabs",
+"class": "VisualRules",
+"language": "GDScript",
+"path": "res://TabScreens/QueryBuilder/Components/VisualRules.gd"
+}, {
 "base": "Node",
 "class": "edsmDataManager",
 "language": "GDScript",
@@ -132,6 +152,8 @@ _global_script_class_icons={
 "DatabaseManager": "",
 "DateTime": "",
 "DetailsWindow": "",
+"EventFields": "",
+"EventTypesTable": "",
 "FileReader": "",
 "FloatingTable": "",
 "GalaxyCenter": "",
@@ -143,10 +165,12 @@ _global_script_class_icons={
 "JournalEvent": "",
 "Logger": "",
 "MaterialsAndInventoryManager": "",
+"PopupResultsDetail": "",
 "QueryBuilderHelper": "",
 "SettingsManager": "",
 "ShipButton": "",
 "ShipsDataManager": "",
+"VisualRules": "",
 "edsmDataManager": ""
 }
 

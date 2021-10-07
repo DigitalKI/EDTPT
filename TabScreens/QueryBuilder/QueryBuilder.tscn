@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://TabScreens/QueryBuilder/QueryBuilder.gd" type="Script" id=1]
 [ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=2]
-
-[sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 1, 1, 1, 1 )
+[ext_resource path="res://TabScreens/QueryBuilder/Components/EventTypes.tscn" type="PackedScene" id=3]
+[ext_resource path="res://TabScreens/QueryBuilder/Components/EventFields.tscn" type="PackedScene" id=4]
+[ext_resource path="res://TabScreens/QueryBuilder/Components/VisualRules.tscn" type="PackedScene" id=5]
+[ext_resource path="res://TabScreens/QueryBuilder/Components/PopupResultsDetail.tscn" type="PackedScene" id=6]
 
 [node name="QueryBuilder" type="Control"]
 anchor_right = 1.0
@@ -14,8 +15,6 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-selected_field_bg = Color( 0.835294, 0.835294, 0.835294, 0.490196 )
-selected_field_fg = Color( 0.227451, 0.227451, 0.227451, 0.490196 )
 
 [node name="HBoxContainer" type="HSplitContainer" parent="."]
 anchor_right = 1.0
@@ -32,7 +31,6 @@ size_flags_horizontal = 3
 tab_align = 0
 
 [node name="SavedViews" type="Tabs" parent="HBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -97,119 +95,14 @@ margin_right = 498.0
 margin_bottom = 25.0
 text = "Delete"
 
-[node name="EventTypes" type="Tabs" parent="HBoxContainer/TabContainer"]
+[node name="EventTypes" parent="HBoxContainer/TabContainer" instance=ExtResource( 3 )]
 visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 33.0
-margin_right = -4.0
-margin_bottom = -4.0
 
-[node name="EventTypes" type="ItemList" parent="HBoxContainer/TabContainer/EventTypes"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_horizontal = 3
-items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
-max_columns = 4
-same_column_width = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="EventFields" type="Tabs" parent="HBoxContainer/TabContainer"]
+[node name="EventFields" parent="HBoxContainer/TabContainer" instance=ExtResource( 4 )]
 visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 33.0
-margin_right = -4.0
-margin_bottom = -4.0
 
-[node name="PanelResult" type="VBoxContainer" parent="HBoxContainer/TabContainer/EventFields"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="EventFields" type="Tree" parent="HBoxContainer/TabContainer/EventFields/PanelResult"]
-margin_right = 498.0
-margin_bottom = 538.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_styles/selected_focus = SubResource( 1 )
-columns = 2
-allow_rmb_select = true
-hide_root = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PopupRemoveTable" type="PopupMenu" parent="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields"]
-margin_right = 20.0
-margin_bottom = 20.0
-items = [ "Remove table", null, 0, false, false, 0, 0, null, "", false, "", null, 0, false, false, 1, 0, null, "", true, "Add Filter", null, 0, false, false, 2, 0, null, "", false, "Add Visual Rule", null, 0, false, false, 3, 0, null, "", false ]
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BtRemoveAll" type="Button" parent="HBoxContainer/TabContainer/EventFields/PanelResult"]
-margin_top = 542.0
-margin_right = 498.0
-margin_bottom = 563.0
-text = "Remove all event types"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VisualRules" type="Tabs" parent="HBoxContainer/TabContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 33.0
-margin_right = -4.0
-margin_bottom = -4.0
-
-[node name="PanelVisualRules" type="VBoxContainer" parent="HBoxContainer/TabContainer/VisualRules"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="RuleFields" type="Tree" parent="HBoxContainer/TabContainer/VisualRules/PanelVisualRules"]
-margin_right = 498.0
-margin_bottom = 538.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_styles/selected_focus = SubResource( 1 )
-columns = 2
-allow_rmb_select = true
-hide_root = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PopupVisualRuleField" type="PopupMenu" parent="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields"]
-visible = true
-margin_right = 93.0
-margin_bottom = 35.0
-items = [ "Remove field", null, 0, false, false, 0, 0, null, "", false ]
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BtRemoveAll" type="Button" parent="HBoxContainer/TabContainer/VisualRules/PanelVisualRules"]
-margin_top = 542.0
-margin_right = 498.0
-margin_bottom = 563.0
-text = "Remove all visual rules"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="VisualRules" parent="HBoxContainer/TabContainer" instance=ExtResource( 5 )]
+visible = false
 
 [node name="QueryView" type="Tabs" parent="HBoxContainer/TabContainer"]
 visible = false
@@ -248,7 +141,13 @@ margin_bottom = 600.0
 rect_min_size = Vector2( 350, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
+allow_rmb_select = true
 hide_root = true
+
+[node name="PopupResultsDetail" parent="HBoxContainer/ResultsTable" instance=ExtResource( 6 )]
+anchor_right = 0.5
+margin_right = -2.0
+margin_bottom = 0.0
 
 [connection signal="item_activated" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList" to="." method="_on_SavedViewsList_item_activated"]
 [connection signal="item_selected" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList" to="." method="_on_SavedViewsList_item_selected"]
@@ -256,16 +155,9 @@ hide_root = true
 [connection signal="text_entered" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/HBoxContainer/TbViewTitle" to="." method="_on_TbViewTitle_text_entered"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/HBoxContainer/BtEdit" to="." method="_on_BtEdit_pressed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/HBoxContainer/BtDelete" to="." method="_on_BtDelete_pressed"]
-[connection signal="item_activated" from="HBoxContainer/TabContainer/EventTypes/EventTypes" to="." method="_on_EventTypes_item_activated"]
-[connection signal="gui_input" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_gui_input"]
-[connection signal="item_activated" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_activated"]
-[connection signal="item_rmb_selected" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_rmb_selected"]
-[connection signal="item_selected" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields" to="." method="_on_EventFields_item_selected"]
-[connection signal="id_pressed" from="HBoxContainer/TabContainer/EventFields/PanelResult/EventFields/PopupRemoveTable" to="." method="_on_PopupRemoveTable_id_pressed"]
-[connection signal="pressed" from="HBoxContainer/TabContainer/EventFields/PanelResult/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]
-[connection signal="gui_input" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields" to="." method="_on_EventFields_gui_input"]
-[connection signal="item_activated" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields" to="." method="_on_EventFields_item_activated"]
-[connection signal="item_rmb_selected" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields" to="." method="_on_EventFields_item_rmb_selected"]
-[connection signal="item_selected" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/RuleFields" to="." method="_on_EventFields_item_selected"]
-[connection signal="pressed" from="HBoxContainer/TabContainer/VisualRules/PanelVisualRules/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]
+[connection signal="event_type_selected" from="HBoxContainer/TabContainer/EventTypes" to="." method="_on_EventTypes_event_type_selected"]
+[connection signal="clear_all" from="HBoxContainer/TabContainer/EventFields" to="." method="_on_EventFields_clear_all"]
+[connection signal="query_changed" from="HBoxContainer/TabContainer/EventFields" to="." method="_on_EventFields_query_changed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/QueryView/BtApplySql" to="." method="_on_BtApplySql_pressed"]
+[connection signal="gui_input" from="HBoxContainer/ResultsTable" to="." method="_on_ResultsTable_gui_input"]
+[connection signal="item_rmb_selected" from="HBoxContainer/ResultsTable" to="." method="_on_ResultsTable_item_rmb_selected"]
