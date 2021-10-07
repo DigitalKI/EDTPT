@@ -37,7 +37,7 @@ var example_settings2 = [
 	, "is_array": false}]
 
 
-func add_rule_field(_event_name : String, _event_color : Color):
+func add_rule_field(_event_name : String, _event_color : Color, _addr : Array, _value : String = ""):
 	if !tree_root is TreeItem:
 		tree_root = rule_fields.create_item()
 	var table_item : TreeItem = rule_fields.create_item(tree_root)
@@ -47,12 +47,13 @@ func add_rule_field(_event_name : String, _event_color : Color):
 	table_item.set_expand_right(0, true)
 	table_item.set_text_align(0, TreeItem.ALIGN_CENTER)
 	var event_fields = data_reader.dbm.get_table_fields(_event_name)
-	for fld in event_fields:
-		var type_item : TreeItem = rule_fields.create_item(table_item)
-		type_item.set_text(0, fld["name"])
-		type_item.set_metadata(0, fld["type"])
-		type_item.set_tooltip(0, "{name} ({type})".format(fld))
-		type_item.set_custom_bg_color(0, selected_field_fg)
-		type_item.set_custom_color(0, selected_field_bg)
-		type_item.set_custom_bg_color(1, selected_field_fg)
-		type_item.set_custom_color(1, selected_field_bg)
+	# Address field, will be readonly
+	var addr_item : TreeItem = rule_fields.create_item(table_item)
+	addr_item.set_text(0, "Address")
+	addr_item.set_text(1, String(_addr))
+	addr_item.set_metadata(1, _addr)
+	# Value field to be used in filters
+	var matrix_value : TreeItem = rule_fields.create_item(table_item)
+	matrix_value.set_text(0, "Value")
+	matrix_value.set_text(1, String(_addr))
+	matrix_value.set_metadata(1, _addr)

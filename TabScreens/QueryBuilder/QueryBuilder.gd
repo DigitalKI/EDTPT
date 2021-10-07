@@ -54,14 +54,16 @@ func _on_BtEdit_pressed():
 func _on_ConfirmationDialog_confirmed():
 	query_structure.clear()
 	views_data.erase(current_query_structure_name)
-	data_reader.settings_manager.save_setting("query_views", views_data)
 	for itm in saved_views.get_selected_items():
 		saved_views.remove_item(itm)
+	events_fields.clear()
+	data_reader.settings_manager.save_setting("query_views", views_data)
 
 func _on_SavedViewsList_item_selected(index):
 	current_query_structure_name = saved_views.get_item_text(index)
 	query_structure = views_data[current_query_structure_name]
 	events_fields.query_structure = query_structure
+	events_fields.clear()
 	for tablename in query_structure["structure"].keys():
 		var selected_event_color := event_types_table.get_event_type_color_by_text(tablename)
 		events_fields.query_structure_to_ui(tablename, selected_event_color)
@@ -80,10 +82,11 @@ func _on_EventTypes_event_type_selected(event_type, event_color):
 	if query_structure["structure"].size() < 5:
 		if !events_fields.get_event_types().has(event_type):
 			events_fields.add_events_fields(event_type, event_color)
-			event_tabs.tabs_visible = 1
+			event_tabs.current_tab = 2
 
 func _on_EventFields_query_changed(sql_query):
 	query_view.text = sql_query
+	data_reader.settings_manager.save_setting("query_views", views_data)
 	get_result_table(sql_query + " LIMIT 1000")
 
 func _on_EventFields_clear_all():
@@ -142,4 +145,4 @@ func _on_ResultsTable_item_rmb_selected(position):
 	if result_text.begins_with("[") || result_text.begins_with("{"):
 		var data = parse_json(result_text)
 		popup_results.fill_table(result_field, data)
-		popup_results.popup(Rect2(position, popup_results.rect_size))
+		popup_results.popup_centered()

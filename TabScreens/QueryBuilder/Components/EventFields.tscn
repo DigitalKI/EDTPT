@@ -55,8 +55,8 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="gui_input" from="PanelResult/EventFields" to="." method="_on_EventFields_gui_input"]
 [connection signal="item_activated" from="PanelResult/EventFields" to="." method="_on_EventFields_item_activated"]
+[connection signal="item_edited" from="PanelResult/EventFields" to="." method="_on_EventFields_item_edited"]
 [connection signal="item_rmb_selected" from="PanelResult/EventFields" to="." method="_on_EventFields_item_rmb_selected"]
 [connection signal="item_selected" from="PanelResult/EventFields" to="." method="_on_EventFields_item_selected"]
 [connection signal="id_pressed" from="PanelResult/EventFields/PopupRemoveTable" to="." method="_on_PopupRemoveTable_id_pressed"]

@@ -39,7 +39,6 @@ __meta__ = {
 }
 
 [node name="PopupVisualRuleField" type="PopupMenu" parent="PanelVisualRules/RuleFields"]
-visible = true
 margin_right = 101.0
 margin_bottom = 34.0
 items = [ "Remove rule", null, 0, false, false, 0, 0, null, "", false ]

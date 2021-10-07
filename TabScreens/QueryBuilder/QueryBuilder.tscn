@@ -145,8 +145,13 @@ allow_rmb_select = true
 hide_root = true
 
 [node name="PopupResultsDetail" parent="HBoxContainer/ResultsTable" instance=ExtResource( 6 )]
-anchor_right = 0.5
-margin_right = -2.0
+anchor_left = 0.253
+anchor_top = 0.112
+anchor_right = 0.749
+anchor_bottom = 0.895
+margin_left = -0.0180054
+margin_top = -0.200005
+margin_right = 0.00598145
 margin_bottom = 0.0
 
 [connection signal="item_activated" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList" to="." method="_on_SavedViewsList_item_activated"]

@@ -36,13 +36,17 @@ func _on_EventFields_item_activated():
 func _on_EventFields_item_selected():
 	events_fields.get_selected().set_editable(1, false)
 
+func _on_EventFields_item_edited():
+	update_query_structure(events_fields.get_selected())
+	var sql_query : String = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
+	emit_signal("query_changed", sql_query)
+
 func _on_EventFields_gui_input(event):
-	var sql_query : String = ""
 	if event is InputEventKey:
 		if event.scancode == KEY_ENTER:
 			events_fields.get_selected().set_editable(1, false)
 			update_query_structure(events_fields.get_selected())
-			sql_query = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
+			var sql_query : String = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
 			emit_signal("query_changed", sql_query)
 
 func _on_EventFields_item_rmb_selected(position):
@@ -117,6 +121,7 @@ func remove_event_fields(_event_name : String):
 			root_evt_item.remove_child(cur)
 		cur = cur.get_next()
 	emit_signal("query_changed", sql_select)
+	events_fields.update()
 
 func get_event_types() -> Array:
 	var event_types : Array = []
@@ -129,24 +134,37 @@ func get_event_types() -> Array:
 			cur = cur.get_next()
 	return event_types
 
-func get_event_field_item_by_text(_text) -> TreeItem:
+# Searches for a field of a specific table.
+# This might not be the ideal way of doing this.
+# I haven't fully understood how get_next and get_children work.
+# TODO: review if it does some extra loop or if it can be improved.
+func get_event_field_item_by_text(_tablename, _text) -> TreeItem:
 	var root_evt_item = events_fields.get_root()
+#	print("----start----")
 	if root_evt_item:
-		var cur : TreeItem = root_evt_item.get_children()
-		while cur:
-			var cur_text := cur.get_text(0)
-			if cur_text == _text:
-				return cur
-			elif cur.get_children():
-				cur = cur.get_children()
+		var table : TreeItem = root_evt_item.get_children()
+		while table:
+			if table.get_text(0) != _tablename:
+				table = table.get_next()
 			else:
-				cur = cur.get_next()
+				var cur : TreeItem = table.get_children()
+				while cur:
+					var cur_text := cur.get_text(0)
+#					print(cur_text)
+					if cur_text == _text:
+#						print("----end----")
+						return cur
+					elif cur.get_children():
+						cur = cur.get_children()
+					else:
+						cur = cur.get_next()
+#	print("----end----")
 	return null
 
 func query_structure_to_ui(_tablename, _color):
 	add_events_fields(_tablename, _color)
 	for fieldname in query_structure["structure"][_tablename].keys():
-		var event_field := get_event_field_item_by_text(fieldname)
+		var event_field := get_event_field_item_by_text(_tablename, fieldname)
 		if event_field:
 			event_field.set_custom_bg_color(0, selected_field_bg)
 			event_field.set_custom_color(0, selected_field_fg)
@@ -163,7 +181,8 @@ func update_query_structure(_selected_field : TreeItem):
 		if event_type_item.get_text(0):
 			if !query_structure["structure"].has(event_type_item.get_text(0)):
 				query_structure["structure"][event_type_item.get_text(0)] = {}
-			if query_structure["structure"][event_type_item.get_text(0)].has(_selected_field.get_text(0)):
+			if query_structure["structure"][event_type_item.get_text(0)].has(_selected_field.get_text(0)) \
+			&& query_structure["structure"][event_type_item.get_text(0)][_selected_field.get_text(0)] == _selected_field.get_text(1):
 				query_structure["structure"][event_type_item.get_text(0)].erase(_selected_field.get_text(0))
 				result = "removed"
 			else:
@@ -176,4 +195,5 @@ func update_query_structure(_selected_field : TreeItem):
 
 func clear():
 	events_fields.clear()
+
 
