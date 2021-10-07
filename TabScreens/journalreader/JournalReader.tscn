@@ -98,3 +98,4 @@ __meta__ = {
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/DisplayByEventFile" to="." method="_on_DisplayByEventFile_toggled"]
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/BtUpdate" to="." method="_on_BtUpdate_toggled"]
 [connection signal="item_selected" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]
+[connection signal="gui_input" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogDetails" to="." method="_on_LogDetails_gui_input"]

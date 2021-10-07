@@ -32,6 +32,15 @@ func _on_LogEntries_item_selected(index):
 	clear_events()
 	add_events(dataobject)
 
+func _on_LogDetails_gui_input(event):
+	if event is InputEventKey:
+		if event.scancode ==  KEY_C && event.control:
+			if log_details.get_selected():
+				var clipboard_data : String = ""
+				for col_idx in log_details.columns:
+					clipboard_data += "\n" + log_details.get_selected().get_text(col_idx)
+				OS.clipboard = clipboard_data.trim_prefix("\n").replace(" | ", "\n")
+
 func _on_DataReader_new_cached_events(_events: Array):
 	add_events(_events)
 
@@ -159,3 +168,4 @@ func _on_DisplayByEventFile_toggled(button_pressed):
 
 func _on_BtUpdate_toggled(button_pressed):
 	data_reader.autoupdate = button_pressed
+
