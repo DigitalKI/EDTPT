@@ -216,10 +216,10 @@ func get_clicked_star():
 	var clicked_star = galaxy.get_clicked_star(mouse_pos)
 	if clicked_star["idx"] >= 0:
 		var found_star : Dictionary = data_reader.galaxy_manager.star_systems[clicked_star["idx"]]
-		set_selected_star(found_star, clicked_star["pos"])
+		set_selected_star(found_star)
 		camera_move(clicked_star["pos"])
 
-func set_selected_star(_star, _star_pos):
+func set_selected_star(_star):
 		details.title = ""
 		details.body = ""
 		if _star.has("StarSystem"):
@@ -265,17 +265,19 @@ func set_selected_star(_star, _star_pos):
 func _on_Search_SearchItemSelected(id):
 	var found_star : Dictionary = data_reader.galaxy_manager.star_systems[id]
 	var starpos := galaxy.galaxy_sector.get_star_position_by_id(id)
-	set_selected_star(found_star, starpos)
+	set_selected_star(found_star)
 	camera_move(starpos)
 
 func _on_FloatingTable_item_selected(tree_item):
-	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
-	camera_move(starpos)
+	if tree_item.has("StarPos"):
+		var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
+		camera_move(starpos)
 
 func _on_FloatingTable_item_doubleclicked(tree_item):
-	var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
-	set_selected_star(tree_item, starpos)
-	camera_move(starpos)
+	set_selected_star(tree_item)
+	if tree_item.has("StarPos"):
+		var starpos = DataConverter.get_position_vector(tree_item["StarPos"])
+		camera_move(starpos)
 
 func _on_RightButtonsContainer_view_button_pressed(_text):
 	var query_views : Dictionary = data_reader.settings_manager.get_setting("query_views")
