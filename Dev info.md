@@ -89,6 +89,39 @@ ON F.SystemAddress = S.SystemAddress
 GROUP BY F.SystemAddress
 HAVING MAX(F.timestamp)
 
+# Exporting to coriolis.io or EDSY
+
+How data seems to be encoded into a URL:
+
+- first is encoded into a byte array using UTF-8 format
+- then it is saved into a compressed file (gzip format)
+- the compressed array is converted into a string again using base 64 format
+- finally is URL escaped and added to the url as a parameter
+
+The code here was a first attempt at doing so, but it doesn't work, possibly due to how godot compress into a gzip format.
+Maybe 7zip can be used to do it via command line.
+
+
+```
+	var shiploadout : String = # data coming from a outfit event
+#	print(parse_json(shiploadout))
+	var file = File.new()
+	file.open("user://save_game.dat", File.WRITE)
+	file.close()
+	file.open_compressed("user://save_game.dat", File.WRITE, File.COMPRESSION_GZIP)
+	file.store_buffer(shiploadout.to_utf8())
+	file.close()
+	file.open("user://save_game.dat", File.READ)
+	var result : String = Marshalls.raw_to_base64(file.get_buffer(file.get_len())).http_escape()
+#	print(result)
+	OS.clipboard = result
+	
+	file.close()
+```
+
+https://github.com/EDDiscovery/BaseUtilities/blob/c03507247988fa3d21b257e2ef8494c5ab6a5dcb/BaseUtilities/HTTP/HttpUriEncode.cs
+https://github.com/EDDiscovery/EDDiscovery/blob/ab86438cf0a2191353436bc56c3ac877f10cb3db/EDDiscovery/UserControls/Overlays/UserControlSysInfo.cs#L521
+
 
 # Sources of info and data
 

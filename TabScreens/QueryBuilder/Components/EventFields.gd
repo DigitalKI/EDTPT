@@ -134,37 +134,10 @@ func get_event_types() -> Array:
 			cur = cur.get_next()
 	return event_types
 
-# Searches for a field of a specific table.
-# This might not be the ideal way of doing this.
-# I haven't fully understood how get_next and get_children work.
-# TODO: review if it does some extra loop or if it can be improved.
-func get_event_field_item_by_text(_tablename, _text) -> TreeItem:
-	var root_evt_item = events_fields.get_root()
-#	print("----start----")
-	if root_evt_item:
-		var table : TreeItem = root_evt_item.get_children()
-		while table:
-			if table.get_text(0) != _tablename:
-				table = table.get_next()
-			else:
-				var cur : TreeItem = table.get_children()
-				while cur:
-					var cur_text := cur.get_text(0)
-#					print(cur_text)
-					if cur_text == _text:
-#						print("----end----")
-						return cur
-					elif cur.get_children():
-						cur = cur.get_children()
-					else:
-						cur = cur.get_next()
-#	print("----end----")
-	return null
-
 func query_structure_to_ui(_tablename, _color):
 	add_events_fields(_tablename, _color)
 	for fieldname in query_structure["structure"][_tablename].keys():
-		var event_field := get_event_field_item_by_text(_tablename, fieldname)
+		var event_field := TreeHelper.get_event_field_item_by_text(events_fields, _tablename, fieldname)
 		if event_field:
 			event_field.set_custom_bg_color(0, selected_field_bg)
 			event_field.set_custom_color(0, selected_field_fg)

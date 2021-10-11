@@ -27,7 +27,7 @@ __meta__ = {
 [node name="DetailTitle" type="Label" parent="VBoxContainer"]
 margin_right = 333.0
 margin_bottom = 14.0
-text = "Detailed data (rmb to add to visual rule)"
+text = "Detailed data (doubleclick to add to visual rule)"
 align = 1
 
 [node name="DetailTree" type="Tree" parent="VBoxContainer"]
@@ -39,3 +39,5 @@ custom_constants/item_margin = 10
 columns = 2
 allow_rmb_select = true
 hide_root = true
+
+[connection signal="item_activated" from="VBoxContainer/DetailTree" to="." method="_on_DetailTree_item_activated"]

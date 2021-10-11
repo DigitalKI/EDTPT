@@ -37,8 +37,17 @@ func _on_LogDetails_gui_input(event):
 		if event.scancode ==  KEY_C && event.control:
 			if log_details.get_selected():
 				var clipboard_data : String = ""
-				for col_idx in log_details.columns:
-					clipboard_data += "\n" + log_details.get_selected().get_text(col_idx)
+#				for col_idx in log_details.columns:
+#					clipboard_data += "\n" + log_details.get_selected().get_text(col_idx)
+				var current_metadata : Dictionary = log_details.get_selected().get_meta("json")
+				for val in current_metadata.keys():
+					if current_metadata[val] is String:
+						var json_data : JSONParseResult = JSON.parse(current_metadata[val])
+						if json_data.error == OK && (current_metadata[val].begins_with("[") || current_metadata[val].begins_with("{")):
+							clipboard_data += "\n%s:" % val
+							clipboard_data += "\n" + JSON.print(json_data.result, "    ")
+						else:
+							clipboard_data += "\n%s: %s" %[val, current_metadata[val]]
 				OS.clipboard = clipboard_data.trim_prefix("\n").replace(" | ", "\n")
 
 func _on_DataReader_new_cached_events(_events: Array):
@@ -128,6 +137,7 @@ func add_events(_current_logobject : Array, _filter : bool = false):
 						objtext +=  String(idx) + " - " + value + " | "
 				evt.set_text(2, objtext.trim_suffix(" | "))
 				evt.set_tooltip(2, objtext.trim_suffix(" | ").replace("|", "\n").replace("},{", "}\n{"))
+				evt.set_meta("json", log_obj)
 
 func fill_event_type_filter():
 	log_filter_popup.clear()

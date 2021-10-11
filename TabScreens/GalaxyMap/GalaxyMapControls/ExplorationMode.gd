@@ -1,5 +1,6 @@
 tool
 extends Button
+class_name ExplorationModeToggle
 export(String, MULTILINE) var button_text setget _set_button_text, _get_button_text
 
 func _set_button_text(_value):

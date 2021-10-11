@@ -154,6 +154,11 @@ margin_top = -0.200005
 margin_right = 0.00598145
 margin_bottom = 0.0
 
+[node name="PopupVisualRules" type="PopupMenu" parent="HBoxContainer/ResultsTable"]
+margin_right = 20.0
+margin_bottom = 20.0
+items = [ "Add new address", null, 0, false, false, 0, 0, null, "", false ]
+
 [connection signal="item_activated" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList" to="." method="_on_SavedViewsList_item_activated"]
 [connection signal="item_selected" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList" to="." method="_on_SavedViewsList_item_selected"]
 [connection signal="confirmed" from="HBoxContainer/TabContainer/SavedViews/VBoxViews/SavedViewsList/DeleteConfirmationDialog" to="." method="_on_ConfirmationDialog_confirmed"]
@@ -165,4 +170,7 @@ margin_bottom = 0.0
 [connection signal="query_changed" from="HBoxContainer/TabContainer/EventFields" to="." method="_on_EventFields_query_changed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/QueryView/BtApplySql" to="." method="_on_BtApplySql_pressed"]
 [connection signal="gui_input" from="HBoxContainer/ResultsTable" to="." method="_on_ResultsTable_gui_input"]
+[connection signal="item_activated" from="HBoxContainer/ResultsTable" to="." method="_on_ResultsTable_item_activated"]
 [connection signal="item_rmb_selected" from="HBoxContainer/ResultsTable" to="." method="_on_ResultsTable_item_rmb_selected"]
+[connection signal="field_selected" from="HBoxContainer/ResultsTable/PopupResultsDetail" to="." method="_on_PopupResultsDetail_field_selected"]
+[connection signal="id_pressed" from="HBoxContainer/ResultsTable/PopupVisualRules" to="." method="_on_PopupVisualRules_id_pressed"]

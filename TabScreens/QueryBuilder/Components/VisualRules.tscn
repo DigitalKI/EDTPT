@@ -51,3 +51,7 @@ text = "Remove all visual rules"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[connection signal="item_rmb_selected" from="PanelVisualRules/RuleFields" to="." method="_on_RuleFields_item_rmb_selected"]
+[connection signal="id_pressed" from="PanelVisualRules/RuleFields/PopupVisualRuleField" to="." method="_on_PopupVisualRuleField_id_pressed"]
+[connection signal="pressed" from="PanelVisualRules/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]

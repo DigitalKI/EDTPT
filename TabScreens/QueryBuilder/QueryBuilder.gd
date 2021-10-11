@@ -8,9 +8,11 @@ onready var delete_confirmation : ConfirmationDialog = $HBoxContainer/TabContain
 onready var view_title : LineEdit = $HBoxContainer/TabContainer/SavedViews/VBoxViews/HBoxContainer/TbViewTitle
 onready var event_types_table : EventTypesTable = $HBoxContainer/TabContainer/EventTypes
 onready var events_fields : EventFields = $HBoxContainer/TabContainer/EventFields
+onready var visual_rules : VisualRules = $HBoxContainer/TabContainer/VisualRules
 onready var query_view: TextEdit = $HBoxContainer/TabContainer/QueryView/ResultingQuery
 onready var results_table : Tree = $HBoxContainer/ResultsTable
 onready var popup_results : PopupResultsDetail = $HBoxContainer/ResultsTable/PopupResultsDetail
+onready var popup_rules : PopupMenu = $HBoxContainer/ResultsTable/PopupVisualRules
 
 var views_data : Dictionary = {}
 var current_query_structure_name : String = ""
@@ -136,13 +138,22 @@ func _on_ResultsTable_gui_input(event):
 			if results_table.get_selected():
 				OS.clipboard = results_table.get_selected().get_text(results_table.get_selected_column())
 
-
-func _on_ResultsTable_item_rmb_selected(position):
-	var result_item := results_table.get_selected()
-	var col_idx := results_table.get_selected_column()
-	var result_field : String = results_table.get_column_title(col_idx)
-	var result_text : String = result_item.get_text(col_idx)
+func _on_ResultsTable_item_activated():
+	var result_field : String = TreeHelper.get_selected_column_title(results_table)
+	var result_text : String = TreeHelper.get_selected_text(results_table)
 	if result_text.begins_with("[") || result_text.begins_with("{"):
 		var data = parse_json(result_text)
 		popup_results.fill_table(result_field, data)
 		popup_results.popup_centered()
+
+func _on_ResultsTable_item_rmb_selected(position):
+	popup_rules.popup(Rect2(results_table.rect_position + position, popup_rules.rect_size))
+
+func _on_PopupResultsDetail_field_selected(addr):
+	visual_rules.add_field_addr(addr, Color(1,1,1))
+
+func _on_PopupVisualRules_id_pressed(id):
+	if id == 0:
+		var selected_field : String = TreeHelper.get_selected_column_title(results_table)
+		visual_rules.add_field_addr([selected_field], Color(1,1,1))
+

@@ -12,6 +12,7 @@ onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/UpperGalaxy
 onready var table : FloatingTable = $HBoxContainer/GalaxyContainer/UpperGalaxyContainer/FloatingTable
 onready var navlabel : Label = $HBoxContainer/GalaxyContainer/LabelNav
 onready var right_buttons_container : ButtonsContainer = $HBoxContainer/RightButtonsContainer
+onready var exploration_mode : ExplorationModeToggle = $HBoxContainer/LeftButtonsContainer/Exploration
 var zoom_speed = 0.15
 var rotation_speed = 0.02
 var movement_speed = 0.03
@@ -148,11 +149,12 @@ func _on_BtGalaxy_pressed():
 	pause_unpause_game()
 
 func _on_DataReader_new_cached_events(_events: Array):
-	for evt in _events:
-		if "FSDJump" == evt["event"]:
-			var new_pos : Vector3 = DataConverter.get_position_vector(evt["StarPos"])
-			galaxy.add_single_star(evt, current_view_settings)
-			camera_move(new_pos, galaxy.camera.translation.z)
+	if exploration_mode.pressed:
+		for evt in _events:
+			if "FSDJump" == evt["event"]:
+				var new_pos : Vector3 = DataConverter.get_position_vector(evt["StarPos"])
+				galaxy.add_single_star(evt, current_view_settings)
+				camera_move(new_pos, galaxy.camera.translation.z)
 
 var sector_x = -1
 var sector_y = -1

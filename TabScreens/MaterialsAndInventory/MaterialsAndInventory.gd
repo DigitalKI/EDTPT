@@ -131,7 +131,7 @@ func _get_matching_child(_parent_item : TreeItem, _text_to_search : String, _col
 		var matching_item : TreeItem = _parent_item.get_children()
 		var text_to_search_cleaned := _text_to_search.trim_prefix("$MICRORESOURCE_CATEGORY_").replace(";", "").to_lower()
 		while matching_item != null && max_count > 0:
-			print("%s -> %s == %s" %  [_parent_item.get_text(0), matching_item.get_text(_column), _text_to_search])
+#			print("%s -> %s == %s" %  [_parent_item.get_text(0), matching_item.get_text(_column), _text_to_search])
 			if matching_item.get_metadata(_column) == text_to_search_cleaned:
 				return matching_item
 			matching_item = matching_item.get_next()
