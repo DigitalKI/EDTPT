@@ -3,7 +3,6 @@
 [ext_resource path="res://TabScreens/QueryBuilder/Components/PopupResultsDetail.gd" type="Script" id=1]
 
 [node name="PopupResultsDetail" type="PopupPanel"]
-visible = true
 anchor_right = 0.333
 anchor_bottom = 0.5
 margin_right = 0.231995
@@ -40,4 +39,5 @@ columns = 2
 allow_rmb_select = true
 hide_root = true
 
+[connection signal="gui_input" from="VBoxContainer/DetailTree" to="." method="_on_DetailTree_gui_input"]
 [connection signal="item_activated" from="VBoxContainer/DetailTree" to="." method="_on_DetailTree_item_activated"]

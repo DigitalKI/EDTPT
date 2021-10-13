@@ -227,11 +227,11 @@ func set_selected_star(_star):
 		if _star.has("StarSystem"):
 			details.title += _star["StarSystem"]
 			for key in _star.keys():
-				if !(data_reader.get_value(_star[key]).begins_with("$") && _star[key].ends_with(";")):
+				if !(DataConverter.get_value(_star[key]).begins_with("$") && _star[key].ends_with(";")):
 					if key != "System":
-						details.body += "%s: %s\n" % [key.replace("_Localised", "").replace("System", "").capitalize(), data_reader.get_value(_star[key])]
+						details.body += "%s: %s\n" % [key.replace("_Localised", "").replace("System", "").capitalize(), DataConverter.get_value(_star[key])]
 					else:
-						details.body += "%s: %s\n" % [key.replace("_Localised", ""), data_reader.get_value(_star[key])]
+						details.body += "%s: %s\n" % [key.replace("_Localised", ""), DataConverter.get_value(_star[key])]
 		
 		var prospected_asteroids_events = []
 		if _star.has("SystemAddress"):

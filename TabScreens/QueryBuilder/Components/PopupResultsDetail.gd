@@ -68,3 +68,7 @@ func _on_DetailTree_item_activated():
 	var selected_cell : String = TreeHelper.get_selected_text(table)
 	emit_signal("field_selected", table.get_selected().get_meta("addr"))
 	visible = false
+
+
+func _on_DetailTree_gui_input(event):
+	TreeHelper.cell_to_clipboard(event, table)

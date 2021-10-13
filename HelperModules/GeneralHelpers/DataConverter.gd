@@ -22,3 +22,22 @@ static func get_position_vector(_data) -> Vector3:
 			position.y = _converted_data[1]
 			position.z = _converted_data[2]
 	return position
+
+# this function gets a string value even when data is null
+static func get_value(_value):
+	var string_value = "null" if (_value == null) else String(_value)
+	return string_value
+
+static func dictionary_pretty_print(_data : Dictionary) -> String:
+	var clipboard_data : String = ""
+	# for each key we try to format data nicely
+	# JSON.print does prettyfy arrays and dictionaries
+	for val in _data.keys():
+		if _data[val] is String:
+			var json_data : JSONParseResult = JSON.parse(_data[val])
+			if json_data.error == OK && (_data[val].begins_with("[") || _data[val].begins_with("{")):
+				clipboard_data += "\n%s:" % val
+				clipboard_data += "\n" + JSON.print(json_data.result, "    ")
+			else:
+				clipboard_data += "\n%s: %s" %[val, _data[val]]
+	return clipboard_data.trim_prefix("\n").replace(" | ", "\n")

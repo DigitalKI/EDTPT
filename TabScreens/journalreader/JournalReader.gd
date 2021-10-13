@@ -32,23 +32,9 @@ func _on_LogEntries_item_selected(index):
 	clear_events()
 	add_events(dataobject)
 
+# This is to allow to copy to clipboard the content of the journal entry
 func _on_LogDetails_gui_input(event):
-	if event is InputEventKey:
-		if event.scancode ==  KEY_C && event.control:
-			if log_details.get_selected():
-				var clipboard_data : String = ""
-#				for col_idx in log_details.columns:
-#					clipboard_data += "\n" + log_details.get_selected().get_text(col_idx)
-				var current_metadata : Dictionary = log_details.get_selected().get_meta("json")
-				for val in current_metadata.keys():
-					if current_metadata[val] is String:
-						var json_data : JSONParseResult = JSON.parse(current_metadata[val])
-						if json_data.error == OK && (current_metadata[val].begins_with("[") || current_metadata[val].begins_with("{")):
-							clipboard_data += "\n%s:" % val
-							clipboard_data += "\n" + JSON.print(json_data.result, "    ")
-						else:
-							clipboard_data += "\n%s: %s" %[val, current_metadata[val]]
-				OS.clipboard = clipboard_data.trim_prefix("\n").replace(" | ", "\n")
+	TreeHelper.cell_to_clipboard(event, log_details, "json")
 
 func _on_DataReader_new_cached_events(_events: Array):
 	add_events(_events)
@@ -133,7 +119,7 @@ func add_events(_current_logobject : Array, _filter : bool = false):
 				var objtext : String = ""
 				for idx in log_obj.keys():
 					if !["event", "timestamp", "Id", "CMDRId", "FileheaderId"].has(idx):
-						var value = "" if log_obj[idx] == null else String(log_obj[idx])
+						var value = DataConverter.get_value(log_obj[idx])
 						objtext +=  String(idx) + " - " + value + " | "
 				evt.set_text(2, objtext.trim_suffix(" | "))
 				evt.set_tooltip(2, objtext.trim_suffix(" | ").replace("|", "\n").replace("},{", "}\n{"))

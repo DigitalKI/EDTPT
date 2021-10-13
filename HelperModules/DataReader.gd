@@ -335,8 +335,3 @@ func get_all_new_events_by_type(_event_types : Array, _new_log_events : Dictiona
 	return evt_lst
 
 
-# this function gets a string value even when data is null
-func get_value(_value):
-	var string_value = "null" if (_value == null) else String(_value)
-	return string_value
-

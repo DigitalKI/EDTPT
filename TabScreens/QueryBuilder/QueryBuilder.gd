@@ -65,6 +65,7 @@ func _on_SavedViewsList_item_selected(index):
 	current_query_structure_name = saved_views.get_item_text(index)
 	query_structure = views_data[current_query_structure_name]
 	events_fields.query_structure = query_structure
+	visual_rules.query_structure = query_structure
 	events_fields.clear()
 	for tablename in query_structure["structure"].keys():
 		var selected_event_color := event_types_table.get_event_type_color_by_text(tablename)
@@ -151,6 +152,7 @@ func _on_ResultsTable_item_rmb_selected(position):
 
 func _on_PopupResultsDetail_field_selected(addr):
 	visual_rules.add_field_addr(addr, Color(1,1,1))
+	event_tabs.current_tab = 3
 
 func _on_PopupVisualRules_id_pressed(id):
 	if id == 0:
