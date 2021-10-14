@@ -77,6 +77,11 @@ func _on_SavedViewsList_item_selected(index):
 	else:
 		query_view.text = query_structure["query"]
 	get_result_table(query_view.text + " LIMIT 1000")
+	
+	if query_structure.has("rules"):
+		visual_rules.ruleset_to_ui(query_structure["rules"])
+	else:
+		visual_rules.ruleset_to_ui([])
 
 func _on_SavedViewsList_item_activated(index):
 	pass
@@ -159,3 +164,5 @@ func _on_PopupVisualRules_id_pressed(id):
 		var selected_field : String = TreeHelper.get_selected_column_title(results_table)
 		visual_rules.add_field_addr([selected_field], Color(1,1,1))
 
+func _on_VisualRules_config_changed():
+	data_reader.settings_manager.save_setting("query_views", views_data)

@@ -34,10 +34,20 @@ static func dictionary_pretty_print(_data : Dictionary) -> String:
 	# JSON.print does prettyfy arrays and dictionaries
 	for val in _data.keys():
 		if _data[val] is String:
-			var json_data : JSONParseResult = JSON.parse(_data[val])
-			if json_data.error == OK && (_data[val].begins_with("[") || _data[val].begins_with("{")):
-				clipboard_data += "\n%s:" % val
-				clipboard_data += "\n" + JSON.print(json_data.result, "    ")
-			else:
+			var var_data = parse_var(_data[val])
+			if var_data is String:
 				clipboard_data += "\n%s: %s" %[val, _data[val]]
+			else:
+				clipboard_data += "\n%s:" % val
+				clipboard_data += "\n" + JSON.print(var_data, "    ")
 	return clipboard_data.trim_prefix("\n").replace(" | ", "\n")
+
+static func parse_var(_var):
+	if _var is String:
+		if _var.begins_with("[") || _var.begins_with("{"):
+			var json_data : JSONParseResult = JSON.parse(_var)
+			if json_data.error == OK:
+				return json_data.result
+		else:
+			return _var
+	return _var

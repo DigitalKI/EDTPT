@@ -26,5 +26,6 @@ func draw_path(_stars : Array, _pos_name : String):
 	mesh = arraymesh
 
 func clear_path():
-	for i in arraymesh.get_surface_count():
-		arraymesh.surface_remove(i)
+	if arraymesh:
+		for i in arraymesh.get_surface_count():
+			arraymesh.surface_remove(i)

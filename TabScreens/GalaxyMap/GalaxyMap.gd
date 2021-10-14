@@ -113,16 +113,16 @@ func _on_Exploration_toggled(button_pressed):
 
 func _on_BtMining_pressed():
 	view_mode = "Mining"
-	current_view_settings = [{"addr": ["RingsAmount"]
+	current_view_settings = [{"address": ["RingsAmount"]
 	, "size_scales":{"min": 0, "max": 15, "min_scale": 0.5, "max_scale": 4}
 	, "is_array": false},
-	{"addr": ["RingsAmount"]
+	{"address": ["RingsAmount"]
 	, "color_scales":{"min": 1, "max": 15, "min_scale": Color(0.0,0.1,0.8), "max_scale": Color(0.0,0.6,0.6)}
 	, "is_array": false},
-	{"addr": ["Ringed"]
+	{"address": ["Ringed"]
 	, "color_matrix": {"0": Color(0.0,0.0,1.0)}
 	, "is_array": false}
-	,{"addr": ["prospected"]
+	,{"address": ["prospected"]
 	, "color_matrix":{"True": Color(1.0,1.0,1.0)}
 	, "is_array": false}]
 	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_rings(), current_view_settings, Color(0.0,0.0,1.0))
@@ -132,15 +132,15 @@ func _on_BtMining_pressed():
 func _on_BtGalaxy_pressed():
 	view_mode = "Galaxy"
 	current_view_settings = [
-	{"addr": ["SystemEconomy"]
+	{"address": ["SystemEconomy"]
 	, "color_matrix": {"$economy_Refinery;": Color(1.0,0.0,0.0)
 					, "$economy_HighTech;": Color(0.0,0.0,1.0)
 					, "$economy_Agri;": Color(0.0,1.0,0.0)}
 	, "is_array": false}
-	,{"addr": ["Visits"]
+	,{"address": ["Visits"]
 	, "color_matrix":{"0": Color(0.5,0.5,0.0)}
 	, "is_array": false}
-	,{"addr": ["Visits"]
+	,{"address": ["Visits"]
 	, "size_scales":{"min": 1, "max": 150, "min_scale": 0.5, "max_scale": 6}
 	, "is_array": false}]
 	galaxy.spawn_sector_stars(data_reader.galaxy_manager.get_systems_by_visits(), current_view_settings)
@@ -290,7 +290,12 @@ func _on_RightButtonsContainer_view_button_pressed(_text):
 		if view_select.empty():
 			view_select = data_reader.query_builder.query_structure_to_select(query_views[_text]["structure"])
 		var events := data_reader.dbm.db_execute_select(view_select)
+		data_reader.galaxy_manager.star_systems = events
 		show_table_view(events, _text)
+		galaxy.spawn_sector_stars(events, query_views[_text]["rules"])
+	#	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
+		update_navlabel()
+		pause_unpause_game()
 
 func show_table_view(_data : Array, _title : String):
 	table.visible = !table.visible
@@ -299,9 +304,9 @@ func show_table_view(_data : Array, _title : String):
 		table.title_text = _title
 		table.visible_columns = []
 		table.table_array = _data
-		if !_data.empty():
-			if _data[0].has("timestamp"):
-				galaxy.galaxy_plotter.draw_path(table.table_array, "StarPos")
+#		if !_data.empty():
+#			if _data[0].has("timestamp"):
+#				galaxy.galaxy_plotter.draw_path(table.table_array, "StarPos")
 	else:
 		galaxy.galaxy_plotter.clear_path()
 

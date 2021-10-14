@@ -25,7 +25,7 @@ func get_multimesh():
 func get_sample_config():
 	var _config = [
 	# This gives a specific color based on a lisf of possible values
-	{"addr": ["factions"]
+	{"address": ["factions"]
 	, "color_matrix": {"Empire": Color(1.0,0.0,0.0)
 					, "Federation": Color(0.0,0.0,1.0)
 					, "Alliance": Color(0.0,1.0,0.0)}
@@ -33,18 +33,18 @@ func get_sample_config():
 	# This gives a specific color based on a lisf of possible values
 	# since is_array, it interpolate the multiple colors associated with the values
 	# ie. a planet with metallic and icy will interpolate red with green
-	,{"addr": ["Rings", "RingClass"]
+	,{"address": ["Rings", "RingClass"]
 	, "color_matrix":{"eRingClass_Metalic": Color(1.0,0.0,0.0)
 					, "eRingClass_MetalRich": Color(0.0,0.0,1.0)
 					, "eRingClass_Rocky": Color(1.0,1.0,0.0)
 					, "eRingClass_Icy": Color(0.0,1.0,0.0)}
 	, "is_array": true}
 	#this gives a size based on a scale
-	,{"addr": ["RingsAmount"]
+	,{"address": ["RingsAmount"]
 	, "size_scales":{"min": 0, "max": 15, "min_scale": 0.5, "max_scale": 4}
 	, "is_array": false}
 	#this blends color based on a scale
-	,{"addr": ["RingsAmount"]
+	,{"address": ["RingsAmount"]
 	, "color_scales":{"min": 0, "max": 15, "min_scale": Color(1.0,0.0,0.0), "max_scale": Color(0.0,0.0,1.0)}
 	, "is_array": false}]
 
@@ -75,7 +75,7 @@ func _config_star(_star : Dictionary, _star_idx : int, _config : Array, _default
 	for _c in _config:
 		if _c.has("color_matrix"):
 			if _c["is_array"]:
-				var arr_values = get_value_from_dict_address(_c["addr"], _star)
+				var arr_values = get_value_from_dict_address(_c["address"], _star)
 				for _cval in arr_values:
 					if _c["color_matrix"].has(_cval):
 						if color_unassigned:
@@ -84,20 +84,26 @@ func _config_star(_star : Dictionary, _star_idx : int, _config : Array, _default
 						else:
 							final_color = final_color.linear_interpolate(_c["color_matrix"][_cval], 0.5)
 			else:
-				var colval = String(get_value_from_dict_address(_c["addr"], _star))
-				if _c["color_matrix"].has(colval):
+				var colval = get_value_from_dict_address(_c["address"], _star)
+				if colval is Array:
+					for val in colval:
+						if _c["color_matrix"].has(val):
+							if color_unassigned:
+								final_color = _c["color_matrix"][val]
+								color_unassigned = false
+				elif _c["color_matrix"].has(colval):
 					if color_unassigned:
 						final_color = _c["color_matrix"][colval]
 						color_unassigned = false
 					else:
 						final_color = final_color.linear_interpolate(_c["color_matrix"][colval], 0.5)
 		elif _c.has("color_scales"):
-			var color_value = get_value_from_dict_address(_c["addr"], _star)
+			var color_value = get_value_from_dict_address(_c["address"], _star)
 			if color_value > _c["color_scales"]["min"] && color_value < _c["color_scales"]["max"]:
 				var color_normalized = inverse_lerp(_c["color_scales"]["min"], _c["color_scales"]["max"], color_value)
 				final_color = _c["color_scales"]["min_scale"].linear_interpolate(_c["color_scales"]["max_scale"], color_normalized)
 		elif _c.has("size_scales"):
-			var scale_value = get_value_from_dict_address(_c["addr"], _star)
+			var scale_value = get_value_from_dict_address(_c["address"], _star)
 			var scale_normalized = inverse_lerp(_c["size_scales"]["min"], _c["size_scales"]["max"], scale_value)
 			var scale = Vector3(_c["size_scales"]["min_scale"],_c["size_scales"]["min_scale"],_c["size_scales"]["min_scale"]).linear_interpolate(Vector3(_c["size_scales"]["max_scale"], _c["size_scales"]["max_scale"], _c["size_scales"]["max_scale"]), scale_normalized)
 			star_size = Basis().scaled(scale)
@@ -125,12 +131,32 @@ func get_position_vector(_position_data):
 # we get the value "empire" from _dict
 func get_value_from_dict_address(_address : Array, _dict : Dictionary):
 	var value = _dict
-	for add in _address:
-		if value is Dictionary:
-			if value.has(add):
-				value = value[add]
-			else:
-				value = 0
+	for addr in _address:
+		value = get_value_from_key(addr, value)
+	return DataConverter.parse_var(value)
+
+func get_value_from_key(_key : String, _data):
+	if _data is String:
+		if _data.begins_with("{") || _data.begins_with("["):
+			_data = parse_json(_data)
+	if _data is Dictionary:
+		if _data.has(_key):
+			_data = _data[_key]
 		else:
-			value = 0
-	return value
+			_data = 0
+	elif _data is Array:
+		var temp_values : Array = []
+		for val in _data:
+			if val is Dictionary:
+				var inn_val = get_value_from_key(_key, val)
+				if inn_val:
+					temp_values.append(inn_val)
+			elif val == _key:
+				temp_values.append(val)
+		if temp_values.empty():
+			_data = 0
+		else:
+			_data = temp_values
+	else:
+		_data = 0
+	return _data

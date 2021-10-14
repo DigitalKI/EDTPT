@@ -11,7 +11,7 @@ func fill_table(_field : String, _data):
 	table.clear()
 	table.columns = 2
 	var tree_root : TreeItem = table.create_item()
-	tree_root.set_meta("addr", [_field])
+	tree_root.set_meta("address", [_field])
 	tree_root.set_tooltip(0, String([_field]))
 	if _data is Array:
 		handle_array(_field, _data, tree_root)
@@ -21,9 +21,9 @@ func fill_table(_field : String, _data):
 func handle_array(_rowname : String, _rows : Array, _parent : TreeItem, _depth : int = 0):
 	var depth_color : Color = Color(1,1,1).linear_interpolate(Color(0,0,0), float(_depth) / 3.0)
 	for row in _rows:
-		var new_addr : Array = _parent.get_meta("addr").duplicate(true)
+		var new_addr : Array = _parent.get_meta("address").duplicate(true)
 		var datarow : TreeItem = table.create_item(_parent)
-		datarow.set_meta("addr", new_addr)
+		datarow.set_meta("address", new_addr)
 		datarow.set_tooltip(0, String(new_addr))
 		if row is Dictionary:
 			if _depth == 0:
@@ -43,10 +43,10 @@ func handle_array(_rowname : String, _rows : Array, _parent : TreeItem, _depth :
 func handle_dictionary(_dict : Dictionary, _parent : TreeItem, _depth : int = 0):
 	var depth_color : Color = Color(1,1,1).linear_interpolate(Color(0,0,0), float(_depth) / 3.0)
 	for col in _dict.keys():
-		var new_addr : Array = _parent.get_meta("addr").duplicate(true)
+		var new_addr : Array = _parent.get_meta("address").duplicate(true)
 		new_addr.append(col)
 		var datarow : TreeItem = table.create_item(_parent)
-		datarow.set_meta("addr", new_addr)
+		datarow.set_meta("address", new_addr)
 		datarow.set_tooltip(0, String(new_addr))
 		if !(_dict[col] is Dictionary || _dict[col] is Array):
 			datarow.set_text(0, col)
@@ -66,7 +66,7 @@ func _on_DetailTree_item_activated():
 	var selected_column : String = TreeHelper.get_selected_column_title(table)
 	var selected_fields : Array = TreeHelper.get_selected_row_text(table)
 	var selected_cell : String = TreeHelper.get_selected_text(table)
-	emit_signal("field_selected", table.get_selected().get_meta("addr"))
+	emit_signal("field_selected", table.get_selected().get_meta("address"))
 	visible = false
 
 
