@@ -99,12 +99,23 @@ func _config_star(_star : Dictionary, _star_idx : int, _config : Array, _default
 						final_color = final_color.linear_interpolate(_c["color_matrix"][colval], 0.5)
 		elif _c.has("color_scales"):
 			var color_value = get_value_from_dict_address(_c["address"], _star)
-			if color_value > _c["color_scales"]["min"] && color_value < _c["color_scales"]["max"]:
-				var color_normalized = inverse_lerp(_c["color_scales"]["min"], _c["color_scales"]["max"], color_value)
-				final_color = _c["color_scales"]["min_scale"].linear_interpolate(_c["color_scales"]["max_scale"], color_normalized)
+			if color_value is float || color_value is int:
+				color_value = [color_value]
+				final_color = _c["color_scales"]["min_scale"]
+			if color_value == null:
+				color_value = []
+			for cval in color_value:
+				if cval > _c["color_scales"]["min"] && cval < _c["color_scales"]["max"]:
+					var color_normalized = inverse_lerp(_c["color_scales"]["min"], _c["color_scales"]["max"], cval)
+					final_color = final_color.linear_interpolate(_c["color_scales"]["max_scale"], color_normalized)
 		elif _c.has("size_scales"):
 			var scale_value = get_value_from_dict_address(_c["address"], _star)
+			if !(scale_value is float || scale_value is int):
+				scale_value = _c["size_scales"]["min"]
 			var scale_normalized = inverse_lerp(_c["size_scales"]["min"], _c["size_scales"]["max"], scale_value)
+			if scale_normalized > 1.0:
+				print("scale is too high! %s" % scale_normalized)
+				scale_normalized = 1.0
 			var scale = Vector3(_c["size_scales"]["min_scale"],_c["size_scales"]["min_scale"],_c["size_scales"]["min_scale"]).linear_interpolate(Vector3(_c["size_scales"]["max_scale"], _c["size_scales"]["max_scale"], _c["size_scales"]["max_scale"]), scale_normalized)
 			star_size = Basis().scaled(scale)
 	$StarsAclose.multimesh.set_instance_transform(_star_idx, Transform(star_size, sys_coord))
@@ -143,7 +154,7 @@ func get_value_from_key(_key : String, _data):
 		if _data.has(_key):
 			_data = _data[_key]
 		else:
-			_data = 0
+			_data = null
 	elif _data is Array:
 		var temp_values : Array = []
 		for val in _data:
@@ -154,9 +165,9 @@ func get_value_from_key(_key : String, _data):
 			elif val == _key:
 				temp_values.append(val)
 		if temp_values.empty():
-			_data = 0
+			_data = null
 		else:
 			_data = temp_values
 	else:
-		_data = 0
+		_data = null
 	return _data

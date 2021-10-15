@@ -27,7 +27,7 @@ __meta__ = {
 
 [node name="RuleFields" type="Tree" parent="PanelVisualRules"]
 margin_right = 1016.0
-margin_bottom = 539.0
+margin_bottom = 515.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_styles/selected_focus = SubResource( 1 )
@@ -56,8 +56,8 @@ __meta__ = {
 
 [node name="PopupVisualRuleCScale" type="PopupMenu" parent="PanelVisualRules/RuleFields/PopupVisualRuleField"]
 margin_right = 101.0
-margin_bottom = 52.0
-items = [ "Add Ruleset", null, 0, false, false, 20, 0, null, "", false, "Add Color", null, 0, false, false, 21, 0, null, "", false ]
+margin_bottom = 34.0
+items = [ "Add Ruleset", null, 0, false, false, 20, 0, null, "", false ]
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -71,7 +71,6 @@ __meta__ = {
 }
 
 [node name="PopupColorPicker" type="PopupPanel" parent="PanelVisualRules/RuleFields"]
-visible = true
 margin_right = 309.0
 margin_bottom = 420.0
 __meta__ = {
@@ -83,17 +82,39 @@ margin_left = 4.0
 margin_top = 4.0
 margin_right = 305.0
 margin_bottom = 416.0
-edit_alpha = false
 presets_visible = false
 
 [node name="BtRemoveAll" type="Button" parent="PanelVisualRules"]
-margin_top = 543.0
+margin_top = 519.0
 margin_right = 1016.0
-margin_bottom = 563.0
+margin_bottom = 539.0
 text = "Remove all visual rules"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelVisualRules"]
+margin_top = 543.0
+margin_right = 1016.0
+margin_bottom = 563.0
+
+[node name="Label" type="Label" parent="PanelVisualRules/HBoxContainer"]
+margin_top = 3.0
+margin_right = 82.0
+margin_bottom = 17.0
+text = "Default color"
+
+[node name="DefaultColor" type="ColorRect" parent="PanelVisualRules/HBoxContainer"]
+margin_left = 86.0
+margin_right = 924.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="BtDefaultColor" type="Button" parent="PanelVisualRules/HBoxContainer"]
+margin_left = 928.0
+margin_right = 1016.0
+margin_bottom = 20.0
+text = "Select Color"
 
 [connection signal="button_pressed" from="PanelVisualRules/RuleFields" to="." method="_on_RuleFields_button_pressed"]
 [connection signal="item_edited" from="PanelVisualRules/RuleFields" to="." method="_on_RuleFields_item_edited"]
@@ -104,3 +125,4 @@ __meta__ = {
 [connection signal="id_pressed" from="PanelVisualRules/RuleFields/PopupVisualRuleField/PopupVisualRuleSScale" to="." method="_on_PopupVisualRuleField_id_pressed"]
 [connection signal="popup_hide" from="PanelVisualRules/RuleFields/PopupColorPicker" to="." method="_on_PopupColorPicker_popup_hide"]
 [connection signal="pressed" from="PanelVisualRules/BtRemoveAll" to="." method="_on_BtRemoveAll_pressed"]
+[connection signal="pressed" from="PanelVisualRules/HBoxContainer/BtDefaultColor" to="." method="_on_BtDefaultColor_pressed"]

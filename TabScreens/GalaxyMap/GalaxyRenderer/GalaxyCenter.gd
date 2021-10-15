@@ -126,10 +126,10 @@ func GalaxyPlaneOnOff(_force_state : int = -1):
 
 func GalaxyParticlesPlaneOnOff(_force_state : int = -1):
 	if _force_state != -1:
-		$GalaxyParticles.visible = bool(_force_state)
+		galaxy_particles.visible = bool(_force_state)
 	else:
-		$GalaxyParticles.visible = !$GalaxyParticles.visible
-	return $GalaxyParticles.visible
+		galaxy_particles.visible = !galaxy_particles.visible
+	return galaxy_particles.visible
 
 func spawn_sector_stars(_stars : Array, _config : Array, _default_color : Color = Color(0.2, 0.2, 0.2), _default_size : float = 1.0):
 	galaxy_sector.spawn_stars(_stars, _config, _default_color, _default_size)

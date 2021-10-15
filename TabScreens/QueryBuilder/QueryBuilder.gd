@@ -102,6 +102,9 @@ func _on_EventFields_clear_all():
 	results_table.clear()
 	query_view.text = ""
 
+func _on_VisualRules_config_changed():
+	data_reader.settings_manager.save_setting("query_views", views_data)
+
 func _on_BtApplySql_pressed():
 	query_structure["query"] = query_view.text
 	data_reader.settings_manager.save_setting("query_views", views_data)
@@ -120,6 +123,8 @@ func list_saved_views():
 		views_data = loaded_views
 		for view in views_data.keys():
 			saved_views.add_item(view)
+	saved_views.select(0)
+	_on_SavedViewsList_item_selected(0)
 
 func get_result_table(_events_query : String):
 	var events := data_reader.dbm.db_execute_select(_events_query)
@@ -163,6 +168,3 @@ func _on_PopupVisualRules_id_pressed(id):
 	if id == 0:
 		var selected_field : String = TreeHelper.get_selected_column_title(results_table)
 		visual_rules.add_field_addr([selected_field], Color(1,1,1))
-
-func _on_VisualRules_config_changed():
-	data_reader.settings_manager.save_setting("query_views", views_data)

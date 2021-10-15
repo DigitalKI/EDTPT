@@ -40,7 +40,7 @@ func _exit_tree():
 
 func _on_GalaxyMap_visibility_changed():
 	right_buttons_container.query_views = data_reader.settings_manager.get_setting("query_views")
-	if !is_visible_in_tree() :
+	if !is_visible_in_tree() && request_ready():
 		save_pos_and_zoom()
 
 func _on_GalaxyMap_gui_input(event):
@@ -58,9 +58,11 @@ func _on_GalaxyMap_gui_input(event):
 		if event.button_index == BUTTON_RIGHT:
 			mouse_right_pressed =  event.pressed
 		if event.button_index == BUTTON_WHEEL_UP:
-			galaxy.zoom(- zoom_speed)
+			if !(details.visible && details.get_rect().has_point(event.position)) && !(table.visible && table.get_rect().has_point(event.position)):
+				galaxy.zoom(- zoom_speed)
 		if event.button_index == BUTTON_WHEEL_DOWN:
-			galaxy.zoom(zoom_speed)
+			if !(details.visible && details.get_rect().has_point(event.position)) && !(table.visible && table.get_rect().has_point(event.position)):
+				galaxy.zoom(zoom_speed)
 		update_navlabel()
 	elif event is InputEventMouseMotion:
 		if mouse_left_pressed:
@@ -190,8 +192,10 @@ func pause_unpause_game(_pause : bool = false):
 		$Timer.start(5)
 
 func save_pos_and_zoom():
-	data_reader.settings_manager.save_setting("camera_pos", galaxy.camera_center.translation)
-	data_reader.settings_manager.save_setting("camera_zoom", galaxy.camera.translation.z)
+	if galaxy.camera_center.translation:
+		data_reader.settings_manager.save_setting("camera_pos", galaxy.camera_center.translation)
+	if galaxy.camera.translation.z != 120000.0:
+		data_reader.settings_manager.save_setting("camera_zoom", galaxy.camera.translation.z)
 
 func initialize_galaxy_map():
 	var camzoom := -1.0
@@ -292,7 +296,7 @@ func _on_RightButtonsContainer_view_button_pressed(_text):
 		var events := data_reader.dbm.db_execute_select(view_select)
 		data_reader.galaxy_manager.star_systems = events
 		show_table_view(events, _text)
-		galaxy.spawn_sector_stars(events, query_views[_text]["rules"])
+		galaxy.spawn_sector_stars(events, query_views[_text]["rules"], query_views[_text]["default_color"])
 	#	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
 		update_navlabel()
 		pause_unpause_game()
