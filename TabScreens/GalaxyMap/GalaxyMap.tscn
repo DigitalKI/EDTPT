@@ -179,6 +179,8 @@ anchor_right = 0.0
 margin_right = 295.0
 margin_bottom = 1.19995
 size_flags_vertical = 3
+data = {
+}
 
 [node name="FloatingTable" parent="HBoxContainer/GalaxyContainer/UpperGalaxyContainer" instance=ExtResource( 8 )]
 margin_left = -300.0

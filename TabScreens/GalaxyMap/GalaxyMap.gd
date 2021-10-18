@@ -58,10 +58,10 @@ func _on_GalaxyMap_gui_input(event):
 		if event.button_index == BUTTON_RIGHT:
 			mouse_right_pressed =  event.pressed
 		if event.button_index == BUTTON_WHEEL_UP:
-			if !(details.visible && details.get_rect().has_point(event.position)) && !(table.visible && table.get_rect().has_point(event.position)):
+			if !(details.visible && details.get_global_rect().has_point(event.global_position)) && !(table.visible && table.get_global_rect().has_point(event.global_position)):
 				galaxy.zoom(- zoom_speed)
 		if event.button_index == BUTTON_WHEEL_DOWN:
-			if !(details.visible && details.get_rect().has_point(event.position)) && !(table.visible && table.get_rect().has_point(event.position)):
+			if !(details.visible && details.get_global_rect().has_point(event.global_position)) && !(table.visible && table.get_global_rect().has_point(event.global_position)):
 				galaxy.zoom(zoom_speed)
 		update_navlabel()
 	elif event is InputEventMouseMotion:
@@ -230,12 +230,13 @@ func set_selected_star(_star):
 		details.body = ""
 		if _star.has("StarSystem"):
 			details.title += _star["StarSystem"]
-			for key in _star.keys():
-				if !(DataConverter.get_value(_star[key]).begins_with("$") && _star[key].ends_with(";")):
-					if key != "System":
-						details.body += "%s: %s\n" % [key.replace("_Localised", "").replace("System", "").capitalize(), DataConverter.get_value(_star[key])]
-					else:
-						details.body += "%s: %s\n" % [key.replace("_Localised", ""), DataConverter.get_value(_star[key])]
+			details.data = _star
+#			for key in _star.keys():
+#				if !(DataConverter.get_value(_star[key]).begins_with("$") && _star[key].ends_with(";")):
+#					if key != "System":
+#						details.body += "%s: %s\n" % [key.replace("_Localised", "").replace("System", "").capitalize(), DataConverter.get_value(_star[key])]
+#					else:
+#						details.body += "%s: %s\n" % [key.replace("_Localised", ""), DataConverter.get_value(_star[key])]
 		
 		var prospected_asteroids_events = []
 		if _star.has("SystemAddress"):

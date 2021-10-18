@@ -58,3 +58,58 @@ static func cell_to_clipboard(_event : InputEvent, _tree_control : Tree, _metada
 				else:
 					clipboard_data =_tree_control.get_selected().get_text(_tree_control.get_selected_column())
 				OS.clipboard = clipboard_data
+
+static func var_to_table(_tree : Tree, _field : String, _data):
+	_tree.clear()
+	_tree.columns = 2
+	var tree_root : TreeItem = _tree.create_item()
+	tree_root.set_meta("address", [_field])
+	tree_root.set_tooltip(0, String([_field]))
+	if _data is Array:
+		handle_array(_tree, _field, _data, tree_root)
+	elif _data is Dictionary:
+		handle_dictionary(_tree, _data, tree_root)
+
+static func handle_array(_tree : Tree, _rowname : String, _rows : Array, _parent : TreeItem, _depth : int = 0):
+	var depth_color : Color = Color(1,1,1).linear_interpolate(Color(0,0,0), float(_depth) / 3.0)
+	for row in _rows:
+		var new_addr : Array = _parent.get_meta("address").duplicate(true)
+		var datarow : TreeItem = _tree.create_item(_parent)
+		datarow.set_meta("address", new_addr)
+		datarow.set_tooltip(0, String(new_addr))
+		if row is Dictionary:
+			if _depth == 0:
+				datarow.set_text(0, _rowname)
+				datarow.set_expand_right(0, true)
+				datarow.set_text_align(0, TreeItem.ALIGN_CENTER)
+				datarow.set_custom_color(0, depth_color.inverted())
+				datarow.set_custom_bg_color(0, depth_color)
+				handle_dictionary(_tree, row, datarow, _depth + 1)
+			else:
+				datarow.free()
+				handle_dictionary(_tree, row, _parent, _depth + 1)
+		else:
+			datarow.set_text(0, _rowname)
+			datarow.set_text(1, String(row))
+
+static func handle_dictionary(_tree : Tree, _dict : Dictionary, _parent : TreeItem, _depth : int = 0):
+	var depth_color : Color = Color(1,1,1).linear_interpolate(Color(0,0,0), float(_depth) / 3.0)
+	for col in _dict.keys():
+		var new_addr : Array = _parent.get_meta("address").duplicate(true)
+		new_addr.append(col)
+		var datarow : TreeItem = _tree.create_item(_parent)
+		datarow.set_meta("address", new_addr)
+		datarow.set_tooltip(0, String(new_addr))
+		if !(_dict[col] is Dictionary || _dict[col] is Array):
+			datarow.set_text(0, col)
+			datarow.set_text(1, String(_dict[col]))
+		else:
+			datarow.set_text(0, col)
+			datarow.set_expand_right(0, true)
+			datarow.set_text_align(0, TreeItem.ALIGN_CENTER)
+			datarow.set_custom_color(0, depth_color.inverted())
+			datarow.set_custom_bg_color(0, depth_color)
+			if _dict[col] is Dictionary:
+				handle_dictionary(_tree, _dict[col], datarow, _depth + 1)
+			elif _dict[col] is Array:
+				handle_array(_tree, col, _dict[col], datarow, _depth + 1)

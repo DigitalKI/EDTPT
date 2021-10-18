@@ -306,9 +306,9 @@ func generate_rulesets():
 						elif rule_item.has_meta("max"):
 							ruleset[loop_ruleset]["max"] = rule_item.get_range(1)
 						elif rule_item.has_meta("min_scale"):
-							ruleset[loop_ruleset]["min_scale"] = rule_item.get_meta("min_scale")
+							ruleset[loop_ruleset]["min_scale"] = rule_item.get_range(1)
 						elif rule_item.has_meta("max_scale"):
-							ruleset[loop_ruleset]["max_scale"] = rule_item.get_meta("max_scale")
+							ruleset[loop_ruleset]["max_scale"] = rule_item.get_range(1)
 						rule_item = rule_item.get_next()
 					query_structure["rules"].append(ruleset)
 					
