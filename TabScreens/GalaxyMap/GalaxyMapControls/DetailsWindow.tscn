@@ -71,32 +71,29 @@ custom_constants/margin_top = 12
 custom_constants/margin_left = 12
 custom_constants/margin_bottom = 12
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/Panel/VBoxContainer/DetailsMargin"]
+[node name="BodyContent" type="VBoxContainer" parent="MarginContainer/Panel/VBoxContainer/DetailsMargin"]
 margin_left = 12.0
 margin_top = 12.0
 margin_right = 1012.0
 margin_bottom = 544.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BodyContent" type="VBoxContainer" parent="MarginContainer/Panel/VBoxContainer/DetailsMargin/ScrollContainer"]
-margin_right = 1000.0
-margin_bottom = 532.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Body" type="RichTextLabel" parent="MarginContainer/Panel/VBoxContainer/DetailsMargin/ScrollContainer/BodyContent"]
+[node name="Body" type="RichTextLabel" parent="MarginContainer/Panel/VBoxContainer/DetailsMargin/BodyContent"]
+visible = false
 margin_right = 1000.0
-margin_bottom = 428.0
+margin_bottom = 264.0
 size_flags_vertical = 3
 fit_content_height = true
 
-[node name="Tree" type="Tree" parent="MarginContainer/Panel/VBoxContainer/DetailsMargin/ScrollContainer/BodyContent"]
-margin_top = 432.0
+[node name="Tree" type="Tree" parent="MarginContainer/Panel/VBoxContainer/DetailsMargin/BodyContent"]
 margin_right = 1000.0
 margin_bottom = 532.0
 rect_min_size = Vector2( 0, 100 )
+size_flags_vertical = 3
 custom_styles/bg = SubResource( 4 )
+custom_constants/item_margin = 5
+custom_constants/draw_relationship_lines = 1
+hide_root = true
 
 [connection signal="gui_input" from="MarginContainer/Panel/VBoxContainer/Title" to="." method="_on_Title_gui_input"]

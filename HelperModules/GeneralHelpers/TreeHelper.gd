@@ -77,6 +77,8 @@ static func handle_array(_tree : Tree, _rowname : String, _rows : Array, _parent
 		var datarow : TreeItem = _tree.create_item(_parent)
 		datarow.set_meta("address", new_addr)
 		datarow.set_tooltip(0, String(new_addr))
+		if row is String && (row.begins_with("[") || row.begins_with("{")):
+			row = parse_json(row)
 		if row is Dictionary:
 			if _depth == 0:
 				datarow.set_text(0, _rowname)
@@ -100,9 +102,12 @@ static func handle_dictionary(_tree : Tree, _dict : Dictionary, _parent : TreeIt
 		var datarow : TreeItem = _tree.create_item(_parent)
 		datarow.set_meta("address", new_addr)
 		datarow.set_tooltip(0, String(new_addr))
+		if _dict[col] is String && (_dict[col].begins_with("[") || _dict[col].begins_with("{")):
+			_dict[col] = parse_json(_dict[col])
+			
 		if !(_dict[col] is Dictionary || _dict[col] is Array):
 			datarow.set_text(0, col)
-			datarow.set_text(1, String(_dict[col]))
+			datarow.set_text(1, DataConverter.get_value(_dict[col]))
 		else:
 			datarow.set_text(0, col)
 			datarow.set_expand_right(0, true)
