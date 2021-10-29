@@ -220,7 +220,8 @@ func add_color_scale_rules(_cscale_ruleset : TreeItem, _color_scales_rules : Dic
 	for key in _color_scales_rules.keys():
 		var c_scale_rule : TreeItem = rules_table.create_item(_cscale_ruleset)
 		if key.ends_with("_scale"):
-			c_scale_rule.add_button(1, generate_color_texture(c_scale_rule, 0, _color_scales_rules[key]))
+			if _color_scales_rules[key] is Color:
+				c_scale_rule.add_button(1, generate_color_texture(c_scale_rule, 0, _color_scales_rules[key]))
 		else:
 			c_scale_rule.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
 			c_scale_rule.set_range_config(1, -999999999, 999999999, 0.01)
@@ -267,53 +268,60 @@ func generate_rulesets():
 	# assign the rulesets
 	query_structure["rules"] = []
 	var root_item : TreeItem = rules_table.get_root()
-	var address_item : TreeItem = root_item.get_children()
-	while address_item:
-		if address_item.has_meta("address"):
-			var cmatrix_ruleset_item : TreeItem = address_item.get_children()
-			while cmatrix_ruleset_item:
-				# if we find a "color_matrix" metadata then we add this ruleset
-				# to the query structure "rules" array
-				var ruleset : Dictionary
-				var loop_ruleset : String = ""
-				if cmatrix_ruleset_item.has_meta("color_matrix"):
-					ruleset = {
-						"address": address_item.get_meta("address")
-						, "color_matrix": {}
-						, "is_array": false}
-					loop_ruleset = "color_matrix"
-				elif cmatrix_ruleset_item.has_meta("color_scales"):
-					ruleset = {
-						"address": address_item.get_meta("address")
-						, "color_scales": {}
-						, "is_array": false}
-					loop_ruleset = "color_scales"
-				elif cmatrix_ruleset_item.has_meta("size_scales"):
-					ruleset = {
-						"address": address_item.get_meta("address")
-						, "size_scales": {}
-						, "is_array": false}
-					loop_ruleset = "size_scales"
-				if !loop_ruleset.empty():
-					var rule_item : TreeItem = cmatrix_ruleset_item.get_children()
-					while rule_item:
-						if rule_item.has_meta("color_rule"):
-							var rule_color : Color = rule_item.get_meta("color_rule")
-							var rule_value : String = rule_item.get_text(1)
-							ruleset[loop_ruleset][rule_value] = rule_color
-						elif rule_item.has_meta("min"):
-							ruleset[loop_ruleset]["min"] = rule_item.get_range(1)
-						elif rule_item.has_meta("max"):
-							ruleset[loop_ruleset]["max"] = rule_item.get_range(1)
-						elif rule_item.has_meta("min_scale"):
-							ruleset[loop_ruleset]["min_scale"] = rule_item.get_range(1)
-						elif rule_item.has_meta("max_scale"):
-							ruleset[loop_ruleset]["max_scale"] = rule_item.get_range(1)
-						rule_item = rule_item.get_next()
-					query_structure["rules"].append(ruleset)
-					
-				cmatrix_ruleset_item = cmatrix_ruleset_item.get_next()
-		address_item = address_item.get_next()
+	if root_item:
+		var address_item : TreeItem = root_item.get_children()
+		while address_item:
+			if address_item.has_meta("address"):
+				var cmatrix_ruleset_item : TreeItem = address_item.get_children()
+				while cmatrix_ruleset_item:
+					# if we find a "color_matrix" metadata then we add this ruleset
+					# to the query structure "rules" array
+					var ruleset : Dictionary
+					var loop_ruleset : String = ""
+					if cmatrix_ruleset_item.has_meta("color_matrix"):
+						ruleset = {
+							"address": address_item.get_meta("address")
+							, "color_matrix": {}
+							, "is_array": false}
+						loop_ruleset = "color_matrix"
+					elif cmatrix_ruleset_item.has_meta("color_scales"):
+						ruleset = {
+							"address": address_item.get_meta("address")
+							, "color_scales": {}
+							, "is_array": false}
+						loop_ruleset = "color_scales"
+					elif cmatrix_ruleset_item.has_meta("size_scales"):
+						ruleset = {
+							"address": address_item.get_meta("address")
+							, "size_scales": {}
+							, "is_array": false}
+						loop_ruleset = "size_scales"
+					if !loop_ruleset.empty():
+						var rule_item : TreeItem = cmatrix_ruleset_item.get_children()
+						while rule_item:
+							if rule_item.has_meta("color_rule"):
+								var rule_color : Color = rule_item.get_meta("color_rule")
+								var rule_value : String = rule_item.get_text(1)
+								ruleset[loop_ruleset][rule_value] = rule_color
+							elif rule_item.has_meta("min"):
+								ruleset[loop_ruleset]["min"] = rule_item.get_range(1)
+							elif rule_item.has_meta("max"):
+								ruleset[loop_ruleset]["max"] = rule_item.get_range(1)
+							elif rule_item.has_meta("min_scale") && cmatrix_ruleset_item.has_meta("color_scales"):
+								var rule_color : Color = rule_item.get_meta("min_scale")
+								ruleset[loop_ruleset]["min_scale"] = rule_color
+							elif rule_item.has_meta("max_scale") && cmatrix_ruleset_item.has_meta("color_scales"):
+								var rule_color : Color = rule_item.get_meta("max_scale")
+								ruleset[loop_ruleset]["max_scale"] = rule_color
+							elif rule_item.has_meta("min_scale") && cmatrix_ruleset_item.has_meta("size_scales"):
+								ruleset[loop_ruleset]["min_scale"] = rule_item.get_range(1)
+							elif rule_item.has_meta("max_scale") && cmatrix_ruleset_item.has_meta("size_scales"):
+								ruleset[loop_ruleset]["max_scale"] = rule_item.get_range(1)
+							rule_item = rule_item.get_next()
+						query_structure["rules"].append(ruleset)
+						
+					cmatrix_ruleset_item = cmatrix_ruleset_item.get_next()
+			address_item = address_item.get_next()
 	emit_signal("config_changed")
 
 func ruleset_to_ui(_rulesets : Array):
