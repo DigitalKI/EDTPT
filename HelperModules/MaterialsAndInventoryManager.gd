@@ -38,7 +38,7 @@ func get_updated_materials():
 			var mats_timestamp = mats_data[0]["timestamp"]
 			if data_reader.dbm.db.query("SELECT * "
 										+ " FROM MaterialCollected"
-										+ " WHERE timestamp >= %s" % mats_timestamp
+										+ " WHERE timestamp >= '%s'" % mats_timestamp
 										+ " ORDER by timestamp"):
 				mats_collected = data_reader.dbm.db.query_result.duplicate()
 			if data_reader.dbm.db.query("SELECT timestamp, MaterialsReward "
