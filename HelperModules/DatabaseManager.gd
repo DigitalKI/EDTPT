@@ -33,20 +33,27 @@ func prepare_database(_verbose : bool = false):
 		dir.make_dir(db_path)
 	
 	db.verbose_mode = _verbose
-#	db.export_to_json("user://Database/edtpt_jsnbkp")
 	if db.select_rows("sqlite_master", "type = 'table'", ["*"]).empty():
 		result = db.import_from_json(db_creation_script)
 		create_index_on_table("edsm_systems", ["id64","sector_x", "sector_y", "sector_z"])
 	return result
 
-func clean_database():
+func clean_database_and_export():
+	clean_database(true)
+	db.export_to_json("user://Database/edtpt_jsnbkp")
+
+func clean_database(_onlydata = false):
 	var tables = db.select_rows("sqlite_master", "type = 'table'", ["*"]).duplicate()
-	for table in tables:
-		if table["name"] != "sqlite_sequence" && table["name"] != "Commander" && table["name"] != "Fileheader" && table["name"] != "event_types":
-			if db.drop_table(table["name"]):
-				logger.log_event("Dropping table %s" % table["name"])
-			else:
-				logger.log_event("Could not delete table %s" % table["name"])
+	if _onlydata:
+		for table in tables:
+			db.delete_rows(table["name"],"")
+	else:
+		for table in tables:
+			if table["name"] != "sqlite_sequence" && table["name"] != "Commander" && table["name"] != "Fileheader" && table["name"] != "event_types":
+				if db.drop_table(table["name"]):
+					logger.log_event("Dropping table %s" % table["name"])
+				else:
+					logger.log_event("Could not delete table %s" % table["name"])
 	db.delete_rows("Commander","")
 	db.delete_rows("Fileheader","")
 	db.delete_rows("event_types","")
@@ -56,7 +63,6 @@ func clean_database():
 		db.update_rows("sqlite_sequence", "name = '" + seq["name"] + "'", seq)
 	db.query("VACUUM;")
 	db.query("CREATE TABLE IF NOT EXISTS Backpack (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,'timestamp' text,'Items' text,'Components' text,'Consumables' text,'Data' text);")
-	# I should also add a counter reset for the autoincrement fields
 
 func update_event_types():
 	event_types.clear()

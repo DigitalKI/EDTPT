@@ -48,7 +48,7 @@ align = 1
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 margin_top = 32.0
 margin_right = 994.0
-margin_bottom = 107.0
+margin_bottom = 132.0
 custom_constants/vseparation = 4
 columns = 2
 
@@ -65,10 +65,25 @@ margin_bottom = 21.0
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "Reset"
 
-[node name="LblImportEDSMInhabited" type="RichTextLabel" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="LblCleanAndExport" type="RichTextLabel" parent="MarginContainer/VBoxContainer/GridContainer"]
 margin_top = 25.0
 margin_right = 765.0
 margin_bottom = 46.0
+size_flags_horizontal = 3
+text = "Clear all data and export creation scema to json (for development purpuses mainly)"
+
+[node name="BtCleanAndExport" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 769.0
+margin_top = 25.0
+margin_right = 994.0
+margin_bottom = 46.0
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+text = "Clean"
+
+[node name="LblImportEDSMInhabited" type="RichTextLabel" parent="MarginContainer/VBoxContainer/GridContainer"]
+margin_top = 50.0
+margin_right = 765.0
+margin_bottom = 71.0
 size_flags_horizontal = 3
 bbcode_enabled = true
 bbcode_text = "Downloads and imports data from [shake rate=7 level=10][color=#F2DBC9][url=\"https://www.edsm.net/en/nightly-dumps\"]EDSM[/url][/color][/shake] into EDTPT (Select your option in the dropdown button)"
@@ -76,26 +91,29 @@ text = "Downloads and imports data from EDSM into EDTPT (Select your option in t
 
 [node name="BtEDSMDownloads" type="MenuButton" parent="MarginContainer/VBoxContainer/GridContainer"]
 margin_left = 769.0
-margin_top = 25.0
+margin_top = 50.0
 margin_right = 994.0
-margin_bottom = 46.0
+margin_bottom = 71.0
 text = "Import"
 flat = false
 expand_icon = true
 
 [node name="Lbl7zPath" type="RichTextLabel" parent="MarginContainer/VBoxContainer/GridContainer"]
-margin_top = 50.0
+margin_top = 75.0
 margin_right = 765.0
-margin_bottom = 75.0
+margin_bottom = 100.0
 size_flags_horizontal = 3
 bbcode_enabled = true
 bbcode_text = "We need 7z to extract the downloaded files, please [url=\"https://www.7-zip.org/download.html\"]install it[/url] and set the path here if it's not the default one"
 text = "We need 7z to extract the downloaded files, please install it and set the path here if it's not the default one"
 
 [node name="Tb7ZPath" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource( 4 )]
+margin_top = 75.0
+margin_bottom = 100.0
 file_dialog_parent_node = NodePath("../../../..")
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GridContainer/BtResetDB" to="." method="_on_BtResetDB_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GridContainer/BtCleanAndExport" to="." method="_on_BtCleanAndExport_pressed"]
 [connection signal="meta_clicked" from="MarginContainer/VBoxContainer/GridContainer/LblImportEDSMInhabited" to="." method="_on_LblImportEDSMInhabited_meta_clicked"]
 [connection signal="meta_clicked" from="MarginContainer/VBoxContainer/GridContainer/Lbl7zPath" to="." method="_on_Lbl7zPath_meta_clicked"]
 [connection signal="file_selected" from="MarginContainer/VBoxContainer/GridContainer/Tb7ZPath" to="." method="_on_Tb7ZPath_file_selected"]

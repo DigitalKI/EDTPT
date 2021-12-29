@@ -6,8 +6,12 @@ var settings_file : File = File.new()
 
 func _init():
 	var settings_directory : Directory = Directory.new()
+	var settings_file : File = File.new()
 	if !settings_directory.dir_exists(settings_path):
 		settings_directory.make_dir(settings_path)
+	if ! settings_file.file_exists(settings_path + "/settings.json"):
+		settings_file.open(settings_path + "/settings.json", File.WRITE)
+		settings_file.close()
 
 func save_setting(_key : String, _value):
 	if settings_file.open(settings_path + "/settings.json", File.READ_WRITE) == OK:

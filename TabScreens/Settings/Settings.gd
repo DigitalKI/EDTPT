@@ -24,6 +24,9 @@ func _on_download_selected(_index):
 func _on_BtResetDB_pressed():
 	data_reader.dbm.clean_database()
 
+func _on_BtCleanAndExport_pressed():
+	data_reader.dbm.clean_database_and_export()
+
 func _on_Lbl7zPath_meta_clicked(meta):
 	OS.shell_open(meta)
 
@@ -39,3 +42,4 @@ func _on_Tb7ZPath_file_selected():
 func apply_settings():
 	if data_reader.settings_manager.get_setting("Tb7ZPath") != null:
 		sevenz_path.text = data_reader.settings_manager.get_setting("Tb7ZPath")
+
