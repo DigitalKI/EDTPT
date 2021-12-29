@@ -1,9 +1,20 @@
 extends Node
 class_name GalaxyDataManager
 
+# Some special queries will be stored here.
+
 var fsd_jumps_events #all the jump events
 var star_systems : Array = [] #the unique star addresses
 
+
+# Get all systems where we took pictures from
+func get_pictures_with_system_coords():
+	if data_reader.dbm.db.query("SELECT DISTINCT SS.*, SY.StarPos"
+								+ "FROM Screenshot SS"
+								+ "LEFT JOIN FSDJump SY"
+								+ "ON SS.System = SY.StarSystem"):
+		star_systems = data_reader.dbm.db.query_result.duplicate()
+	return star_systems
 
 # Stores all the jump events, star systems addreses, and group jumps per system address
 func get_systems_by_visits():

@@ -167,6 +167,8 @@ func _prepare_insert_events(_edsm_retrieved_systems : Array, _check_id : bool = 
 
 func _write_systems_to_db(_edsm_systems : Array, _check_ids : bool = true):
 	var insert_events = _prepare_insert_events(_edsm_systems, _check_ids)
+	if !data_reader.dbm.event_types.has("edsm_systems"):
+		data_reader.create_table_from_examples("edsm_systems", insert_events)
 	if !data_reader.dbm.db.insert_rows("edsm_systems", insert_events): 
 		logger.log_event(data_reader.dbm.db.error_message)
 		logger.log_event("There was a problem adding EDSM Systems data.")
