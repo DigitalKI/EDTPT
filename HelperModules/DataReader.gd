@@ -41,6 +41,10 @@ func _ready():
 	edsm_manager.add_http_reader()
 	current_scene.add_child(edsm_manager.http_request)
 	
+	# Let's check if the journals are found or else set the custom path
+	if !file_reader.check_logs_path(current_scene):
+		file_reader.set_custom_journal_path(current_scene)
+	
 	# The second is the timer
 	initialize_timer(current_scene)
 	
