@@ -11,7 +11,7 @@ var galaxy_clouds_fade_dist = 20000.0
 var relative_mov : Vector3 = Vector3()
 var galaxy_plane = Plane(Vector3(0, 1, 0), 0)
 
-onready var stars_multimesh : MultiMeshInstance = $StarsMultiMesh
+#onready var stars_multimesh : MultiMeshInstance = $StarsMultiMesh
 onready var edsm_multimesh : MultiMeshInstance = $EDSMMultiMesh
 onready var camera := $PlaneGrid/CameraCenter/CameraRotation/Camera
 onready var camera_plane : Spatial = $PlaneGrid

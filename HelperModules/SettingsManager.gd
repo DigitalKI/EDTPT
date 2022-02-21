@@ -14,12 +14,16 @@ func _init():
 		settings_file.close()
 
 func save_setting(_key : String, _value):
+	var json_settings = {}
+	var settings_strig := ""
 	if settings_file.open(settings_path + "/settings.json", File.READ_WRITE) == OK:
-		var settings_strig = settings_file.get_as_text()
+		settings_strig = settings_file.get_as_text()
 		var json_settings_parser = JSON.parse(settings_strig)
-		var json_settings = {}
 		if json_settings_parser.error == OK:
 			json_settings = json_settings_parser.result
+		settings_file.close()
+	# We close and open again the settings file in order to use the WRITE mode
+	if settings_file.open(settings_path + "/settings.json", File.WRITE) == OK:
 		json_settings[_key] = var2str(_value)
 		settings_strig = JSON.print(json_settings, "  ", true)
 		settings_file.store_string(settings_strig)

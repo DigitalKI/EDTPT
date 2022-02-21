@@ -91,7 +91,10 @@ func initialize_event_fields():
 	events_fields.set_column_min_width(1, 30)
 
 func add_events_fields(_event_name : String, _event_color : Color):
-	if !tree_root is TreeItem:
+	tree_root = events_fields.get_root()
+	if !tree_root:
+		tree_root = events_fields.create_item()
+	elif !(tree_root is TreeItem):
 		tree_root = events_fields.create_item()
 	var table_item : TreeItem = events_fields.create_item(tree_root)
 	table_item.set_text(0, _event_name)

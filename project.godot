@@ -42,7 +42,7 @@ _global_script_classes=[ {
 "base": "Panel",
 "class": "DetailsWindow",
 "language": "GDScript",
-"path": "res://TabScreens/GalaxyMap/GalaxyMapControls/DetailsWindow.gd"
+"path": "res://TabScreens/GeneralControls/DetailsWindow.gd"
 }, {
 "base": "Tabs",
 "class": "EventFields",

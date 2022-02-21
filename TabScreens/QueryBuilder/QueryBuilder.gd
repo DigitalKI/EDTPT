@@ -63,25 +63,26 @@ func _on_ConfirmationDialog_confirmed():
 
 func _on_SavedViewsList_item_selected(index):
 	current_query_structure_name = saved_views.get_item_text(index)
-	query_structure = views_data[current_query_structure_name]
-	events_fields.query_structure = query_structure
-	visual_rules.query_structure = query_structure
-	events_fields.clear()
-	for tablename in query_structure["structure"].keys():
-		var selected_event_color := event_types_table.get_event_type_color_by_text(tablename)
-		events_fields.query_structure_to_ui(tablename, selected_event_color)
-	if !query_structure.has("query"):
-		query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
-	elif query_structure["query"].empty():
-		query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
-	else:
-		query_view.text = query_structure["query"]
-	get_result_table(query_view.text + " LIMIT 1000")
-	
-	if query_structure.has("rules"):
-		visual_rules.ruleset_to_ui(query_structure["rules"])
-	else:
-		visual_rules.ruleset_to_ui([])
+	if current_query_structure_name:
+		query_structure = views_data[current_query_structure_name]
+		events_fields.query_structure = query_structure
+		visual_rules.query_structure = query_structure
+		events_fields.clear()
+		for tablename in query_structure["structure"].keys():
+			var selected_event_color := event_types_table.get_event_type_color_by_text(tablename)
+			events_fields.query_structure_to_ui(tablename, selected_event_color)
+		if !query_structure.has("query"):
+			query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
+		elif query_structure["query"].empty():
+			query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
+		else:
+			query_view.text = query_structure["query"]
+		get_result_table(query_view.text + " LIMIT 1000")
+		
+		if query_structure.has("rules"):
+			visual_rules.ruleset_to_ui(query_structure["rules"])
+		else:
+			visual_rules.ruleset_to_ui([])
 
 func _on_SavedViewsList_item_activated(index):
 	pass
@@ -103,6 +104,7 @@ func _on_EventFields_clear_all():
 	query_view.text = ""
 
 func _on_VisualRules_config_changed():
+	query_structure = visual_rules.query_structure
 	data_reader.settings_manager.save_setting("query_views", views_data)
 
 func _on_BtApplySql_pressed():

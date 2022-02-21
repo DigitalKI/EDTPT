@@ -297,7 +297,8 @@ func _on_RightButtonsContainer_view_button_pressed(_text):
 		var events := data_reader.dbm.db_execute_select(view_select)
 		data_reader.galaxy_manager.star_systems = events
 		show_table_view(events, _text)
-		galaxy.spawn_sector_stars(events, query_views[_text]["rules"], query_views[_text]["default_color"])
+		if query_views[_text].has("rules"):
+			galaxy.spawn_sector_stars(events, query_views[_text]["rules"], query_views[_text]["default_color"])
 	#	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
 		update_navlabel()
 		pause_unpause_game()

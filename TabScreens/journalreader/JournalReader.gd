@@ -7,6 +7,7 @@ onready var log_filter_popup : PopupMenu = log_filter.get_popup()
 onready var time_range : MenuButton = $LogDetailContainer/VBoxContainer/ToolBarContainer/TimeRange
 onready var time_range_popup : PopupMenu = time_range.get_popup()
 onready var autoupdate_toggle : CheckButton = $LogDetailContainer/VBoxContainer/ToolBarContainer/BtUpdate
+onready var details_window : DetailsWindow = $LogDetailContainer/VBoxContainer/HBoxContainer/DetailsWindow
 
 var journal_events := []
 var timerange := 24
@@ -32,9 +33,23 @@ func _on_LogEntries_item_selected(index):
 	clear_events()
 	add_events(dataobject)
 
+# Close the details window every time you select another entry
+func _on_LogDetails_item_selected():
+	details_window.visible = false
+
 # This is to allow to copy to clipboard the content of the journal entry
 func _on_LogDetails_gui_input(event):
-	TreeHelper.cell_to_clipboard(event, log_details, "json")
+	if event is InputEventMouseButton:
+		if event.button_index == BUTTON_RIGHT:
+			TreeHelper.cell_to_clipboard(event, log_details, "json")
+		if event.button_index == BUTTON_LEFT && event.doubleclick:
+			var data = TreeHelper.get_selected_meta(log_details, "json")
+			var selected_item = log_details.get_selected()
+			if selected_item:
+				var event_type = selected_item.get_text(1)
+				details_window.title = event_type
+				details_window.data = data
+				details_window.visible = true
 
 func _on_DataReader_new_cached_events(_events: Array):
 	add_events(_events)
@@ -164,4 +179,5 @@ func _on_DisplayByEventFile_toggled(button_pressed):
 
 func _on_BtUpdate_toggled(button_pressed):
 	data_reader.autoupdate = button_pressed
+
 

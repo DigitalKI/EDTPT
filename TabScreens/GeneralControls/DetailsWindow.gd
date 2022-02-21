@@ -35,12 +35,18 @@ func _set_data(_value):
 	if table:
 		table.clear()
 		data = _value
-		var body_text :String = ""
 		if _value is Dictionary:
 			TreeHelper.var_to_table(table, title, _value)
-			_set_body(body_text)
+		elif _value is String:
+			_set_body(_value)
 
 func _on_Title_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			OS.clipboard = title_label.text
+
+func _on_Tree_item_activated():
+	var selected_item : TreeItem = table.get_selected()
+	if selected_item:
+		if selected_item.get_children():
+			selected_item.collapsed = !selected_item.collapsed

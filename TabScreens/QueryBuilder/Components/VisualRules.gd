@@ -158,8 +158,9 @@ func _on_BtRemoveAll_pressed():
 	rules_table.clear()
 	generate_rulesets()
 
-func add_field_addr(_addr : Array, _field_color : Color = Color(1,1,1)):
-	if !tree_root is TreeItem:
+func add_field_addr(_addr : Array, _field_color : Color = Color(1,1,1), _generate_ruleset : bool = true):
+	tree_root = rules_table.get_root()
+	if !tree_root:
 		tree_root = rules_table.create_item()
 	var table_item : TreeItem = rules_table.create_item(tree_root)
 	# adds the address field, that will be parent of the other parameters
@@ -169,7 +170,8 @@ func add_field_addr(_addr : Array, _field_color : Color = Color(1,1,1)):
 	table_item.set_custom_bg_color(0, _field_color)
 	table_item.set_expand_right(0, true)
 	table_item.set_text_align(0, TreeItem.ALIGN_CENTER)
-	generate_rulesets()
+	if _generate_ruleset:
+		generate_rulesets()
 	return table_item
 
 func add_size_scales_ruleset(_addr_item : TreeItem, _scale_rules : Dictionary = {}):
@@ -330,9 +332,9 @@ func ruleset_to_ui(_rulesets : Array):
 		if ruleset is Dictionary:
 			for key in ruleset.keys():
 				if key == "color_matrix":
-					add_color_matrix_ruleset(add_field_addr(ruleset["address"]), ruleset["color_matrix"])
+					add_color_matrix_ruleset(add_field_addr(ruleset["address"], Color(1,1,1), false), ruleset["color_matrix"])
 				elif key == "color_scales":
-					add_color_scales_ruleset(add_field_addr(ruleset["address"]), ruleset["color_scales"])
+					add_color_scales_ruleset(add_field_addr(ruleset["address"], Color(1,1,1), false), ruleset["color_scales"])
 				elif key == "size_scales":
-					add_size_scales_ruleset(add_field_addr(ruleset["address"]), ruleset["size_scales"])
+					add_size_scales_ruleset(add_field_addr(ruleset["address"], Color(1,1,1), false), ruleset["size_scales"])
 

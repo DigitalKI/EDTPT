@@ -81,7 +81,7 @@ __meta__ = {
 margin_left = 4.0
 margin_top = 4.0
 margin_right = 305.0
-margin_bottom = 416.0
+margin_bottom = 440.0
 presets_visible = false
 
 [node name="BtRemoveAll" type="Button" parent="PanelVisualRules"]

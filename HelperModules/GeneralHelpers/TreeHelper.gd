@@ -58,6 +58,14 @@ static func cell_to_clipboard(_event : InputEvent, _tree_control : Tree, _metada
 				else:
 					clipboard_data =_tree_control.get_selected().get_text(_tree_control.get_selected_column())
 				OS.clipboard = clipboard_data
+	
+static func get_selected_meta(_tree_control : Tree, _metadata : String = ""):
+	var current_metadata : Dictionary = {}
+	if _tree_control.get_selected():
+		var clipboard_data : String = ""
+		if _metadata:
+			current_metadata = _tree_control.get_selected().get_meta(_metadata)
+	return current_metadata
 
 static func var_to_table(_tree : Tree, _field : String, _data):
 	_tree.clear()

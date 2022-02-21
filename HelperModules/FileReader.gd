@@ -5,11 +5,13 @@ extends Node
 class_name FileReader
 
 var default_logs_path = "%s\\Saved Games\\Frontier Developments\\Elite Dangerous\\" % OS.get_environment('userprofile')
-var logs_path = ""
+var logs_path := ""
 
 func check_logs_path(_current_scene : Node):
 	if data_reader.settings_manager.get_setting("logs_path"):
 		logs_path = data_reader.settings_manager.get_setting("logs_path")
+		if !logs_path.ends_with("/"):
+			logs_path += "/"
 	else:
 		logs_path = default_logs_path
 	var logs_dir = Directory.new()

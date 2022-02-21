@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://TabScreens/journalreader/JournalReader.gd" type="Script" id=1]
+[ext_resource path="res://TabScreens/GeneralControls/DetailsWindow.tscn" type="PackedScene" id=2]
 [ext_resource path="res://TabScreens/DefaultTheme.tres" type="Theme" id=3]
 
 [node name="JournalReader" type="Control"]
@@ -95,7 +96,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="DetailsWindow" parent="LogDetailContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 2 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 714.0
+margin_right = 1014.0
+margin_bottom = 546.0
+rect_min_size = Vector2( 300, 0 )
+data = {
+}
+
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/DisplayByEventFile" to="." method="_on_DisplayByEventFile_toggled"]
 [connection signal="toggled" from="LogDetailContainer/VBoxContainer/ToolBarContainer/BtUpdate" to="." method="_on_BtUpdate_toggled"]
 [connection signal="item_selected" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogEntries" to="." method="_on_LogEntries_item_selected"]
 [connection signal="gui_input" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogDetails" to="." method="_on_LogDetails_gui_input"]
+[connection signal="item_selected" from="LogDetailContainer/VBoxContainer/HBoxContainer/LogDetails" to="." method="_on_LogDetails_item_selected"]

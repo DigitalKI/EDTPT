@@ -161,6 +161,15 @@ func get_value_from_key(_key : String, _data):
 			if val is Dictionary:
 				var inn_val = get_value_from_key(_key, val)
 				if inn_val:
+					if inn_val is String:
+						temp_values.append(inn_val)
+					elif inn_val is Array:
+						temp_values.append_array(inn_val)
+					else:
+						logger.log_event("Can't determine address value")
+			elif val is Array:
+				var inn_val = get_value_from_key(_key, val)
+				if inn_val:
 					temp_values.append(inn_val)
 			elif val == _key:
 				temp_values.append(val)
