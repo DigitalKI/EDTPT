@@ -23,11 +23,19 @@ func _on_EventFields_item_activated():
 		selected_item.set_custom_color(0, selected_field_fg)
 		selected_item.set_custom_bg_color(1, selected_field_bg)
 		selected_item.set_custom_color(1, selected_field_fg)
+		selected_item.set_custom_bg_color(2, selected_field_bg)
+		selected_item.set_custom_color(2, selected_field_fg)
+		selected_item.set_custom_bg_color(3, selected_field_bg)
+		selected_item.set_custom_color(3, selected_field_fg)
 	else:
 		selected_item.set_custom_bg_color(0, selected_field_fg)
 		selected_item.set_custom_color(0, selected_field_bg)
 		selected_item.set_custom_bg_color(1, selected_field_fg)
 		selected_item.set_custom_color(1, selected_field_bg)
+		selected_item.set_custom_bg_color(2, selected_field_bg)
+		selected_item.set_custom_color(2, selected_field_fg)
+		selected_item.set_custom_bg_color(3, selected_field_bg)
+		selected_item.set_custom_color(3, selected_field_fg)
 		selected_item.set_text(1, "")
 	sql_query = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
 	emit_signal("query_changed", sql_query)
@@ -71,7 +79,7 @@ func _on_PopupRemoveTable_id_pressed(id):
 		remove_event_fields(events_fields.get_selected().get_text(0))
 	elif id == 2:
 		var editing_item : TreeItem = events_fields.get_selected()
-		editing_item.set_editable(1, true)
+		editing_item.set_editable(3, true)
 		if events_fields.edit_selected():
 			print(editing_item.get_text(0))
 	elif id == 3:
@@ -87,8 +95,12 @@ func initialize_event_fields():
 	events_fields.set_column_title(0, "Field")
 	events_fields.set_column_min_width(0, 70)
 	events_fields.set_column_expand(0, true)
-	events_fields.set_column_title(1, "Filter")
-	events_fields.set_column_min_width(1, 30)
+	events_fields.set_column_title(1, "L")
+	events_fields.set_column_min_width(1, 10)
+	events_fields.set_column_title(2, "D")
+	events_fields.set_column_min_width(2, 10)
+	events_fields.set_column_title(3, "Filter")
+	events_fields.set_column_min_width(3, 30)
 
 func add_events_fields(_event_name : String, _event_color : Color):
 	tree_root = events_fields.get_root()
@@ -110,8 +122,14 @@ func add_events_fields(_event_name : String, _event_color : Color):
 		type_item.set_tooltip(0, "{name} ({type})".format(fld))
 		type_item.set_custom_bg_color(0, selected_field_fg)
 		type_item.set_custom_color(0, selected_field_bg)
+		type_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 		type_item.set_custom_bg_color(1, selected_field_fg)
 		type_item.set_custom_color(1, selected_field_bg)
+		type_item.set_cell_mode(2, TreeItem.CELL_MODE_CHECK)
+		type_item.set_custom_bg_color(2, selected_field_fg)
+		type_item.set_custom_color(2, selected_field_bg)
+		type_item.set_custom_bg_color(3, selected_field_fg)
+		type_item.set_custom_color(3, selected_field_bg)
 
 func remove_event_fields(_event_name : String):
 	var sql_select : String = ""
@@ -158,13 +176,13 @@ func update_query_structure(_selected_field : TreeItem):
 			if !query_structure["structure"].has(event_type_item.get_text(0)):
 				query_structure["structure"][event_type_item.get_text(0)] = {}
 			if query_structure["structure"][event_type_item.get_text(0)].has(_selected_field.get_text(0)) \
-			&& query_structure["structure"][event_type_item.get_text(0)][_selected_field.get_text(0)] == _selected_field.get_text(1):
+			&& query_structure["structure"][event_type_item.get_text(0)][_selected_field.get_text(0)] == _selected_field.get_text(3):
 				query_structure["structure"][event_type_item.get_text(0)].erase(_selected_field.get_text(0))
 				result = "removed"
 			else:
 				query_structure["structure"][event_type_item.get_text(0)][_selected_field.get_text(0)] = ""
-				if _selected_field.get_text(1):
-					query_structure["structure"][event_type_item.get_text(0)][_selected_field.get_text(0)] = _selected_field.get_text(1)
+				if _selected_field.get_text(3):
+					query_structure["structure"][event_type_item.get_text(0)][_selected_field.get_text(0)] = _selected_field.get_text(3)
 				result = "added"
 #	data_reader.settings_manager.save_setting("query_views", views_data)
 	return result
