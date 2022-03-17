@@ -48,16 +48,14 @@ static func get_selected_row_text(_tree : Tree) -> Array:
 	return result_array
 	
 static func cell_to_clipboard(_event : InputEvent, _tree_control : Tree, _metadata : String = ""):
-	if _event is InputEventKey:
-		if _event.scancode ==  KEY_C && _event.control:
-			if _tree_control.get_selected():
-				var clipboard_data : String = ""
-				if _metadata:
-					var current_metadata : Dictionary = _tree_control.get_selected().get_meta(_metadata)
-					clipboard_data = DataConverter.dictionary_pretty_print(current_metadata)
-				else:
-					clipboard_data =_tree_control.get_selected().get_text(_tree_control.get_selected_column())
-				OS.clipboard = clipboard_data
+	if _tree_control.get_selected():
+		var clipboard_data : String = ""
+		if _metadata:
+			var current_metadata : Dictionary = _tree_control.get_selected().get_meta(_metadata)
+			clipboard_data = DataConverter.dictionary_pretty_print(current_metadata)
+		else:
+			clipboard_data =_tree_control.get_selected().get_text(_tree_control.get_selected_column())
+		OS.clipboard = clipboard_data
 	
 static func get_selected_meta(_tree_control : Tree, _metadata : String = ""):
 	var current_metadata : Dictionary = {}

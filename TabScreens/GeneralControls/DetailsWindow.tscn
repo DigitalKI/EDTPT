@@ -97,4 +97,5 @@ custom_styles/bg = SubResource( 4 )
 hide_root = true
 
 [connection signal="gui_input" from="MarginContainer/Panel/VBoxContainer/Title" to="." method="_on_Title_gui_input"]
+[connection signal="gui_input" from="MarginContainer/Panel/VBoxContainer/DetailsMargin/BodyContent/Tree" to="." method="_on_Tree_gui_input"]
 [connection signal="item_activated" from="MarginContainer/Panel/VBoxContainer/DetailsMargin/BodyContent/Tree" to="." method="_on_Tree_item_activated"]

@@ -40,7 +40,7 @@ func _on_LogDetails_item_selected():
 # This is to allow to copy to clipboard the content of the journal entry
 func _on_LogDetails_gui_input(event):
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_RIGHT:
+		if event.button_index == BUTTON_RIGHT && event.control:
 			TreeHelper.cell_to_clipboard(event, log_details, "json")
 		if event.button_index == BUTTON_LEFT && event.doubleclick:
 			var data = TreeHelper.get_selected_meta(log_details, "json")

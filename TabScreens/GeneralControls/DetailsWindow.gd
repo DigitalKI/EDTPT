@@ -50,3 +50,11 @@ func _on_Tree_item_activated():
 	if selected_item:
 		if selected_item.get_children():
 			selected_item.collapsed = !selected_item.collapsed
+
+
+
+func _on_Tree_gui_input(event):
+	if event is InputEventKey:
+		if event.scancode == KEY_C && event.control:
+			TreeHelper.cell_to_clipboard(event, table)
+

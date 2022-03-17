@@ -71,4 +71,6 @@ func _on_DetailTree_item_activated():
 
 
 func _on_DetailTree_gui_input(event):
-	TreeHelper.cell_to_clipboard(event, table)
+	if event is InputEventKey:
+		if event.scancode == KEY_C && event.control:
+			TreeHelper.cell_to_clipboard(event, table)
