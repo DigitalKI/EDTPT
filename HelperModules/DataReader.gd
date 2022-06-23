@@ -83,8 +83,10 @@ func initialize_timer(_current_scene_root):
 #	timer.start()
 
 func timer_read_cache():
-#	journal_updates_threaded()
-	journal_updates()
+	if settings_manager.get_setting("Threaded"):
+		journal_updates_threaded()
+	else:
+		journal_updates()
 
 func journal_updates_threaded():
 	if thread_reader.is_active():
@@ -99,22 +101,27 @@ func journal_updates(_threaded = false):
 	if _threaded:
 		mutex.unlock()
 		call_deferred("reset_thread")
-		returnval = new_logs["events"]
+		returnval = new_logs
 	else:
 		emit_signal("new_cached_events", new_logs["events"])
 		_set_autoupdate(autoupdate)
-	# As it manipulates the events dictionary, it's left last,
-	# so that the journal reader will still be intact
-	_write_all_events_to_db(new_logs["byfile"])
+		# As it manipulates the events dictionary, it's left last,
+		# so that the journal reader will still be intact
+		# It will run only when not threaded
+		# , in which case it will be done at reset_thread.
+		_write_all_events_to_db(new_logs["byfile"])
 	if !current_cmdr:
 		_set_cmdr("")
 	return returnval
 
 func reset_thread():
-	if thread_reader.is_active():
-		var new_events = thread_reader.wait_to_finish()
-		emit_signal("new_cached_events", new_events)
-		timer.start()
+	var new_events = {"events":[]}
+	if !thread_reader.is_alive():
+		new_events = thread_reader.wait_to_finish()
+	emit_signal("new_cached_events", [] if new_events == null else new_events["events"])
+	if new_events:
+		_write_all_events_to_db(new_events["byfile"])
+	_set_autoupdate(autoupdate)
 
 func db_get_log_files(_filename : String = ""):
 	var filter = "" if _filename.empty() else "filename = '" + _filename + "'"
