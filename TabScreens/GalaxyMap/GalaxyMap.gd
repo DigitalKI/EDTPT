@@ -7,6 +7,7 @@ var rl_pressed := false
 var fb_pressed := false
 var view_mode := "Galaxy"
 var current_view_settings : Array = []
+var current_structure_settings : Dictionary = {}
 onready var galaxy : GalaxyCenter = $GalaxyMapView/Viewport/GalaxyCenter
 onready var details : DetailsWindow = $HBoxContainer/GalaxyContainer/UpperGalaxyContainer/SystemDetails
 onready var table : FloatingTable = $HBoxContainer/GalaxyContainer/UpperGalaxyContainer/FloatingTable
@@ -298,7 +299,9 @@ func _on_RightButtonsContainer_view_button_pressed(_text):
 		data_reader.galaxy_manager.star_systems = events
 		show_table_view(events, _text)
 		if query_views[_text].has("rules"):
-			galaxy.spawn_sector_stars(events, query_views[_text]["rules"], query_views[_text]["default_color"])
+			current_view_settings = query_views[_text]["rules"]
+			current_structure_settings = query_views[_text]["structure"]
+			galaxy.spawn_sector_stars(events, current_view_settings, query_views[_text]["default_color"])
 	#	galaxy.spawn_stars(data_reader.galaxy_manager.star_systems, "Visits", 100, Color(0.4, 0.1, 0.1), Color(1.0, 0.87, 0.4))
 		update_navlabel()
 		pause_unpause_game()

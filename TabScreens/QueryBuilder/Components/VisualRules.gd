@@ -248,9 +248,10 @@ func add_color_matrix_rules(_cmatrix_ruleset : TreeItem, _color_rules : Dictiona
 		_color_rules["edit to set value"] = Color(1,1,1)
 	for key in _color_rules.keys():
 		var c_matrix_rule : TreeItem = rules_table.create_item(_cmatrix_ruleset)
-		c_matrix_rule.add_button(0, generate_color_texture(c_matrix_rule, 0, _color_rules[key]))
+		var rule_color : = Color(_color_rules[key].split(",")[0], _color_rules[key].split(",")[1], _color_rules[key].split(",")[2], _color_rules[key].split(",")[3])
+		c_matrix_rule.add_button(0, generate_color_texture(c_matrix_rule, 0, rule_color))
 		c_matrix_rule.set_text(1, key)
-		c_matrix_rule.set_meta("color_rule", _color_rules[key])
+		c_matrix_rule.set_meta("color_rule", rule_color)
 		c_matrix_rule.set_editable(1, true)
 	generate_rulesets()
 

@@ -197,9 +197,7 @@ func update_query_structure(_selected_field : TreeItem):
 		var event_type : String = event_type_item.get_text(0)
 		var event_field : String = _selected_field.get_text(0)
 		if event_type:
-			if query_structure["structure"][event_type].has(event_field) \
-			&& (query_structure["structure"][event_type][event_field]["list"] \
-			||  query_structure["structure"][event_type][event_field]["detail"]):
+			if !(_selected_field.is_checked(1) || _selected_field.is_checked(2)):
 				query_structure["structure"][event_type].erase(event_field)
 				result = "removed"
 			else:

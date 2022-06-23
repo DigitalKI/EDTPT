@@ -23,7 +23,9 @@ func query_structure_to_select(_query_structure : Dictionary):
 				filters_query += " AND %s %s" % [fld, _query_structure[tbl][fld]["filter"]]
 			if fld == "timestamp":
 				sort_query = " ORDER BY {tbl}.{fld}".format({"tbl": tbl, "fld": fld})
-		tables_query += " INNER JOIN {tbl} ON {prev_tbl}.SystemAddress = {tbl}.SystemAddress".format({"prev_tbl": prev_tbl, "tbl": tbl}) if has_sys_addr && prev_tbl.length() > 0 else tbl
+		var prev_sysaddress = "SystemAddress" if prev_tbl != "edsm_systems" else "id64"
+		var tbl_sysaddress = "SystemAddress" if tbl != "edsm_systems" else "id64"
+		tables_query += " INNER JOIN {tbl} ON {prev_tbl}.{prev_sysaddress} = {tbl}.{tbl_sysaddress}".format({"prev_tbl": prev_tbl, "tbl": tbl, "prev_sysaddress": prev_sysaddress, "tbl_sysaddress": tbl_sysaddress}) if has_sys_addr && prev_tbl.length() > 0 else tbl
 		prev_tbl = tbl
 	resulting_query += fields_query.trim_prefix(",") + tables_query + filters_query + sort_query
 	return resulting_query

@@ -71,7 +71,7 @@ func _config_star(_star : Dictionary, _star_idx : int, _config : Array, _default
 	var final_color : Color = _default_color
 	var star_size : Basis = Basis().scaled(Vector3(_default_size, _default_size, _default_size))
 	var color_unassigned = true
-	var sys_coord : Vector3 = DataConverter.get_position_vector(_star["StarPos"])
+	var sys_coord : Vector3 = DataConverter.get_position_vector(_star["StarPos"] if _star.has("StarPos") else _star["coords"])
 	for _c in _config:
 		if _c.has("color_matrix"):
 			if _c["is_array"]:
@@ -93,7 +93,10 @@ func _config_star(_star : Dictionary, _star_idx : int, _config : Array, _default
 								color_unassigned = false
 				elif _c["color_matrix"].has(colval):
 					if color_unassigned:
-						final_color = _c["color_matrix"][colval]
+						if _c["color_matrix"][colval] is String:
+							final_color = Color(_c["color_matrix"][colval].split(",")[0], _c["color_matrix"][colval].split(",")[1], _c["color_matrix"][colval].split(",")[2], _c["color_matrix"][colval].split(",")[3])
+						elif _c["color_matrix"][colval] is Color:
+							final_color = _c["color_matrix"][colval]
 						color_unassigned = false
 					else:
 						final_color = final_color.linear_interpolate(_c["color_matrix"][colval], 0.5)
