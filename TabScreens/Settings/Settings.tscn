@@ -48,7 +48,7 @@ align = 1
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 margin_top = 32.0
 margin_right = 994.0
-margin_bottom = 132.0
+margin_bottom = 176.0
 custom_constants/vseparation = 4
 columns = 2
 
@@ -112,9 +112,25 @@ margin_top = 75.0
 margin_bottom = 100.0
 file_dialog_parent_node = NodePath("../../../..")
 
+[node name="LblThreaded" type="RichTextLabel" parent="MarginContainer/VBoxContainer/GridContainer"]
+margin_top = 104.0
+margin_right = 765.0
+margin_bottom = 144.0
+size_flags_horizontal = 3
+text = "Enable/Disable threaded mode (disable it for debugging)."
+
+[node name="BtThreaded" type="CheckButton" parent="MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 769.0
+margin_top = 104.0
+margin_right = 994.0
+margin_bottom = 144.0
+text = "Threaded"
+flat = true
+
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GridContainer/BtResetDB" to="." method="_on_BtResetDB_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GridContainer/BtCleanAndExport" to="." method="_on_BtCleanAndExport_pressed"]
 [connection signal="meta_clicked" from="MarginContainer/VBoxContainer/GridContainer/LblImportEDSMInhabited" to="." method="_on_LblImportEDSMInhabited_meta_clicked"]
 [connection signal="meta_clicked" from="MarginContainer/VBoxContainer/GridContainer/Lbl7zPath" to="." method="_on_Lbl7zPath_meta_clicked"]
 [connection signal="file_selected" from="MarginContainer/VBoxContainer/GridContainer/Tb7ZPath" to="." method="_on_Tb7ZPath_file_selected"]
 [connection signal="text_entered" from="MarginContainer/VBoxContainer/GridContainer/Tb7ZPath" to="." method="_on_Tb7ZPath_text_entered"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/GridContainer/BtThreaded" to="." method="_on_BtThreaded_toggled"]

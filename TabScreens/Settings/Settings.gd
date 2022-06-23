@@ -3,6 +3,7 @@ extends Panel
 onready var button_edsm_downloads : MenuButton = $MarginContainer/VBoxContainer/GridContainer/BtEDSMDownloads
 onready var edsm_downloads_popup : PopupMenu = button_edsm_downloads.get_popup()
 onready var sevenz_path : LineEdit = $MarginContainer/VBoxContainer/GridContainer/Tb7ZPath
+onready var button_threaded : CheckButton = $MarginContainer/VBoxContainer/GridContainer/BtThreaded
 
 func _ready():
 	edsm_downloads_popup.clear()
@@ -42,4 +43,8 @@ func _on_Tb7ZPath_file_selected():
 func apply_settings():
 	if data_reader.settings_manager.get_setting("Tb7ZPath") != null:
 		sevenz_path.text = data_reader.settings_manager.get_setting("Tb7ZPath")
+	if data_reader.settings_manager.get_setting("Threaded") != null:
+		button_threaded.pressed = data_reader.settings_manager.get_setting("Threaded")
 
+func _on_BtThreaded_toggled(button_pressed):
+	data_reader.settings_manager.save_setting("Threaded", button_pressed)
