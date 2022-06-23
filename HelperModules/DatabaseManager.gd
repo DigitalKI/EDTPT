@@ -77,10 +77,16 @@ func get_all_event_tables(_filter : String = ""):
 		table_evt_types.append(evt_tbl["tbl_name"])
 	return table_evt_types
 
-func get_table_fields(_table_name : String):
+func get_table_fields(_table_name : String, fields_only : bool = false):
+	var return_data = []
 	if data_reader.dbm.db.query("PRAGMA table_info(%s);" % _table_name):
-		return data_reader.dbm.db.query_result.duplicate(true)
-	return []
+		return_data = data_reader.dbm.db.query_result.duplicate(true)
+		if fields_only:
+			var fields_arr := []
+			for fld in return_data:
+				fields_arr.append(fld["name"])
+			return_data = fields_arr
+	return return_data
 
 func db_set_event_type(_event_type):
 	# Create the event type
@@ -93,6 +99,16 @@ func db_execute_select(_select : String) -> Array:
 		if db.query(_select):
 			return db.query_result.duplicate(true)
 	return []
+	
+func convert_to_db_colum_type(_column_val) -> String:
+	var data_type = "text"
+	if _column_val is String && (_column_val == "true" ||  _column_val == "false"):
+		data_type = "int"
+	elif typeof(_column_val) == TYPE_INT:
+		data_type = "int"
+	elif typeof(_column_val) == TYPE_REAL:
+		data_type = "numeric"
+	return data_type
 
 # Creates a table from the event type, 
 # automatically generating columns with its respective type.
@@ -111,16 +127,7 @@ func create_table_from_event(_event : Dictionary, _is_event : bool = true):
 		
 		for column in _event.keys():
 			if column != "event":
-				var data_type = "text"
-				if _event[column] is String && (_event[column] == "true" ||  _event[column] == "false"):
-					data_type = "int"
-#				elif typeof(_event[column]) == TYPE_ARRAY:
-#					data_type = "blob"
-				elif typeof(_event[column]) == TYPE_INT:
-					data_type = "int"
-				elif typeof(_event[column]) == TYPE_REAL:
-					data_type = "numeric"
-				
+				var data_type = convert_to_db_colum_type(_event[column])
 				# Apparently this column name cannot work
 				# We add single quotes
 				# forbidden_columns is defined at the beginning of this script
@@ -135,6 +142,21 @@ func create_table_from_event(_event : Dictionary, _is_event : bool = true):
 			logger.log_event("There was an error creating table %s" % table_name)
 	else:
 			logger.log_event("Table %s already exists!" % table_name)
+
+# Since I'm lazy, I'd like to have a function that takes care of updating a table with new columns.
+# The _data field is a dictionary containing the column names and a sample value.
+func update_table_from_data(_table_name : String, _data : Dictionary):
+	# Do nothing if it doesn't exists
+	if  db.select_rows("event_types", "event_type = '" + _table_name + "'", ["*"]).empty():
+		pass
+	var existing_fields = get_table_fields(_table_name, true)
+	for col in _data.keys():
+		if !existing_fields.has(col) && col != "id" && col != "timestamp":
+			var col_type = convert_to_db_colum_type(_data[col])
+			var update_query = "ALTER TABLE %s ADD %s %s;" % [_table_name, col, col_type]
+			if !db.query(update_query):
+				logger.log_event("There was an error updating table '%s' column '%s'" % [_table_name, col])
+				logger.log_event(data_reader.dbm.db.error_message)
 
 func update_or_insert_multiple(_table_name : String, _data : Array):
 	var query_string = "INSERT OR REPLACE INTO " + _table_name + " "
