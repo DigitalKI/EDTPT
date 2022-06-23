@@ -268,7 +268,7 @@ func _get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name
 					# all the necessary tables
 					if !dbm.event_types.has(current_event_type) && current_event_type != "Commander" && current_event_type != "Fileheader":
 						var typed_events = get_all_new_events_by_type([current_event_type], _new_log_events)
-						create_table_from_examples(current_event_type, typed_events)
+						create_update_table_from_examples(current_event_type, typed_events)
 					if fileheader_last_id <= 0:
 						logger.log_event("No fileheader id to use! Aborting")
 						continue
@@ -282,14 +282,17 @@ func _get_insert_events_from_object(_dobj : Array, _fid : String, _log_file_name
 						_all_insert_events[current_event_type].append(evt)
 	return _all_insert_events
 
-func create_table_from_examples(_event_type : String, _typed_events : Array):
+func create_update_table_from_examples(_event_type : String, _typed_events : Array, _update : bool = false):
 	var example_event : Dictionary = {}
 	example_event["event"] = _event_type
 	for evtt in _typed_events:
 		for evt_k in evtt.keys():
 			if !example_event.has(evt_k):
 				example_event[evt_k] = evtt[evt_k] if evtt[evt_k] else "string"
-	dbm.create_table_from_event(example_event)
+	if _update:
+		dbm.update_table_from_data(_event_type, example_event)
+	else:
+		dbm.create_table_from_event(example_event)
 
 func get_events_by_type(_event_types : Array, _dataobject, _first : bool = false):
 	var evt_lst : Array = []
