@@ -59,9 +59,10 @@ func get_data_object_text(_current_logobject):
 		var objtext = ""
 		for log_obj in _current_logobject:
 			if log_obj:
+				var line = ''
 				for idx in log_obj.keys():
-					objtext +=  String(idx) + " - " + String(log_obj.get(idx)) + "\n"
-				objtext += "\n"
+					line +=  String(idx) + " - " + String(log_obj.get(idx)) + "\n"
+				objtext += line + "\n"
 			objtext += "------------------------\n"
 		return objtext
 
