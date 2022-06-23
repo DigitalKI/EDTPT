@@ -13,9 +13,6 @@ margin_top = 33.0
 margin_right = -4.0
 margin_bottom = -4.0
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="PanelResult" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -55,6 +52,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[connection signal="cell_selected" from="PanelResult/EventFields" to="." method="_on_EventFields_cell_selected"]
 [connection signal="item_activated" from="PanelResult/EventFields" to="." method="_on_EventFields_item_activated"]
 [connection signal="item_edited" from="PanelResult/EventFields" to="." method="_on_EventFields_item_edited"]
 [connection signal="item_rmb_selected" from="PanelResult/EventFields" to="." method="_on_EventFields_item_rmb_selected"]

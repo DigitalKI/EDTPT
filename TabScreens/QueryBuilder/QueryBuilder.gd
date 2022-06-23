@@ -68,9 +68,7 @@ func _on_SavedViewsList_item_selected(index):
 		events_fields.query_structure = query_structure
 		visual_rules.query_structure = query_structure
 		events_fields.clear()
-		for tablename in query_structure["structure"].keys():
-			var selected_event_color := event_types_table.get_event_type_color_by_text(tablename)
-			events_fields.query_structure_to_ui(tablename, selected_event_color)
+		events_fields.query_structure_to_ui(event_types_table)
 		if !query_structure.has("query"):
 			query_view.text = data_reader.query_builder.query_structure_to_select(query_structure["structure"])
 		elif query_structure["query"].empty():
@@ -90,7 +88,8 @@ func _on_SavedViewsList_item_activated(index):
 func _on_EventTypes_event_type_selected(event_type, event_color):
 	if query_structure["structure"].size() < 5:
 		if !events_fields.get_event_types().has(event_type):
-			events_fields.add_events_fields(event_type, event_color)
+			events_fields.add_event_types(event_type, event_color)
+			data_reader.settings_manager.save_setting("query_views", views_data)
 			event_tabs.current_tab = 2
 
 func _on_EventFields_query_changed(sql_query):
@@ -129,7 +128,7 @@ func list_saved_views():
 	_on_SavedViewsList_item_selected(0)
 
 func get_result_table(_events_query : String):
-	var events := data_reader.dbm.db_execute_select(_events_query)
+	var events : Array = data_reader.dbm.db_execute_select(_events_query)
 	results_table.clear()
 	results_table.set_column_titles_visible(true)
 	if !events.empty():
