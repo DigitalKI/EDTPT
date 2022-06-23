@@ -24,7 +24,7 @@ func save_setting(_key : String, _value):
 		settings_file.close()
 	# We close and open again the settings file in order to use the WRITE mode
 	if settings_file.open(settings_path + "/settings.json", File.WRITE) == OK:
-		json_settings[_key] = var2str(_value)
+		json_settings[_key] = var2str(_value) if !(_value is Dictionary) else _value
 		settings_strig = JSON.print(json_settings, "  ", true)
 		settings_file.store_string(settings_strig)
 		settings_file.close()
@@ -50,5 +50,4 @@ func get_all_settings():
 		var json_settings = JSON.parse(settings_strig)
 		if json_settings.error == OK:
 			return json_settings.result
-		else:
-			return {}
+	return {}
