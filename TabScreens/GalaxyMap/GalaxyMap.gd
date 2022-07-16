@@ -231,7 +231,12 @@ func set_selected_star(_star):
 		details.body = ""
 		if _star.has("StarSystem"):
 			details.title += _star["StarSystem"]
-			details.data = _star
+		if _star.has("Name"):
+			details.title += _star["Name"]
+		elif _star.has("Body"):
+			details.title += _star["Body"]
+		details.visible_columns = data_reader.query_builder.get_query_structure_fields(current_structure_settings, true)
+		details.data = _star
 #			for key in _star.keys():
 #				if !(DataConverter.get_value(_star[key]).begins_with("$") && _star[key].ends_with(";")):
 #					if key != "System":
@@ -297,7 +302,7 @@ func _on_RightButtonsContainer_view_button_pressed(_text):
 			view_select = data_reader.query_builder.query_structure_to_select(query_views[_text]["structure"])
 		var events := data_reader.dbm.db_execute_select(view_select)
 		data_reader.galaxy_manager.star_systems = events
-		show_table_view(events, _text)
+		show_table_view(events, data_reader.query_builder.get_query_structure_fields(query_views[_text]["structure"]), _text)
 		if query_views[_text].has("rules"):
 			current_view_settings = query_views[_text]["rules"]
 			current_structure_settings = query_views[_text]["structure"]
@@ -306,12 +311,12 @@ func _on_RightButtonsContainer_view_button_pressed(_text):
 		update_navlabel()
 		pause_unpause_game()
 
-func show_table_view(_data : Array, _title : String):
+func show_table_view(_data : Array, _visible_columns : Array, _title : String):
 	table.visible = !table.visible
 	if table.visible:
 		details.visible = false
 		table.title_text = _title
-		table.visible_columns = []
+		table.visible_columns = _visible_columns
 		table.table_array = _data
 #		if !_data.empty():
 #			if _data[0].has("timestamp"):

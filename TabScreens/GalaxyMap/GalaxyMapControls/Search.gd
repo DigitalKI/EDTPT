@@ -7,8 +7,13 @@ func _on_Search_text_changed(new_text):
 		$PopupMenuFound.rect_size.y = 20
 		for idx in range(data_reader.galaxy_manager.star_systems.size()):
 			var system = data_reader.galaxy_manager.star_systems[idx]
-			if system["StarSystem"].to_upper().find(new_text.to_upper()) > -1 && $PopupMenuFound.get_item_count() < 11:
-				$PopupMenuFound.add_item(system["StarSystem"], idx)
+			if system.has("StarSystem"):
+				if system["StarSystem"].to_upper().find(new_text.to_upper()) > -1 && $PopupMenuFound.get_item_count() < 11:
+					$PopupMenuFound.add_item(system["StarSystem"], idx)
+			elif system.has("name"):
+				if system["name"].to_upper().find(new_text.to_upper()) > -1 && $PopupMenuFound.get_item_count() < 11:
+					$PopupMenuFound.add_item(system["name"], idx)
+				
 		if $PopupMenuFound.get_item_count() > 0:
 			$PopupMenuFound.rect_size.x = $PopupMenuFound.get_parent().rect_size.x
 			$PopupMenuFound.set_position(Vector2($PopupMenuFound.get_parent().rect_global_position.x, $PopupMenuFound.get_parent().rect_size.y + 16))

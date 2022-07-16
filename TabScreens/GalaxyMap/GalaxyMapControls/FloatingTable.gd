@@ -52,7 +52,7 @@ func add_events(_data : Array):
 			table.set_column_expand(0, false)
 			table.set_column_min_width(0, 140.0)
 		for _col in _data[0].keys():
-			if visible_columns.has(_col) || visible_columns.empty():
+			if (visible_columns.has(_col) || visible_columns.empty()) && _col != "timestamp":
 				table.set_column_title(col_idx, _col)
 				table.set_column_expand(col_idx, true)
 				table.set_column_min_width(col_idx, 110.0)
