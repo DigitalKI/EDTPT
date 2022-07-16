@@ -320,14 +320,6 @@
 		]
 	},
 	{
-		"name": "PayFines",
-		"sql": "CREATE TABLE \"PayFines\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Amount\"\tnumeric,\r\n\t\"AllFines\"\ttext,\r\n\t\"ShipID\"\ttext,\r\n\t\"BrokerPercentage\"\tnumeric,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "Outfitting",
 		"sql": "CREATE TABLE \"Outfitting\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"MarketID\"\tnumeric,\r\n\t\"StationName\"\ttext,\r\n\t\"StarSystem\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
@@ -384,14 +376,6 @@
 		]
 	},
 	{
-		"name": "Promotion",
-		"sql": "CREATE TABLE \"Promotion\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Trade\"\tnumeric,\r\n\t\"Explore\"\tnumeric,\r\n\t\"Combat\"\tnumeric,\r\n\t\"Empire\"\tnumeric,\r\n\t\"Federation\"\tnumeric,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "MissionCompleted",
 		"sql": "CREATE TABLE \"MissionCompleted\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Faction\"\ttext,\r\n\t\"Name\"\ttext,\r\n\t\"MissionID\"\tnumeric,\r\n\t\"Commodity\"\ttext,\r\n\t\"Commodity_Localised\"\ttext,\r\n\t\"Count\"\tnumeric,\r\n\t\"DestinationSystem\"\ttext,\r\n\t\"DestinationStation\"\ttext,\r\n\t\"Reward\"\tnumeric,\r\n\t\"FactionEffects\"\ttext,\r\n\t\"TargetFaction\"\ttext,\r\n\t\"Donation\"\ttext,\r\n\t\"Donated\"\tnumeric,\r\n\t\"NewDestinationSystem\"\ttext,\r\n\t\"MaterialsReward\"\ttext,\r\n\t\"CommodityReward\"\ttext,\r\n\t\"TargetType\"\ttext,\r\n\t\"TargetType_Localised\"\ttext,\r\n\t\"KillCount\"\tnumeric,\r\n\t\"NewDestinationStation\"\ttext,\r\n\t\"Target\"\ttext,\r\n\t\"Target_Localised\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
@@ -410,14 +394,6 @@
 	{
 		"name": "StoredShips",
 		"sql": "CREATE TABLE \"StoredShips\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"StationName\"\ttext,\r\n\t\"MarketID\"\tnumeric,\r\n\t\"StarSystem\"\ttext,\r\n\t\"ShipsHere\"\ttext,\r\n\t\"ShipsRemote\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
-		"name": "CodexEntry",
-		"sql": "CREATE TABLE \"CodexEntry\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"EntryID\"\tnumeric,\r\n\t\"Name\"\ttext,\r\n\t\"Name_Localised\"\ttext,\r\n\t\"SubCategory\"\ttext,\r\n\t\"SubCategory_Localised\"\ttext,\r\n\t\"Category\"\ttext,\r\n\t\"Category_Localised\"\ttext,\r\n\t\"Region\"\ttext,\r\n\t\"Region_Localised\"\ttext,\r\n\t\"System\"\ttext,\r\n\t\"SystemAddress\"\tnumeric,\r\n\t\"IsNewEntry\"\ttext,\r\n\t\"NearestDestination\"\ttext,\r\n\t\"NearestDestination_Localised\"\ttext,\r\n\t\"VoucherAmount\"\tnumeric,\r\n\t\"Latitude\"\tnumeric,\r\n\t\"Longitude\"\tnumeric,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
 		"row_array": [
 
@@ -610,14 +586,6 @@
 	{
 		"name": "HullDamage",
 		"sql": "CREATE TABLE \"HullDamage\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Health\"\tnumeric,\r\n\t\"PlayerPilot\"\ttext,\r\n\t\"Fighter\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
-		"name": "Died",
-		"sql": "CREATE TABLE \"Died\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"KillerName\"\ttext,\r\n\t\"KillerShip\"\ttext,\r\n\t\"KillerRank\"\ttext,\r\n\t\"KillerName_Localised\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
 		"row_array": [
 
@@ -865,7 +833,7 @@
 	},
 	{
 		"name": "EjectCargo",
-		"sql": "CREATE TABLE \"EjectCargo\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Type\"\ttext,\r\n\t\"Type_Localised\"\ttext,\r\n\t\"Count\"\tnumeric,\r\n\t\"Abandoned\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
+		"sql": "CREATE TABLE \"EjectCargo\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Type\"\ttext,\r\n\t\"Type_Localised\"\ttext,\r\n\t\"Count\"\tnumeric,\r\n\t\"Abandoned\"\ttext, \r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
 		"row_array": [
 
@@ -1002,14 +970,6 @@
 	{
 		"name": "QuitACrew",
 		"sql": "CREATE TABLE \"QuitACrew\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Captain\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
-		"name": "ProspectedAsteroid",
-		"sql": "CREATE TABLE \"ProspectedAsteroid\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Materials\"\ttext,\r\n\t\"Content\"\ttext,\r\n\t\"Content_Localised\"\ttext,\r\n\t\"Remaining\"\tnumeric,\r\n\t\"MotherlodeMaterial\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
 		"row_array": [
 
@@ -1592,14 +1552,6 @@
 		]
 	},
 	{
-		"name": "CarrierFinance",
-		"sql": "CREATE TABLE CarrierFinance (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,CarrierID numeric,TaxRate text,CarrierBalance numeric,ReserveBalance numeric,AvailableBalance numeric,ReservePercent numeric)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "CarrierJumpCancelled",
 		"sql": "CREATE TABLE CarrierJumpCancelled (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,CarrierID numeric)",
 		"type": "table",
@@ -1642,14 +1594,6 @@
 	{
 		"name": "AsteroidCracked",
 		"sql": "CREATE TABLE AsteroidCracked (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,Body text)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
-		"name": "DropItems",
-		"sql": "CREATE TABLE DropItems (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,Name text,Name_Localised text,Type text,OwnerID text,Count numeric)",
 		"type": "table",
 		"row_array": [
 
@@ -1722,6 +1666,142 @@
 	{
 		"name": "SRVDestroyed",
 		"sql": "CREATE TABLE \"SRVDestroyed\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"ID_ID\"\tnumeric,\n\t\"SRVType\"\tTEXT,\n\t\"SRVType_Localised\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CarrierCrewServices",
+		"sql": "CREATE TABLE CarrierCrewServices (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,CarrierID numeric,CrewRole text,Operation text,CrewName text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CarrierDockingPermission",
+		"sql": "CREATE TABLE CarrierDockingPermission (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,CarrierID numeric,DockingAccess text,AllowNotorious text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "ScanOrganic",
+		"sql": "CREATE TABLE ScanOrganic (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,ScanType text,Genus text,Genus_Localised text,Species text,Species_Localised text,SystemAddress numeric,Body numeric)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "RenameSuitLoadout",
+		"sql": "CREATE TABLE RenameSuitLoadout (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,SuitID numeric,SuitName text,SuitName_Localised text,LoadoutID numeric,LoadoutName text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "UpgradeWeapon",
+		"sql": "CREATE TABLE UpgradeWeapon (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,Name text,Name_Localised text,Class numeric,SuitModuleID numeric,Cost numeric)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "SellOrganicData",
+		"sql": "CREATE TABLE SellOrganicData (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,MarketID numeric,BioData text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "BookDropship",
+		"sql": "CREATE TABLE BookDropship (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,Cost text,DestinationSystem text,DestinationLocation text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CancelDropship",
+		"sql": "CREATE TABLE CancelDropship (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,Refund text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CarrierNameChange",
+		"sql": "CREATE TABLE CarrierNameChange (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,CarrierID numeric,Name text,Callsign text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CommunityGoalDiscard",
+		"sql": "CREATE TABLE CommunityGoalDiscard (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,CGID numeric,Name text,System text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "PayFines",
+		"sql": "CREATE TABLE \"PayFines\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Amount\"\tnumeric,\n\t\"AllFines\"\ttext,\n\t\"ShipID\"\ttext,\n\t\"BrokerPercentage\"\tnumeric,\n\t\"Faction\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CarrierFinance",
+		"sql": "CREATE TABLE \"CarrierFinance\" (\n\t\"Id\"\tINTEGER NOT NULL,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"CarrierID\"\tnumeric,\n\t\"TaxRate\"\ttext,\n\t\"CarrierBalance\"\tnumeric,\n\t\"ReserveBalance\"\tnumeric,\n\t\"AvailableBalance\"\tnumeric,\n\t\"ReservePercent\"\tnumeric,\n\t\"TaxRate_shipyard\"\tINTEGER,\n\t\"TaxRate_pioneersupplies\"\tINTEGER,\n\t\"TaxRate_rearm\"\tINTEGER,\n\t\"TaxRate_outfitting\"\tINTEGER,\n\t\"TaxRate_refuel\"\tINTEGER,\n\t\"TaxRate_repair\"\tINTEGER,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "DropItems",
+		"sql": "CREATE TABLE \"DropItems\" (\n\t\"Id\"\tINTEGER NOT NULL,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Name\"\ttext,\n\t\"Name_Localised\"\ttext,\n\t\"Type\"\ttext,\n\t\"OwnerID\"\ttext,\n\t\"Count\"\tnumeric,\n\t\"MissionID\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CodexEntry",
+		"sql": "CREATE TABLE \"CodexEntry\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"EntryID\"\tnumeric,\n\t\"Name\"\ttext,\n\t\"Name_Localised\"\ttext,\n\t\"SubCategory\"\ttext,\n\t\"SubCategory_Localised\"\ttext,\n\t\"Category\"\ttext,\n\t\"Category_Localised\"\ttext,\n\t\"Region\"\ttext,\n\t\"Region_Localised\"\ttext,\n\t\"System\"\ttext,\n\t\"SystemAddress\"\tnumeric,\n\t\"IsNewEntry\"\ttext,\n\t\"NearestDestination\"\ttext,\n\t\"NearestDestination_Localised\"\ttext,\n\t\"VoucherAmount\"\tnumeric,\n\t\"Latitude\"\tnumeric,\n\t\"Longitude\"\tnumeric,\n\t\"Traits\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "Died",
+		"sql": "CREATE TABLE \"Died\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"KillerName\"\ttext,\n\t\"KillerShip\"\ttext,\n\t\"KillerRank\"\ttext,\n\t\"KillerName_Localised\"\ttext,\n\t\"Killers\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "Promotion",
+		"sql": "CREATE TABLE \"Promotion\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Trade\"\tnumeric,\n\t\"Explore\"\tnumeric,\n\t\"Combat\"\tnumeric,\n\t\"Empire\"\tnumeric,\n\t\"Federation\"\tnumeric,\n\t\"Soldier\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "ProspectedAsteroid",
+		"sql": "CREATE TABLE \"ProspectedAsteroid\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Materials\"\ttext,\n\t\"Content\"\ttext,\n\t\"Content_Localised\"\ttext,\n\t\"Remaining\"\tnumeric,\n\t\"MotherlodeMaterial\"\ttext,\n\t\"MotherlodeMaterial_Localised\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
 		"type": "table",
 		"row_array": [
 
