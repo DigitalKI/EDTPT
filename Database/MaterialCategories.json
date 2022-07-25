@@ -93,15 +93,20 @@
             "ancientculturaldata",
             "ancientlanguagedata"
         ],
-        "thargoid A": [
-            "NA",
+        "guardian blueprints": [
+            "Guardian_WeaponBlueprint",
+            "Guardian_ModuleBlueprint",
+            "Guardian_VesselBlueprint"
+        ],
+        "Thargoid Data A": [
+            "",
             "TG_StructuralData",
             "TG_CompositionData",
             "TG_ResidueData"
         ],
-        "thargoid B": [
-            "NA",
-            "NA",
+        "Thargoid Data B": [
+            "",
+            "",
             "TG_ShipFlightData",
             "tg_shipsystemsdata"
         ]
@@ -184,18 +189,19 @@
             "guardian_techcomponent",
             "guardian_sentinel_weaponparts"
         ],
-        "thargoid A": [
-            "NA",
-            "NA",
+        "Thargoid Components A": [
+            "",
+            "",
             "tg_wreckagecomponents",
+            "",
             "unknownenergysource"
         ],
-        "thargoid B": [
-            "NA",
-            "NA",
+        "Thargoid Components B": [
+            "",
+            "",
             "tg_biomechanicalconduits",
-            "tg_propulsionelement",
-            "tg_weaponparts"
+            "tg_weaponparts",
+            "tg_propulsionelement"
         ]
     }
 }
