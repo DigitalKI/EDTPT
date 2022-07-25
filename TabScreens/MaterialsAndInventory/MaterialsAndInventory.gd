@@ -24,7 +24,7 @@ func _on_DataReader_new_cached_events(_events: Array):
 		if evt["event"] == "Materials":
 			if evt["timestamp"] > latest_mat_event["timestamp"]:
 				latest_mat_event = evt
-		if ["MaterialCollected", "MissionCompleted"].has(evt["event"]):
+		if ["MaterialCollected", "MissionCompleted", "MaterialTrade"].has(evt["event"]):
 			other_mat_events.append(evt)
 	if latest_mat_event.has("event"):
 		for mat in latest_mat_event["Raw"]:
@@ -41,6 +41,9 @@ func _on_DataReader_new_cached_events(_events: Array):
 				if evt.has("MaterialsReward") && evt["MaterialsReward"]:
 					for mat in evt["MaterialsReward"]:
 						update_mats_tree(mat["Category"], mat["Name"], mat["Count"], true)
+			elif "MaterialTrade" == evt["event"]:
+				update_mats_tree(evt['Paid']["Category"], evt['Paid']["Name"], evt['Paid']["Count"], true)
+				update_mats_tree(evt['Received']["Category"], evt['Received']["Name"], evt['Received']["Count"], true)
 
 func _on_InventoryAndMaterials_visibility_changed():
 	if is_visible_in_tree():
@@ -138,6 +141,7 @@ func _get_matching_child(_parent_item : TreeItem, _text_to_search : String, _col
 			max_count -= 1
 	return null
 
+# Some manual labor to shorten localized names.
 func _get_material_localized(_mat : String, _data : Array) -> String:
 	var return_val : String = _mat
 	for _m_data in _data:
