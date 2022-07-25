@@ -9,6 +9,7 @@ onready var table : Tree = $MarginContainer/Panel/VBoxContainer/DetailsMargin/Bo
 export(String) var title setget _set_title, _get_title
 export(String, MULTILINE) var body setget _set_body, _get_body
 export(Dictionary) var data setget _set_data
+export(Array, String) var visible_columns
 
 
 func _set_title(_value):

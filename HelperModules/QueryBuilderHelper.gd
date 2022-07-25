@@ -29,3 +29,13 @@ func query_structure_to_select(_query_structure : Dictionary):
 		prev_tbl = tbl
 	resulting_query += fields_query.trim_prefix(",") + tables_query + filters_query + sort_query
 	return resulting_query
+
+func get_query_structure_fields(_struct : Dictionary, _details : bool = false) -> Array:
+	var fld_lst = []
+	for tbl in _struct:
+		for fld in _struct[tbl]:
+			if _details && _struct[tbl][fld]["detail"]:
+				fld_lst.append(fld)
+			elif _struct[tbl][fld]["list"]:
+				fld_lst.append(fld)
+	return fld_lst
