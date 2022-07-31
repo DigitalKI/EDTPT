@@ -18,9 +18,9 @@ func query_structure_to_select(_query_structure : Dictionary):
 	for tbl in _query_structure.keys():
 		var has_sys_addr : bool = event_tables_coords.has(tbl) || event_tables_system_addr.has(tbl)
 		for fld in _query_structure[tbl].keys():
-			fields_query += ", %s.%s" % [tbl, fld]
+			fields_query += ", %s.\'%s\'" % [tbl, fld]
 			if _query_structure[tbl][fld]["filter"]:
-				filters_query += " AND %s %s" % [fld, _query_structure[tbl][fld]["filter"]]
+				filters_query += " AND %s.\'%s\' %s" % [tbl, fld, _query_structure[tbl][fld]["filter"]]
 			if fld == "timestamp":
 				sort_query = " ORDER BY {tbl}.{fld}".format({"tbl": tbl, "fld": fld})
 		var prev_sysaddress = "SystemAddress" if prev_tbl != "edsm_systems" else "id64"

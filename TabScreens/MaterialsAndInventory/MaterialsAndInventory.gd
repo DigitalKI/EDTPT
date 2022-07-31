@@ -162,6 +162,8 @@ func _get_material_localized(_mat : String, _data : Array) -> String:
 		return_val = return_val.replace("Encryptors", "E.")
 	elif return_val.find("Pattern") >= 0:
 		return_val = return_val.replace("Pattern", "P.")
+	elif return_val.find("Fragment") >= 0 && return_val.find("Blueprint") >= 0:
+		return_val = return_val.replace("Fragment", "")
 	return_val = return_val.trim_prefix("Guardian")
 	return return_val
 
