@@ -832,14 +832,6 @@
 		]
 	},
 	{
-		"name": "EjectCargo",
-		"sql": "CREATE TABLE \"EjectCargo\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Type\"\ttext,\r\n\t\"Type_Localised\"\ttext,\r\n\t\"Count\"\tnumeric,\r\n\t\"Abandoned\"\ttext, \r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "Synthesis",
 		"sql": "CREATE TABLE \"Synthesis\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Name\"\ttext,\r\n\t\"Materials\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
@@ -1776,14 +1768,6 @@
 		]
 	},
 	{
-		"name": "CodexEntry",
-		"sql": "CREATE TABLE \"CodexEntry\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"EntryID\"\tnumeric,\n\t\"Name\"\ttext,\n\t\"Name_Localised\"\ttext,\n\t\"SubCategory\"\ttext,\n\t\"SubCategory_Localised\"\ttext,\n\t\"Category\"\ttext,\n\t\"Category_Localised\"\ttext,\n\t\"Region\"\ttext,\n\t\"Region_Localised\"\ttext,\n\t\"System\"\ttext,\n\t\"SystemAddress\"\tnumeric,\n\t\"IsNewEntry\"\ttext,\n\t\"NearestDestination\"\ttext,\n\t\"NearestDestination_Localised\"\ttext,\n\t\"VoucherAmount\"\tnumeric,\n\t\"Latitude\"\tnumeric,\n\t\"Longitude\"\tnumeric,\n\t\"Traits\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "Died",
 		"sql": "CREATE TABLE \"Died\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"KillerName\"\ttext,\n\t\"KillerShip\"\ttext,\n\t\"KillerRank\"\ttext,\n\t\"KillerName_Localised\"\ttext,\n\t\"Killers\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
 		"type": "table",
@@ -1802,6 +1786,38 @@
 	{
 		"name": "ProspectedAsteroid",
 		"sql": "CREATE TABLE \"ProspectedAsteroid\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Materials\"\ttext,\n\t\"Content\"\ttext,\n\t\"Content_Localised\"\ttext,\n\t\"Remaining\"\tnumeric,\n\t\"MotherlodeMaterial\"\ttext,\n\t\"MotherlodeMaterial_Localised\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "EjectCargo",
+		"sql": "CREATE TABLE EjectCargo (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,Type text,Type_Localised text,Count numeric,Abandoned text,MissionID numeric)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "FCMaterials",
+		"sql": "CREATE TABLE FCMaterials (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text,MarketID numeric,CarrierName text,CarrierID text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "NavRouteClear",
+		"sql": "CREATE TABLE NavRouteClear (Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,CMDRId INTEGER NOT NULL,FileheaderId INTEGER NOT NULL,timestamp text)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CodexEntry",
+		"sql": "CREATE TABLE \"CodexEntry\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"EntryID\"\tnumeric,\n\t\"Name\"\ttext,\n\t\"Name_Localised\"\ttext,\n\t\"SubCategory\"\ttext,\n\t\"SubCategory_Localised\"\ttext,\n\t\"Category\"\ttext,\n\t\"Category_Localised\"\ttext,\n\t\"Region\"\ttext,\n\t\"Region_Localised\"\ttext,\n\t\"System\"\ttext,\n\t\"SystemAddress\"\tnumeric,\n\t\"IsNewEntry\"\ttext,\n\t\"NearestDestination\"\ttext,\n\t\"NearestDestination_Localised\"\ttext,\n\t\"VoucherAmount\"\tnumeric,\n\t\"Latitude\"\tnumeric,\n\t\"Longitude\"\tnumeric,\n\t\"Traits\"\tTEXT,\n\t\"BodyID\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
 		"type": "table",
 		"row_array": [
 
