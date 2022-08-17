@@ -856,14 +856,6 @@
 		]
 	},
 	{
-		"name": "PayBounties",
-		"sql": "CREATE TABLE \"PayBounties\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Amount\"\tnumeric,\r\n\t\"Faction\"\ttext,\r\n\t\"Faction_Localised\"\ttext,\r\n\t\"ShipID\"\tnumeric,\r\n\t\"BrokerPercentage\"\tnumeric,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "PowerplaySalary",
 		"sql": "CREATE TABLE \"PowerplaySalary\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Power\"\ttext,\r\n\t\"Amount\"\tnumeric,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
@@ -1818,6 +1810,14 @@
 	{
 		"name": "CodexEntry",
 		"sql": "CREATE TABLE \"CodexEntry\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"EntryID\"\tnumeric,\n\t\"Name\"\ttext,\n\t\"Name_Localised\"\ttext,\n\t\"SubCategory\"\ttext,\n\t\"SubCategory_Localised\"\ttext,\n\t\"Category\"\ttext,\n\t\"Category_Localised\"\ttext,\n\t\"Region\"\ttext,\n\t\"Region_Localised\"\ttext,\n\t\"System\"\ttext,\n\t\"SystemAddress\"\tnumeric,\n\t\"IsNewEntry\"\ttext,\n\t\"NearestDestination\"\ttext,\n\t\"NearestDestination_Localised\"\ttext,\n\t\"VoucherAmount\"\tnumeric,\n\t\"Latitude\"\tnumeric,\n\t\"Longitude\"\tnumeric,\n\t\"Traits\"\tTEXT,\n\t\"BodyID\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "PayBounties",
+		"sql": "CREATE TABLE \"PayBounties\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Amount\"\tnumeric,\n\t\"Faction\"\ttext,\n\t\"Faction_Localised\"\ttext,\n\t\"ShipID\"\tnumeric,\n\t\"BrokerPercentage\"\tnumeric,\n\t\"AllFines\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
 		"type": "table",
 		"row_array": [
 
