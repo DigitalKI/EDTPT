@@ -40,14 +40,6 @@
 		]
 	},
 	{
-		"name": "BuyMicroResources",
-		"sql": "CREATE TABLE \"BuyMicroResources\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Name\"\ttext,\r\n\t\"Name_Localised\"\ttext,\r\n\t\"Category\"\ttext,\r\n\t\"Count\"\tnumeric,\r\n\t\"Price\"\tnumeric,\r\n\t\"MarketID\"\tnumeric,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "Backpack",
 		"sql": "CREATE TABLE \"Backpack\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Items\"\ttext,\r\n\t\"Components\"\ttext,\r\n\t\"Consumables\"\ttext,\r\n\t\"Data\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
@@ -616,14 +608,6 @@
 		]
 	},
 	{
-		"name": "SAASignalsFound",
-		"sql": "CREATE TABLE \"SAASignalsFound\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"BodyName\"\ttext,\r\n\t\"SystemAddress\"\tnumeric,\r\n\t\"BodyID\"\tnumeric,\r\n\t\"Signals\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "BuyExplorationData",
 		"sql": "CREATE TABLE \"BuyExplorationData\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"System\"\ttext,\r\n\t\"Cost\"\tnumeric,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
@@ -1146,14 +1130,6 @@
 	{
 		"name": "BuyWeapon",
 		"sql": "CREATE TABLE \"BuyWeapon\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"Name\"\ttext,\r\n\t\"Name_Localised\"\ttext,\r\n\t\"Price\"\tnumeric,\r\n\t\"SuitModuleID\"\tnumeric,\r\n\t\"Class\"\tnumeric,\r\n\t\"WeaponMods\"\ttext,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
-		"name": "Embark",
-		"sql": "CREATE TABLE \"Embark\" (\r\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\r\n\t\"CMDRId\"\tINTEGER NOT NULL,\r\n\t\"FileheaderId\"\tINTEGER NOT NULL,\r\n\t\"timestamp\"\ttext,\r\n\t\"SRV\"\ttext,\r\n\t\"Taxi\"\ttext,\r\n\t\"Multicrew\"\ttext,\r\n\t\"ID_ID\"\tnumeric,\r\n\t\"StarSystem\"\ttext,\r\n\t\"SystemAddress\"\tnumeric,\r\n\t\"Body\"\ttext,\r\n\t\"BodyID\"\tnumeric,\r\n\t\"OnStation\"\ttext,\r\n\t\"OnPlanet\"\ttext,\r\n\t\"StationName\"\ttext,\r\n\t\"StationType\"\ttext,\r\n\t\"MarketID\"\tnumeric,\r\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\r\n)",
 		"type": "table",
 		"row_array": [
 
@@ -1768,14 +1744,6 @@
 		]
 	},
 	{
-		"name": "Promotion",
-		"sql": "CREATE TABLE \"Promotion\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Trade\"\tnumeric,\n\t\"Explore\"\tnumeric,\n\t\"Combat\"\tnumeric,\n\t\"Empire\"\tnumeric,\n\t\"Federation\"\tnumeric,\n\t\"Soldier\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
-		"type": "table",
-		"row_array": [
-
-		]
-	},
-	{
 		"name": "ProspectedAsteroid",
 		"sql": "CREATE TABLE \"ProspectedAsteroid\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Materials\"\ttext,\n\t\"Content\"\ttext,\n\t\"Content_Localised\"\ttext,\n\t\"Remaining\"\tnumeric,\n\t\"MotherlodeMaterial\"\ttext,\n\t\"MotherlodeMaterial_Localised\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
 		"type": "table",
@@ -1808,16 +1776,48 @@
 		]
 	},
 	{
-		"name": "CodexEntry",
-		"sql": "CREATE TABLE \"CodexEntry\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"EntryID\"\tnumeric,\n\t\"Name\"\ttext,\n\t\"Name_Localised\"\ttext,\n\t\"SubCategory\"\ttext,\n\t\"SubCategory_Localised\"\ttext,\n\t\"Category\"\ttext,\n\t\"Category_Localised\"\ttext,\n\t\"Region\"\ttext,\n\t\"Region_Localised\"\ttext,\n\t\"System\"\ttext,\n\t\"SystemAddress\"\tnumeric,\n\t\"IsNewEntry\"\ttext,\n\t\"NearestDestination\"\ttext,\n\t\"NearestDestination_Localised\"\ttext,\n\t\"VoucherAmount\"\tnumeric,\n\t\"Latitude\"\tnumeric,\n\t\"Longitude\"\tnumeric,\n\t\"Traits\"\tTEXT,\n\t\"BodyID\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"name": "PayBounties",
+		"sql": "CREATE TABLE \"PayBounties\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Amount\"\tnumeric,\n\t\"Faction\"\ttext,\n\t\"Faction_Localised\"\ttext,\n\t\"ShipID\"\tnumeric,\n\t\"BrokerPercentage\"\tnumeric,\n\t\"AllFines\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
 		"type": "table",
 		"row_array": [
 
 		]
 	},
 	{
-		"name": "PayBounties",
-		"sql": "CREATE TABLE \"PayBounties\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Amount\"\tnumeric,\n\t\"Faction\"\ttext,\n\t\"Faction_Localised\"\ttext,\n\t\"ShipID\"\tnumeric,\n\t\"BrokerPercentage\"\tnumeric,\n\t\"AllFines\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"name": "Embark",
+		"sql": "CREATE TABLE \"Embark\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"SRV\"\ttext,\n\t\"Taxi\"\ttext,\n\t\"Multicrew\"\ttext,\n\t\"ID_ID\"\tnumeric,\n\t\"StarSystem\"\ttext,\n\t\"SystemAddress\"\tnumeric,\n\t\"Body\"\ttext,\n\t\"BodyID\"\tnumeric,\n\t\"OnStation\"\ttext,\n\t\"OnPlanet\"\ttext,\n\t\"StationName\"\ttext,\n\t\"StationType\"\ttext,\n\t\"MarketID\"\tnumeric,\n\t\"Crew\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "SAASignalsFound",
+		"sql": "CREATE TABLE \"SAASignalsFound\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"BodyName\"\ttext,\n\t\"SystemAddress\"\tnumeric,\n\t\"BodyID\"\tnumeric,\n\t\"Signals\"\ttext,\n\t\"Genuses\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "CodexEntry",
+		"sql": "CREATE TABLE \"CodexEntry\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"EntryID\"\tnumeric,\n\t\"Name\"\ttext,\n\t\"Name_Localised\"\ttext,\n\t\"SubCategory\"\ttext,\n\t\"SubCategory_Localised\"\ttext,\n\t\"Category\"\ttext,\n\t\"Category_Localised\"\ttext,\n\t\"Region\"\ttext,\n\t\"Region_Localised\"\ttext,\n\t\"System\"\ttext,\n\t\"SystemAddress\"\tnumeric,\n\t\"IsNewEntry\"\ttext,\n\t\"NearestDestination\"\ttext,\n\t\"NearestDestination_Localised\"\ttext,\n\t\"VoucherAmount\"\tnumeric,\n\t\"Latitude\"\tnumeric,\n\t\"Longitude\"\tnumeric,\n\t\"Traits\"\tTEXT,\n\t\"BodyID\"\tNUMERIC,\n\t\"NewTraitsDiscovered\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "Promotion",
+		"sql": "CREATE TABLE \"Promotion\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Trade\"\tnumeric,\n\t\"Explore\"\tnumeric,\n\t\"Combat\"\tnumeric,\n\t\"Empire\"\tnumeric,\n\t\"Federation\"\tnumeric,\n\t\"Soldier\"\tNUMERIC,\n\t\"Exobiologist\"\tNUMERIC,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
+		"type": "table",
+		"row_array": [
+
+		]
+	},
+	{
+		"name": "BuyMicroResources",
+		"sql": "CREATE TABLE \"BuyMicroResources\" (\n\t\"Id\"\tINTEGER NOT NULL UNIQUE,\n\t\"CMDRId\"\tINTEGER NOT NULL,\n\t\"FileheaderId\"\tINTEGER NOT NULL,\n\t\"timestamp\"\ttext,\n\t\"Name\"\ttext,\n\t\"Name_Localised\"\ttext,\n\t\"Category\"\ttext,\n\t\"Count\"\tnumeric,\n\t\"Price\"\tnumeric,\n\t\"MarketID\"\tnumeric,\n\t\"TotalCount\"\tNUMERIC,\n\t\"MicroResources\"\tTEXT,\n\tPRIMARY KEY(\"Id\" AUTOINCREMENT)\n)",
 		"type": "table",
 		"row_array": [
 
