@@ -42,8 +42,8 @@ func _on_DataReader_new_cached_events(_events: Array):
 					for mat in evt["MaterialsReward"]:
 						update_mats_tree(mat["Category"], mat["Name"], mat["Count"], true)
 			elif "MaterialTrade" == evt["event"]:
-				update_mats_tree(evt['Paid']["Category"], evt['Paid']["Name"], evt['Paid']["Count"], true)
-				update_mats_tree(evt['Received']["Category"], evt['Received']["Name"], evt['Received']["Count"], true)
+				update_mats_tree(evt['Paid']["Category"], evt['Paid']["Material"], evt['Paid']["Quantity"], false)
+				update_mats_tree(evt['Received']["Category"], evt['Received']["Material"], evt['Received']["Quantity"], true)
 
 func _on_InventoryAndMaterials_visibility_changed():
 	if is_visible_in_tree():
